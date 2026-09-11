@@ -1,0 +1,6 @@
+{
+  "name": "HOS Route Planner & ELD Log Generator",
+  "description": "FMCSA-compliant HOS route planner and ELD driver daily log generator with road routing, dynamic rest and fuel stop scheduling, and 24-hour RODS grid.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
