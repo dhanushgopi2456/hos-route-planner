@@ -1,6 +1,3 @@
-import json
-
-from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -17,7 +14,6 @@ from services.hos.calculator import (
     calculate_driving_remaining,
     calculate_window_remaining,
     calculate_break_remaining,
-    HOS_CONSTANTS,
 )
 
 from services.hos.validators import (
@@ -30,7 +26,7 @@ class HealthCheckView(APIView):
     def get(self, request):
         return Response({
             "status": "ok",
-            "service": "Django DRF HOS Backend",
+            "service": "Django DRF HOS Backend"
         })
 
 
@@ -81,11 +77,11 @@ class TripTimelineView(APIView):
 
         serializer = TripEventSerializer(
             events,
-            many=True,
+            many=True
         )
 
         return Response({
-            "events": serializer.data,
+            "events": serializer.data
         })
 
 
@@ -97,11 +93,11 @@ class TripLogsView(APIView):
 
         serializer = DailyLogSerializer(
             logs,
-            many=True,
+            many=True
         )
 
         return Response({
-            "daily_logs": serializer.data,
+            "daily_logs": serializer.data
         })
 
 
@@ -110,15 +106,21 @@ class ValidateTripView(APIView):
         events = request.data.get("events", [])
 
         initial_cycle = float(
-            request.data.get(
-                "initial_cycle_used",
-                0.0,
-            )
+            request.data.get("initial_cycle_used", 0.0)
         )
 
         result = validate_trip(
             events,
-            initial_cycle,
+            initial_cycle
         )
+
+        return Response(result)
+
+
+class ValidateDailyLogView(APIView):
+    def post(self, request):
+        daily_log = request.data
+
+        result = validate_daily_log(daily_log)
 
         return Response(result)
