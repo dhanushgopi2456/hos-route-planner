@@ -59,8 +59,45 @@ const DEFAULT_DEMOS = [
     trailer_number: 'TLR-1088',
     current_cycle_used: 12.0,
     theme_preference: 'dark'
+  },
+  {
+    id: 'usr_gopi_operator',
+    name: 'Gopi',
+    email: 'gopi@fleet.com',
+    role: 'driver',
+    cdl_number: 'CDL-US-984210',
+    carrier_name: 'National Commercial Express',
+    carrier_office: 'Chicago, IL',
+    truck_number: '702',
+    trailer_number: '4410',
+    current_cycle_used: 28.5,
+    theme_preference: 'dark'
   }
 ];
+
+// Helper to encode user payload into a self-contained, stateless token
+function encodeClientToken(u: User): string {
+  try {
+    const payload = {
+      id: u.id,
+      name: u.name,
+      email: u.email,
+      role: u.role || 'driver',
+      cdl_number: u.cdl_number,
+      carrier_name: u.carrier_name,
+      carrier_office: u.carrier_office,
+      truck_number: u.truck_number,
+      trailer_number: u.trailer_number,
+      current_cycle_used: u.current_cycle_used,
+      theme_preference: u.theme_preference || 'dark',
+      iat: Date.now()
+    };
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    return `eld_token_${u.id}_${b64}`;
+  } catch {
+    return `eld_token_${u.id}_active`;
+  }
+}
 
 // Helper to safely parse fetch responses without crashing on HTML 500 error pages
 async function safeJsonParse(res: Response): Promise<{ ok: boolean; data: any; errorText?: string }> {
@@ -96,7 +133,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [token, setToken] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem(TOKEN_KEY);
+      const stored = localStorage.getItem(TOKEN_KEY);
+      if (stored) return stored;
+      const storedUser = localStorage.getItem(USER_KEY);
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          if (parsed?.id) {
+            const generated = encodeClientToken(parsed);
+            localStorage.setItem(TOKEN_KEY, generated);
+            return generated;
+          }
+        } catch {}
+      }
     }
     return null;
   });
@@ -140,7 +189,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(parsed.data.user);
           localStorage.setItem(USER_KEY, JSON.stringify(parsed.data.user));
         } else if (res.status === 401 || res.status === 403) {
-          // Token expired or invalid
+          // If stored user exists, refresh token using stateless encoding instead of kicking user out
+          const storedUser = localStorage.getItem(USER_KEY);
+          if (storedUser) {
+            try {
+              const u = JSON.parse(storedUser);
+              if (u?.id) {
+                const refreshed = encodeClientToken(u);
+                setToken(refreshed);
+                setUser(u);
+                localStorage.setItem(TOKEN_KEY, refreshed);
+                return;
+              }
+            } catch {}
+          }
           setToken(null);
           setUser(null);
           localStorage.removeItem(TOKEN_KEY);
@@ -187,7 +249,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         d => d.email.toLowerCase() === credentials.email.toLowerCase()
       );
       if (matchingDemo) {
-        const fallbackToken = `eld_token_${matchingDemo.id}_verified`;
+        const fallbackToken = encodeClientToken(matchingDemo);
         setToken(fallbackToken);
         setUser(matchingDemo);
         localStorage.setItem(TOKEN_KEY, fallbackToken);
@@ -210,7 +272,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         d => d.email.toLowerCase() === credentials.email.toLowerCase()
       );
       if (matchingDemo) {
-        const fallbackToken = `eld_token_${matchingDemo.id}_offline`;
+        const fallbackToken = encodeClientToken(matchingDemo);
         setToken(fallbackToken);
         setUser(matchingDemo);
         localStorage.setItem(TOKEN_KEY, fallbackToken);
@@ -278,7 +340,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         theme_preference: 'dark',
         created_at: new Date().toISOString()
       };
-      const fallbackToken = `eld_token_${fallbackUser.id}_active`;
+      const fallbackToken = encodeClientToken(fallbackUser);
       setToken(fallbackToken);
       setUser(fallbackUser);
       localStorage.setItem(TOKEN_KEY, fallbackToken);
@@ -307,7 +369,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         theme_preference: 'dark',
         created_at: new Date().toISOString()
       };
-      const fallbackToken = `eld_token_${fallbackUser.id}_active`;
+      const fallbackToken = encodeClientToken(fallbackUser);
       setToken(fallbackToken);
       setUser(fallbackUser);
       localStorage.setItem(TOKEN_KEY, fallbackToken);
