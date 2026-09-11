@@ -70,6 +70,9 @@ export const DashboardPage: React.FC = () => {
         trailer_number: request.trailer_number || user?.trailer_number || '4410'
       };
 
+      const controller = new AbortController();
+      const fetchTimeout = setTimeout(() => controller.abort(), 15000);
+
       const res = await fetch('/api/trips/plan', {
         method: 'POST',
         headers: {
@@ -77,8 +80,10 @@ export const DashboardPage: React.FC = () => {
           'Authorization': `Bearer ${effectiveToken}`,
           ...(user ? { 'X-Driver-User': JSON.stringify(user) } : {})
         },
-        body: JSON.stringify(enrichedRequest)
+        body: JSON.stringify(enrichedRequest),
+        signal: controller.signal
       });
+      clearTimeout(fetchTimeout);
 
       if (!res.ok) {
         let errMessage = 'Failed to plan trip. Please check your inputs.';
@@ -113,7 +118,10 @@ export const DashboardPage: React.FC = () => {
       );
     } catch (err: any) {
       console.error('Trip planning error:', err);
-      const msg = err.message || 'An unexpected error occurred while planning the trip.';
+      let msg = err.message || 'An unexpected error occurred while planning the trip.';
+      if (err.name === 'AbortError') {
+        msg = 'Trip planning request timed out. Please check that stops are connected via highway or select a corridor preset.';
+      }
       setErrorMessage(msg);
       toastError('Trip Planning Failed', msg);
     } finally {

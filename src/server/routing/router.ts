@@ -8,7 +8,7 @@ export async function calculateRouteLeg(from: LocationPoint, to: LocationPoint):
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    const timeout = setTimeout(() => controller.abort(), 3500);
 
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeout);

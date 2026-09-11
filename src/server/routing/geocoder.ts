@@ -1,7 +1,7 @@
 import { LocationPoint } from '../../types/hos';
 
 // Pre-seeded high-accuracy freight terminals & major logistics hubs across all global corridors
-const KNOWN_HUBS: LocationPoint[] = [
+export const KNOWN_HUBS: LocationPoint[] = [
   // North America
   { name: 'Chicago, IL, USA', city: 'Chicago', state: 'IL', country: 'USA', lat: 41.8781, lng: -87.6298, address: 'Chicago Freight Terminal, IL, USA' },
   { name: 'Indianapolis, IN, USA', city: 'Indianapolis', state: 'IN', country: 'USA', lat: 39.7684, lng: -86.1581, address: 'Indianapolis Logistics Hub, IN, USA' },
@@ -41,9 +41,19 @@ const KNOWN_HUBS: LocationPoint[] = [
   { name: 'Osaka, Japan', city: 'Osaka', state: 'Kansai', country: 'Japan', lat: 34.6937, lng: 135.5023, address: 'Osaka Logistics Bay, Japan' },
   { name: 'Singapore', city: 'Singapore', state: 'Singapore', country: 'Singapore', lat: 1.3521, lng: 103.8198, address: 'Singapore Jurong Logistics Hub' },
   { name: 'Dubai, UAE', city: 'Dubai', state: 'Dubai', country: 'United Arab Emirates', lat: 25.2048, lng: 55.2708, address: 'Jebel Ali Port & Logistics Park, Dubai, UAE' },
-  { name: 'Mumbai, India', city: 'Mumbai', state: 'Maharashtra', country: 'India', lat: 19.0760, lng: 72.8777, address: 'JNPT Port Logistics Center, Mumbai, India' },
-  { name: 'Delhi, India', city: 'Delhi', state: 'Delhi', country: 'India', lat: 28.7041, lng: 77.1025, address: 'Delhi Multi-Modal Logistics Park, India' },
+  { name: 'Tadepalligudem, AP, India', city: 'Tadepalligudem', state: 'Andhra Pradesh', country: 'India', lat: 16.8052, lng: 81.5283, address: 'Tadepalligudem Logistics Center, Andhra Pradesh, India' },
+  { name: 'Eluru, AP, India', city: 'Eluru', state: 'Andhra Pradesh', country: 'India', lat: 16.7107, lng: 81.0952, address: 'Eluru Freight Yard, Andhra Pradesh, India' },
+  { name: 'Rajahmundry, AP, India', city: 'Rajahmundry', state: 'Andhra Pradesh', country: 'India', lat: 17.0005, lng: 81.8040, address: 'Rajahmundry Cargo Hub, Andhra Pradesh, India' },
+  { name: 'Vijayawada, AP, India', city: 'Vijayawada', state: 'Andhra Pradesh', country: 'India', lat: 16.5062, lng: 80.6480, address: 'Vijayawada Multi-Modal Logistics Hub, Andhra Pradesh, India' },
+  { name: 'Visakhapatnam, AP, India', city: 'Visakhapatnam', state: 'Andhra Pradesh', country: 'India', lat: 17.6868, lng: 83.2185, address: 'Visakhapatnam Port Container Terminal, Andhra Pradesh, India' },
+  { name: 'Hyderabad, TS, India', city: 'Hyderabad', state: 'Telangana', country: 'India', lat: 17.3850, lng: 78.4867, address: 'Hyderabad Logistics Corridor, Telangana, India' },
+  { name: 'Chennai, TN, India', city: 'Chennai', state: 'Tamil Nadu', country: 'India', lat: 13.0827, lng: 80.2707, address: 'Chennai Port Container Freight Terminal, Tamil Nadu, India' },
   { name: 'Bengaluru, India', city: 'Bengaluru', state: 'Karnataka', country: 'India', lat: 12.9716, lng: 77.5946, address: 'Bengaluru Logistics Corridor, India' },
+  { name: 'Mumbai, India', city: 'Mumbai', state: 'Maharashtra', country: 'India', lat: 19.0760, lng: 72.8777, address: 'JNPT Port Logistics Center, Mumbai, India' },
+  { name: 'Pune, MH, India', city: 'Pune', state: 'Maharashtra', country: 'India', lat: 18.5204, lng: 73.8567, address: 'Pune Industrial Freight Hub, Maharashtra, India' },
+  { name: 'Delhi, India', city: 'Delhi', state: 'Delhi', country: 'India', lat: 28.7041, lng: 77.1025, address: 'Delhi Multi-Modal Logistics Park, India' },
+  { name: 'Kolkata, WB, India', city: 'Kolkata', state: 'West Bengal', country: 'India', lat: 22.5726, lng: 88.3639, address: 'Kolkata Port Logistics, West Bengal, India' },
+  { name: 'Ahmedabad, GJ, India', city: 'Ahmedabad', state: 'Gujarat', country: 'India', lat: 23.0225, lng: 72.5714, address: 'Ahmedabad Logistics Park, Gujarat, India' },
   { name: 'Seoul, South Korea', city: 'Seoul', state: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780, address: 'Seoul Central Freight Center, South Korea' },
 
   // Australia & New Zealand
@@ -166,14 +176,15 @@ export async function geocodeQuery(query: string): Promise<LocationPoint[]> {
 }
 
 export async function reverseGeocode(lat: number, lng: number): Promise<LocationPoint> {
+  // 1. First try OpenStreetMap Nominatim with proper contact header
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3500);
+    const timeout = setTimeout(() => controller.abort(), 2800);
 
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'HOSRoutePlannerELD/1.0'
+        'User-Agent': 'HOSRoutePlannerELD/1.0 (contact: dispatch@hosrouteplanner.io)'
       },
       signal: controller.signal
     });
@@ -189,33 +200,65 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Location
         addr.municipality ||
         addr.suburb ||
         addr.county ||
-        'Current Location';
+        '';
       const state = addr.state
         ? getStateAbbr(addr.state)
         : (addr.region || addr.province || addr.state_district || '');
       const country = addr.country || (addr.country_code ? addr.country_code.toUpperCase() : '');
 
       const nameParts = [city, state, country].filter(Boolean);
-      const name =
-        nameParts.length > 0
-          ? nameParts.join(', ')
-          : data.display_name?.split(',').slice(0, 3).join(', ') || `GPS (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-
-      return {
-        name,
-        city,
-        state,
-        country: country || 'Global',
-        lat,
-        lng,
-        address: data.display_name || name
-      };
+      if (nameParts.length > 0) {
+        return {
+          name: nameParts.join(', '),
+          city: city || 'Local Terminal',
+          state: state,
+          country: country || 'Global',
+          lat,
+          lng,
+          address: data.display_name || nameParts.join(', ')
+        };
+      }
     }
   } catch (e) {
-    // Fallback based on closest known hub or direct coordinates
+    // Continue to Photon fallback
   }
 
-  // Find closest known hub
+  // 2. High-speed fallback: Photon (OSM-based, high rate limits, friendly to serverless)
+  try {
+    const photonUrl = `https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`;
+    const pController = new AbortController();
+    const pTimeout = setTimeout(() => pController.abort(), 2500);
+
+    const pRes = await fetch(photonUrl, { signal: pController.signal });
+    clearTimeout(pTimeout);
+
+    if (pRes.ok) {
+      const pData = await pRes.json();
+      if (pData?.features && pData.features.length > 0) {
+        const props = pData.features[0]?.properties || {};
+        const city = props.city || props.town || props.locality || props.district || props.county || '';
+        const state = props.state ? getStateAbbr(props.state) : '';
+        const country = props.country || '';
+
+        const nameParts = [city, state, country].filter(Boolean);
+        if (nameParts.length > 0) {
+          return {
+            name: nameParts.join(', '),
+            city: city || 'Local Terminal',
+            state: state,
+            country: country || 'Global',
+            lat,
+            lng,
+            address: `${city ? city + ', ' : ''}${state ? state + ', ' : ''}${country}`
+          };
+        }
+      }
+    }
+  } catch (e) {
+    // Continue to closest hub & regional lookup
+  }
+
+  // 3. Intelligent closest known hub & regional classification fallback
   let closest = KNOWN_HUBS[0];
   let minDistance = Infinity;
   for (const hub of KNOWN_HUBS) {
@@ -226,7 +269,8 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Location
     }
   }
 
-  if (minDistance < 1.0) {
+  // If very close to a hub (< 25 miles / ~0.35 deg)
+  if (minDistance < 0.35) {
     return {
       ...closest,
       lat,
@@ -234,14 +278,65 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Location
     };
   }
 
+  // If moderately close to a hub (< 150 miles / ~2.2 deg)
+  if (minDistance < 2.2) {
+    return {
+      name: `Near ${closest.city}, ${closest.state ? closest.state + ', ' : ''}${closest.country}`,
+      city: closest.city,
+      state: closest.state || '',
+      country: closest.country || 'Global',
+      lat,
+      lng,
+      address: `Logistics Area near ${closest.name}`
+    };
+  }
+
+  // Regional geographic classifier by coordinates
+  let regionName = 'Commercial Dispatch Area';
+  let countryName = 'Global';
+  let stateName = '';
+
+  if (lat >= 6.5 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5) {
+    countryName = 'India';
+    if (lat >= 14.0 && lat <= 19.5 && lng >= 78.0 && lng <= 84.5) {
+      stateName = 'Andhra Pradesh';
+      regionName = 'Godavari / Coastal Corridor';
+    } else if (lat >= 16.0 && lat <= 20.0 && lng >= 77.0 && lng <= 81.5) {
+      stateName = 'Telangana';
+      regionName = 'Hyderabad / Deccan Corridor';
+    } else if (lat >= 11.5 && lat <= 18.5 && lng >= 74.0 && lng <= 78.5) {
+      stateName = 'Karnataka';
+      regionName = 'Bengaluru Corridor';
+    } else if (lat >= 8.0 && lat <= 13.5 && lng >= 76.0 && lng <= 80.5) {
+      stateName = 'Tamil Nadu';
+      regionName = 'Chennai Corridor';
+    } else if (lat >= 15.5 && lat <= 22.0 && lng >= 72.5 && lng <= 80.5) {
+      stateName = 'Maharashtra';
+      regionName = 'Mumbai / Pune Corridor';
+    } else {
+      regionName = 'India Regional Freight Route';
+    }
+  } else if (lat >= 24.0 && lat <= 50.0 && lng >= -125.0 && lng <= -66.0) {
+    countryName = 'USA';
+    stateName = closest.state || 'Midwest';
+    regionName = `US Highway Corridor near ${closest.city || 'Terminal'}`;
+  } else if (lat >= 35.0 && lat <= 60.0 && lng >= -10.0 && lng <= 30.0) {
+    countryName = 'Europe';
+    regionName = `European Logistics Corridor near ${closest.city || 'Depot'}`;
+  }
+
+  const generatedName = stateName
+    ? `${regionName}, ${stateName}, ${countryName}`
+    : `${regionName}, ${countryName}`;
+
   return {
-    name: `GPS Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
-    city: closest.city || 'Current City',
-    state: closest.state || '',
-    country: closest.country || 'Global',
+    name: generatedName,
+    city: closest.city || regionName,
+    state: stateName || closest.state || '',
+    country: countryName,
     lat,
     lng,
-    address: `GPS Pin: ${lat.toFixed(5)}, ${lng.toFixed(5)}`
+    address: `${generatedName} (${lat.toFixed(4)}, ${lng.toFixed(4)})`
   };
 }
 

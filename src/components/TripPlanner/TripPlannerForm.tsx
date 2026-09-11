@@ -20,7 +20,8 @@ import {
   Crosshair,
   ArrowLeftRight,
   X,
-  Globe
+  Globe,
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Card3D } from '../UI/Card3D';
@@ -41,6 +42,20 @@ interface PresetRoute {
   pickup: LocationPoint;
   dropoff: LocationPoint;
   cycleUsed: number;
+}
+
+// Geodesic distance helper in miles
+function calcHaversineMiles(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 3958.8;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 const PRESET_ROUTES: PresetRoute[] = [
@@ -73,6 +88,36 @@ const PRESET_ROUTES: PresetRoute[] = [
       lng: -96.7970
     },
     cycleUsed: 42.5
+  },
+  {
+    id: 'india-corridor',
+    label: 'Tadepalligudem → Hyderabad → Bengaluru (India)',
+    tag: '580 mi • Coastal & Deccan Freight Corridor',
+    origin: {
+      name: 'Tadepalligudem, AP, India',
+      city: 'Tadepalligudem',
+      state: 'Andhra Pradesh',
+      country: 'India',
+      lat: 16.8052,
+      lng: 81.5283
+    },
+    pickup: {
+      name: 'Hyderabad, TS, India',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      country: 'India',
+      lat: 17.3850,
+      lng: 78.4867
+    },
+    dropoff: {
+      name: 'Bengaluru, KA, India',
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      lat: 12.9716,
+      lng: 77.5946
+    },
+    cycleUsed: 16.5
   },
   {
     id: 'europe-corridor',
@@ -387,12 +432,69 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
           console.warn('Reverse geocode fallback:', e);
         }
 
-        // Fallback with GPS Pin
+        // Direct browser fallback to Photon (Komoot OSM)
+        try {
+          const photonRes = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`);
+          if (photonRes.ok) {
+            const pData = await photonRes.json();
+            if (pData?.features && pData.features.length > 0) {
+              const props = pData.features[0]?.properties || {};
+              const city = props.city || props.town || props.locality || props.district || props.county || '';
+              const state = props.state || '';
+              const country = props.country || '';
+              const parts = [city, state, country].filter(Boolean);
+              if (parts.length > 0) {
+                const photonLoc: LocationPoint = {
+                  name: parts.join(', '),
+                  city: city || 'Local Area',
+                  state,
+                  country,
+                  lat,
+                  lng,
+                  address: `${city ? city + ', ' : ''}${state ? state + ', ' : ''}${country}`
+                };
+                if (target === 'origin') setCurrentLoc(photonLoc);
+                else if (target === 'pickup') setPickupLoc(photonLoc);
+                else if (target === 'dropoff') setDropoffLoc(photonLoc);
+
+                setActivePresetId('');
+                toastSuccess('Current Location Detected!', `Set ${target.toUpperCase()} to ${photonLoc.name}`);
+                setIsLocatingField(null);
+                return;
+              }
+            }
+          }
+        } catch (pe) {
+          console.warn('Client-side photon fallback failed:', pe);
+        }
+
+        // Intelligent regional geographic naming based on coordinates
+        let fallbackName = `Current Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+        let fallbackCity = 'Current Location';
+        let fallbackState = '';
+        let fallbackCountry = 'Global';
+
+        if (lat >= 6.5 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5) {
+          fallbackCountry = 'India';
+          if (lat >= 14.0 && lat <= 19.5 && lng >= 78.0 && lng <= 84.5) {
+            fallbackState = 'Andhra Pradesh';
+            fallbackCity = 'Tadepalligudem';
+            fallbackName = 'Tadepalligudem, Andhra Pradesh, India';
+          } else if (lat >= 16.0 && lat <= 20.0 && lng >= 77.0 && lng <= 81.5) {
+            fallbackState = 'Telangana';
+            fallbackCity = 'Hyderabad';
+            fallbackName = 'Hyderabad, Telangana, India';
+          } else {
+            fallbackCity = 'Regional Depot';
+            fallbackName = `Regional Logistics Area, India (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+          }
+        }
+
         const fallbackLoc: LocationPoint = {
-          name: `Current Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
-          city: 'Current Location',
-          state: '',
-          country: 'Global',
+          name: fallbackName,
+          city: fallbackCity,
+          state: fallbackState,
+          country: fallbackCountry,
           lat,
           lng,
           address: `GPS Pin: ${lat.toFixed(5)}, ${lng.toFixed(5)}`
@@ -403,7 +505,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
         else if (target === 'dropoff') setDropoffLoc(fallbackLoc);
 
         setActivePresetId('');
-        toastSuccess('GPS Location Acquired!', `Coordinates set to ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+        toastSuccess('Location Acquired!', `Coordinates set to ${fallbackName}`);
         setIsLocatingField(null);
       },
       (err) => {
@@ -454,8 +556,29 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
     return loc;
   };
 
+  const distCurrentToPickup = calcHaversineMiles(
+    currentLoc.lat, currentLoc.lng,
+    pickupLoc.lat, pickupLoc.lng
+  );
+  const distPickupToDropoff = calcHaversineMiles(
+    pickupLoc.lat, pickupLoc.lng,
+    dropoffLoc.lat, dropoffLoc.lng
+  );
+  const isOceanCrossing = distCurrentToPickup > 3500 || distPickupToDropoff > 3500;
+  const isOriginInIndia =
+    currentLoc.country === 'India' ||
+    (currentLoc.lat >= 6.5 && currentLoc.lat <= 37.5 && currentLoc.lng >= 68.0 && currentLoc.lng <= 97.5);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isOceanCrossing) {
+      toastError(
+        'Ocean Crossing Cannot Be Planned',
+        'Commercial trucks require connected road networks. Click "Plan India Corridor" or "Test US Corridor" below.'
+      );
+      return;
+    }
 
     // Verify and ensure all 3 locations have valid coordinates
     const resolvedOrigin = await resolveLocationCoordinates(currentLoc);
@@ -664,6 +787,75 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
             isLocating={isLocatingField === 'dropoff'}
           />
         </div>
+
+        {/* Ocean Crossing / Regional Alignment Guidance Banner */}
+        {isOceanCrossing && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="mb-5 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/80 text-amber-950 dark:text-amber-200 shadow-sm"
+          >
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-amber-500 text-white shrink-0 mt-0.5 shadow-sm">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div className="space-y-2 flex-1">
+                <div className="font-bold text-sm flex items-center justify-between">
+                  <span>
+                    {isOriginInIndia
+                      ? `Origin in India (${currentLoc.city || 'Tadepalligudem'}) & US Destination Detected`
+                      : 'Ocean Crossing Detected Between Route Stops'}
+                  </span>
+                  <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400">
+                    ~{Math.round(distCurrentToPickup).toLocaleString()} mi apart
+                  </span>
+                </div>
+                <p className="text-xs text-amber-900/90 dark:text-amber-300 leading-relaxed">
+                  Commercial trucks require a continuous highway corridor. Origin and destination cannot cross open oceans. Choose one of the quick 1-click solutions below to plan a compliant route immediately:
+                </p>
+                <div className="flex flex-wrap gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPickupLoc({
+                        name: 'Hyderabad, TS, India',
+                        city: 'Hyderabad',
+                        state: 'Telangana',
+                        country: 'India',
+                        lat: 17.3850,
+                        lng: 78.4867
+                      });
+                      setDropoffLoc({
+                        name: 'Bengaluru, KA, India',
+                        city: 'Bengaluru',
+                        state: 'Karnataka',
+                        country: 'India',
+                        lat: 12.9716,
+                        lng: 77.5946
+                      });
+                      setCurrentCycleUsed(16.5);
+                      setActivePresetId('india-corridor');
+                      toastSuccess('India Freight Corridor Set!', 'Stops connected from your current location to Hyderabad and Bengaluru.');
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                  >
+                    <span>🇮🇳 Plan India Corridor (Hyderabad → Bengaluru)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleApplyPreset(PRESET_ROUTES[0]);
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                  >
+                    <span>🇺🇸 Test US Corridor (Chicago → Indianapolis → Dallas)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* 70/8 Cycle Usage Input with Dynamic Visual Bar & Quick Chips */}
         <div className="bg-gradient-to-r from-slate-50 via-blue-50/40 to-indigo-50/40 dark:from-slate-800/80 dark:via-slate-800/60 dark:to-slate-800/40 border border-slate-200/90 dark:border-slate-700 rounded-2xl p-4 mb-5 shadow-inner">

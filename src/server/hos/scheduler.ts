@@ -12,7 +12,7 @@ import {
 } from '../../types/hos';
 import { HOS_CONSTANTS } from './calculator';
 import { interpolateCoordinate } from '../routing/router';
-import { reverseGeocode } from '../routing/geocoder';
+import { KNOWN_HUBS } from '../routing/geocoder';
 import { generateDailyLogs } from './logGenerator';
 import { validateTrip } from './validators';
 
@@ -128,7 +128,7 @@ export class HosTripPlanner {
         // 1. Check 70-hour cycle limit
         if (currentCycleUsed >= HOS_CONSTANTS.CYCLE_LIMIT_HOURS) {
           // Mandatory 34-hour restart
-          const restLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const restLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             'SLEEPER_BERTH',
             'SLEEPER_BERTH',
@@ -157,7 +157,7 @@ export class HosTripPlanner {
 
         // 2. Check 11-hour driving or 14-hour window limit
         if (drivingInWindow >= HOS_CONSTANTS.MAX_DAILY_DRIVING_HOURS || windowElapsed >= HOS_CONSTANTS.MAX_DAILY_WINDOW_HOURS) {
-          const restLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const restLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             'SLEEPER_BERTH',
             'SLEEPER_BERTH',
@@ -185,7 +185,7 @@ export class HosTripPlanner {
 
         // 3. Check 8-hour cumulative driving 30-min break
         if (cumulativeDrivingSinceBreak >= HOS_CONSTANTS.MAX_CUMULATIVE_DRIVING_BEFORE_BREAK) {
-          const breakLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const breakLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             'REST_BREAK',
             'OFF_DUTY',
@@ -211,7 +211,7 @@ export class HosTripPlanner {
 
         // 4. Check fuel threshold (fuel every 1,000 miles, trigger at ~920 miles)
         if (distanceSinceLastFuel >= HOS_CONSTANTS.FUELING_TRIGGER_MILES) {
-          const fuelLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const fuelLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             'FUEL',
             'ON_DUTY_NOT_DRIVING',
@@ -277,7 +277,7 @@ export class HosTripPlanner {
         distanceSinceLastFuel += driveMiles;
 
         const chunkFraction = Math.min(1.0, legDistanceProgress / leg.distance_miles);
-        const chunkLoc = await resolveRouteLocation(leg.geometry, chunkFraction, leg.to);
+        const chunkLoc = resolveRouteLocation(leg.geometry, chunkFraction, leg.to);
 
         recordEvent(
           'DRIVING',
@@ -448,21 +448,54 @@ export class HosTripPlanner {
   }
 }
 
-async function resolveRouteLocation(
+function resolveRouteLocation(
   geometry: [number, number][],
   fraction: number,
   fallback: LocationPoint
-): Promise<LocationPoint> {
+): LocationPoint {
   const coord = interpolateCoordinate(geometry, fraction);
   if (!coord || (coord[0] === 0 && coord[1] === 0)) {
     return fallback;
   }
-  const geo = await reverseGeocode(coord[0], coord[1]);
+  const lat = Math.round(coord[0] * 10000) / 10000;
+  const lng = Math.round(coord[1] * 10000) / 10000;
+
+  // Zero-latency nearest hub matching in memory (< 0.001 ms)
+  let closest = KNOWN_HUBS[0];
+  let minDistance = Infinity;
+  for (const hub of KNOWN_HUBS) {
+    const d = Math.hypot(hub.lat - lat, hub.lng - lng);
+    if (d < minDistance) {
+      minDistance = d;
+      closest = hub;
+    }
+  }
+
+  // If close to a recognized logistics hub (< ~65 miles / 0.95 degrees)
+  if (minDistance < 0.95 && closest) {
+    return {
+      name: `Near ${closest.city}, ${closest.state ? closest.state + ', ' : ''}${closest.country || 'USA'}`,
+      city: closest.city,
+      state: closest.state || '',
+      country: closest.country || 'USA',
+      lat,
+      lng
+    };
+  }
+
+  // Otherwise high-accuracy highway corridor waypoint naming
+  const targetCity = fallback.city || fallback.name;
+  const pct = Math.round(fraction * 100);
+  const corridorName = pct > 0 && pct < 100
+    ? `Highway Corridor (~${pct}% to ${targetCity})`
+    : targetCity;
+
   return {
-    name: geo.name,
-    city: geo.city,
-    state: geo.state,
-    lat: Math.round(coord[0] * 10000) / 10000,
-    lng: Math.round(coord[1] * 10000) / 10000
+    name: corridorName,
+    city: fallback.city || 'Highway Corridor',
+    state: fallback.state || '',
+    country: fallback.country || 'USA',
+    lat,
+    lng
   };
 }

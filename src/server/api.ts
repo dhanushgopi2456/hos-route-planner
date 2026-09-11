@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { geocodeQuery, reverseGeocode } from './routing/geocoder';
-import { calculateCompleteRoute } from './routing/router';
+import { calculateCompleteRoute, haversineDistanceMiles } from './routing/router';
 import { HosTripPlanner } from './hos/scheduler';
 import { validateTrip } from './hos/validators';
 import { runAllHosUnitTests } from './tests/test_hos_engine';
@@ -100,6 +100,22 @@ apiRouter.post('/trips/plan', async (req: Request, res: Response) => {
     if (currentCycleUsed >= 70) {
       return res.status(400).json({
         error: 'The supplied Current Cycle Used (>= 70h) leaves no legal on-duty capacity to complete the requested trip without a 34-hour restart.'
+      });
+    }
+
+    // Check for impossible ocean crossings (distance > 3,500 miles between points)
+    const distCurrentToPickup = haversineDistanceMiles(
+      body.current_location.lat, body.current_location.lng,
+      body.pickup_location.lat, body.pickup_location.lng
+    );
+    const distPickupToDropoff = haversineDistanceMiles(
+      body.pickup_location.lat, body.pickup_location.lng,
+      body.dropoff_location.lat, body.dropoff_location.lng
+    );
+
+    if (distCurrentToPickup > 3500 || distPickupToDropoff > 3500) {
+      return res.status(400).json({
+        error: 'Ocean crossing detected. Commercial motor vehicles require connected highway road networks. Please select stops within the same continent (e.g. India Regional Freight Corridor or US Interstate corridor).'
       });
     }
 
