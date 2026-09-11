@@ -74,12 +74,24 @@ export const DashboardPage: React.FC = () => {
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || 'Failed to plan trip. Please check your inputs.');
+        let errMessage = 'Failed to plan trip. Please check your inputs.';
+        try {
+          const err = await res.json();
+          errMessage = err.error || errMessage;
+        } catch {
+          const txt = await res.text().catch(() => '');
+          if (txt && txt.length < 200) errMessage = txt;
+        }
+        throw new Error(errMessage);
       }
 
       setPlanningStep('Generating 24.00h ELD Driver Logs & midnight splits...');
-      const data: TripPlanResponse = await res.json();
+      let data: TripPlanResponse;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error('Route calculation response could not be parsed. Please try again.');
+      }
       setPlannedTrip(data);
       setSelectedDayLog(1);
       setSelectedStop(null);

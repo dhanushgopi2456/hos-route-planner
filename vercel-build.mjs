@@ -1,7 +1,7 @@
 import { build } from 'esbuild';
 
 await build({
-  entryPoints: ['api/index.ts'],
+  entryPoints: ['src/server/vercel.ts'],
   bundle: true,
   platform: 'node',
   format: 'esm',
