@@ -1,231 +1,704 @@
-# Commercial HOS Route Planner & FMCSA ELD Daily Log Generator
+# 🚛 HOS ROUTE PLANNER & ELD LOG GENERATOR
 
-An FMCSA-compliant commercial vehicle Hours of Service (HOS) route planner and Electronic Logging Device (ELD) Record of Duty Status (RODS) generator. 
+<p align="center">
 
-Built with **React 19**, **TypeScript**, **Tailwind CSS v4**, **Express**, **Motion**, and **Leaflet**.
+### **Plan Smarter. Drive Compliant. Log Automatically.**
+
+**A full-stack commercial HOS route planning and ELD RODS generation platform built for modern fleet operations.**
+
+<br/>
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=38BDF8&center=true&vCenter=true&width=850&lines=Plan+Commercial+Routes+%F0%9F%9A%9B;Calculate+Driver+Hours+%E2%8F%B1%EF%B8%8F;Validate+HOS+Rules+%F0%9F%9B%A1%EF%B8%8F;Generate+ELD+Daily+Logs+%F0%9F%93%8B;Stay+Compliance-Ready+%E2%9C%85" />
+
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white"/>
+<img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>
+<img src="https://img.shields.io/badge/Tailwind-v4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white"/>
+<img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white"/>
+
+</p>
+
+<p align="center">
+
+<img src="https://img.shields.io/badge/Leaflet-Maps-199900?style=for-the-badge&logo=leaflet&logoColor=white"/>
+<img src="https://img.shields.io/badge/FMCSA-HOS-1D4ED8?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/Vercel-Ready-black?style=for-the-badge&logo=vercel"/>
+<img src="https://img.shields.io/badge/Tests-16-success?style=for-the-badge"/>
+
+</p>
 
 ---
 
-## Key Features
+# 🚛 What Is This?
 
-- **FMCSA 49 CFR Part 395 Compliance**:
-  - **11-Hour Driving Limit**: Prevents driving beyond 11 hours without a mandatory 10-hour consecutive off-duty reset.
-  - **14-Hour Driving Window**: Flags and prevents driving beyond the 14th consecutive hour after coming on duty.
-  - **30-Minute Rest Break**: Automatically schedules a mandatory 30-minute off-duty / sleeper break after 8 cumulative hours of driving.
-  - **10-Hour Off-Duty Reset**: Enforces full 10.0-hour consecutive rest periods between driving shifts.
-  - **70-Hour / 8-Day Cycle Rule**: Monitors multi-day cumulative driving and on-duty hours against the 70.0h statutory ceiling.
-  - **Fuel Stops Under 1,000 Miles**: Automatically schedules 30-minute refueling stops every 850–950 miles.
-  - **Pickup & Drop-off Buffers**: 1-hour on-duty (not driving) buffer allocated for loading/origin and unloading/destination.
-- **Pixel-Perfect 24.00-Hour ELD Daily Log Sheets**:
-  - Visual 24-hour graphical grid matching standard FMCSA paper logs / electronic display formats.
-  - Duty status tracking across **Off Duty**, **Sleeper Berth**, **Driving**, and **On Duty (Not Driving)**.
-  - Automatic midnight splits for multi-day cross-country hauls with exact 24.00-hour daily reconciliations.
-  - Multi-page vector PDF generation and printing.
-- **Driver Authentication & Gating**:
-  - Secure session-based authentication with token verification.
-  - Protected trip planning and ELD features reserved for authorized drivers.
-  - Displays active carrier name, CDL number, truck/tractor unit, and current cycle usage.
-- **Interactive Routing & Highway Map**:
-  - Interactive Leaflet route visualization with custom stop markers (Origin, Fuel, Rest, Destination).
-  - Turn-by-turn stop table with scheduled arrival, departure, activity duration, and status updates.
-  - Comprehensive 16-test automated HOS audit engine with real-time rule inspection.
+**HOS Route Planner & ELD Daily Log Generator** is a full-stack logistics application designed to help commercial drivers and fleet operations plan trips around Hours-of-Service constraints and generate structured daily Record of Duty Status logs.
+
+Instead of simply calculating a route, the system considers:
+
+**🛣️ Route Distance + ⏱️ Driving Time + 🛌 Rest + ⛽ Fuel + 📦 Pickup/Drop-off + 📜 HOS Rules**
+
+and transforms the result into a complete trip timeline and 24-hour ELD log.
 
 ---
 
-## How to Run This Project in VS Code (Local Development)
+# ⚡ From Route to ELD Log
 
-Follow these straightforward steps to set up, run, and develop this application locally on your computer using **Visual Studio Code**.
+```text
+                         🚛 TRIP INPUT
+                              │
+                ┌─────────────┼─────────────┐
+                ▼             ▼             ▼
+             📍 Origin     📍 Destination   ⏱️ Cycle
+                              │
+                              ▼
+                       🗺️ ROUTE ENGINE
+                              │
+                              ▼
+                    ⏱️ HOS SCHEDULER
+                              │
+             ┌────────────────┼────────────────┐
+             ▼                ▼                ▼
+          🚛 Driving       🛌 Rest          ⛽ Fuel
+             │                │                │
+             └────────────────┼────────────────┘
+                              ▼
+                     🛡️ HOS AUDIT ENGINE
+                              │
+                     ┌────────┴────────┐
+                     ▼                 ▼
+                  ✅ Valid          ⚠️ Violation
+                     │
+                     ▼
+                  📋 ELD RODS
+                     │
+                     ▼
+              📄 DAILY LOG SHEETS
+```
 
-### 1. Prerequisites
+---
 
-Ensure you have the following installed on your machine:
-- **Node.js**: Version 18.x or 20.x+ ([Download Node.js](https://nodejs.org/))
-- **npm** (bundled with Node.js) or **yarn** / **pnpm**
-- **Git** ([Download Git](https://git-scm.com/))
-- **Visual Studio Code** ([Download VS Code](https://code.visualstudio.com/))
+# ✨ Core Capabilities
 
-### 2. Clone or Open the Project in VS Code
+| 🚀 Module                    | Capability                                           |
+| ---------------------------- | ---------------------------------------------------- |
+| 🛣️ **Route Planning**       | Plan commercial trips between origin and destination |
+| ⏱️ **HOS Scheduling**        | Schedule driving, rest and duty periods              |
+| 🛡️ **Compliance Engine**    | Automatically inspect HOS constraints                |
+| ⛽ **Fuel Planning**          | Insert commercial refueling stops                    |
+| 📦 **Pickup / Delivery**     | Account for loading and unloading time               |
+| 🗺️ **Interactive Map**      | Visualize route and stop locations                   |
+| 📋 **ELD RODS Generator**    | Generate 24-hour duty-status logs                    |
+| 🌙 **Midnight Splitting**    | Split multi-day trips into daily records             |
+| 🔐 **Driver Authentication** | Protected driver access                              |
+| 📊 **Trip Summary**          | Mileage, duty and compliance metrics                 |
+| 🧪 **Automated Auditing**    | 16-test HOS validation suite                         |
+| 📄 **PDF Generation**        | Printable/vector daily log sheets                    |
 
-1. Open your terminal (or Command Prompt / PowerShell).
-2. Clone the repository or navigate to your downloaded folder:
-   ```bash
-   git clone <YOUR_REPOSITORY_URL>
-   cd <PROJECT_FOLDER>
-   ```
-3. Launch Visual Studio Code in this folder:
-   ```bash
-   code .
-   ```
+---
 
-### 3. Recommended VS Code Extensions (Optional but Recommended)
+# 🛡️ HOS Compliance Engine
 
-For the best developer experience, install these extensions in VS Code:
-- **Tailwind CSS IntelliSense** (`bradlc.vscode-tailwindcss`)
-- **ESLint** (`dbaeumer.vscode-eslint`)
-- **Pretty TypeScript Errors** (`yoavbls.pretty-ts-errors`)
+The core of the application is its automated HOS scheduling and validation logic.
 
-### 4. Install Dependencies
+### ⏱️ 11-Hour Driving Limit
 
-Open the integrated terminal in VS Code (`Ctrl + \`` or `Cmd + \`` on macOS, or menu **Terminal > New Terminal**), then run:
+The planner prevents a driver from exceeding the configured 11-hour driving allowance before a required reset.
+
+### 🕐 14-Hour Duty Window
+
+The system tracks the consecutive on-duty window and prevents scheduled driving beyond the allowed window.
+
+### 🛌 30-Minute Rest Break
+
+A mandatory 30-minute off-duty/sleeper period is automatically scheduled after the configured cumulative driving threshold.
+
+### 🌙 10-Hour Reset
+
+The scheduler inserts a full 10-hour consecutive rest period between driving shifts.
+
+### 📊 70/8 Cycle
+
+Multi-day cumulative duty is tracked against the configured 70-hour / 8-day limit.
+
+### ⛽ Fuel Stops
+
+Long-distance routes automatically receive refueling stops within the project's configured 850–950 mile interval.
+
+### 📦 Dock Operations
+
+Pickup and delivery receive dedicated one-hour on-duty buffers.
+
+---
+
+# 🧠 Automated Compliance Pipeline
+
+```text
+                  🚛 ROUTE
+                     │
+                     ▼
+             📏 DISTANCE + ETA
+                     │
+                     ▼
+             ⏱️ DUTY CALCULATION
+                     │
+                     ▼
+        ┌───────────────────────────┐
+        │       HOS ENGINE          │
+        │                           │
+        │  11h Driving              │
+        │  14h Window               │
+        │  30m Break                │
+        │  10h Reset               │
+        │  70/8 Cycle               │
+        │  Fuel Stops               │
+        │  Dock Time                │
+        └─────────────┬─────────────┘
+                      │
+                      ▼
+                📋 EVENT TIMELINE
+                      │
+                      ▼
+                🛡️ AUDIT ENGINE
+                      │
+             ┌────────┴────────┐
+             ▼                 ▼
+          ✅ PASS           ⚠️ FAIL
+             │                 │
+             ▼                 ▼
+        📄 ELD LOG          🚨 VIOLATION
+```
+
+---
+
+# 📋 ELD Daily Log Generator
+
+One of the project's key features is automatic generation of **24-hour daily duty-status records**.
+
+Each daily log tracks:
+
+```text
+24-HOUR DUTY STATUS
+────────────────────────────────────────────────────────────
+
+OFF DUTY
+████████        ████████
+
+SLEEPER
+        ███████████
+
+DRIVING
+                    ███████████████████
+
+ON DUTY
+    ████                         ████
+```
+
+### Supported duty statuses
+
+* 💤 **Off Duty**
+* 🛏️ **Sleeper Berth**
+* 🚛 **Driving**
+* 🔧 **On Duty — Not Driving**
+
+---
+
+# 🌙 Multi-Day Trip Handling
+
+Long-haul trips can cross midnight.
+
+The application automatically splits the timeline into separate daily records.
+
+```text
+DAY 1                         DAY 2
+00:00 ─────────── 24:00      00:00 ─────────── 24:00
+│                              │
+├── Driving                    ├── Driving
+├── Fuel                       ├── Rest
+├── Driving                    ├── Fuel
+├── Rest                       ├── Driving
+└── Midnight Split ──────────►└── Delivery
+```
+
+Every generated day is reconciled against a complete **24-hour / 1,440-minute timeline**.
+
+---
+
+# 🗺️ Interactive Highway Map
+
+The application uses Leaflet to visualize the planned route.
+
+### Custom stop markers
+
+```text
+📍 ORIGIN
+   │
+   ▼
+🚛 Driving
+   │
+   ▼
+⛽ Fuel Stop
+   │
+   ▼
+🚛 Driving
+   │
+   ▼
+🛌 Rest Stop
+   │
+   ▼
+🚛 Driving
+   │
+   ▼
+📦 DESTINATION
+```
+
+The map works together with the chronological stop table so users can understand both the **geographical route** and the **operational timeline**.
+
+---
+
+# 📍 Trip Timeline
+
+Every planned trip produces a detailed sequence of events.
+
+| Event       | Arrival | Departure | Duration | Status   |
+| ----------- | ------: | --------: | -------: | -------- |
+| 📍 Pickup   |   08:00 |     09:00 |       1h | On Duty  |
+| 🚛 Driving  |   09:00 |     13:30 |     4.5h | Driving  |
+| ⛽ Fuel      |   13:30 |     14:00 |      30m | On Duty  |
+| 🛌 Rest     |   14:00 |     14:30 |      30m | Off Duty |
+| 🚛 Driving  |   14:30 |       ... |      ... | Driving  |
+| 📦 Delivery |     ... |       ... |       1h | On Duty  |
+
+---
+
+# 🔐 Driver Authentication
+
+Trip planning and ELD functionality are protected behind driver authentication.
+
+```text
+                  👤 DRIVER
+                     │
+                     ▼
+               🔐 SIGN IN
+                     │
+                     ▼
+              🎫 SESSION TOKEN
+                     │
+                     ▼
+               🛡️ AUTH GATE
+                     │
+                     ▼
+          ┌──────────┴──────────┐
+          ▼                     ▼
+       Authorized           Unauthorized
+          │                     │
+          ▼                     ▼
+    🚛 Trip Planner          🔒 Blocked
+    📋 ELD Logs
+```
+
+The authenticated experience can display driver and carrier information such as:
+
+* Driver name
+* CDL number
+* Carrier
+* Tractor/unit
+* Current cycle usage
+
+---
+
+# 🧪 16-Test Compliance Audit
+
+The project includes an automated HOS audit suite covering the major scheduling and log-generation rules implemented by the application.
+
+```text
+                🧪 HOS AUDIT ENGINE
+
+       ┌──────────┬──────────┬──────────┐
+       │ TEST 01  │ TEST 02  │ TEST 03  │
+       ├──────────┼──────────┼──────────┤
+       │ TEST 04  │ TEST 05  │ TEST 06  │
+       ├──────────┼──────────┼──────────┤
+       │ TEST 07  │ TEST 08  │ TEST 09  │
+       ├──────────┼──────────┼──────────┤
+       │ TEST 10  │ TEST 11  │ TEST 12  │
+       ├──────────┼──────────┼──────────┤
+       │ TEST 13  │ TEST 14  │ TEST 15  │
+       ├──────────┴──────────┴──────────┤
+       │             TEST 16             │
+       └─────────────────────────────────┘
+                       │
+                       ▼
+                🟢 AUDIT RESULT
+```
+
+Run the test suite with:
 
 ```bash
+npm run test
+```
+
+---
+
+# 📊 Compliance Dashboard
+
+The application brings route information and compliance information together.
+
+```text
+┌─────────────────────────────────────────────────────┐
+│                  🚛 TRIP SUMMARY                    │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  📏 Distance        ⏱️ Drive Time       🛌 Rest    │
+│  1,320 mi            20h 30m            10h        │
+│                                                     │
+├─────────────────────────────────────────────────────┤
+│              🛡️ COMPLIANCE STATUS                   │
+│                                                     │
+│       ✅ 11h Driving Limit                          │
+│       ✅ 14h Duty Window                            │
+│       ✅ 30m Break                                  │
+│       ✅ 10h Reset                                  │
+│       ✅ 70/8 Cycle                                 │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+```
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                         👤 DRIVER
+                            │
+                            ▼
+                ┌─────────────────────┐
+                │   React 19 Client   │
+                │                     │
+                │ Trip Planner        │
+                │ ELD Viewer          │
+                │ Map                 │
+                │ Timeline            │
+                │ Compliance UI       │
+                └──────────┬──────────┘
+                           │
+                       REST API
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Express Server      │
+                │                     │
+                │ Authentication      │
+                │ Trip Planning       │
+                │ HOS Engine          │
+                │ Routing             │
+                │ Geocoding           │
+                │ Rule Tests          │
+                └───────┬─────┬───────┘
+                        │     │
+              ┌─────────┘     └─────────┐
+              ▼                         ▼
+        🧠 HOS ENGINE              🗺️ ROUTING
+              │                         │
+              ▼                         ▼
+        📋 ELD EVENTS             📍 GEO DATA
+              │
+              ▼
+        📄 DAILY LOGS
+```
+
+---
+
+# 🛠️ Technology Stack
+
+### 🎨 Frontend
+
+| Technology         | Purpose                   |
+| ------------------ | ------------------------- |
+| ⚛️ React 19        | User interface            |
+| 🟦 TypeScript      | Type safety               |
+| ⚡ Vite             | Development/build tooling |
+| 🎨 Tailwind CSS v4 | Styling                   |
+| 🎬 Motion          | UI animations             |
+| 🗺️ Leaflet        | Interactive maps          |
+| 📋 SVG             | ELD daily log rendering   |
+
+### ⚙️ Backend
+
+| Technology         | Purpose                     |
+| ------------------ | --------------------------- |
+| 🟢 Node.js         | Runtime                     |
+| 🚂 Express         | API server                  |
+| 🟦 TypeScript      | Type-safe backend           |
+| 🧠 HOS Engine      | Scheduling/compliance logic |
+| 🗺️ Routing Engine | Route planning              |
+| 📍 Nominatim       | Geocoding                   |
+| 🧪 Test Suite      | HOS validation              |
+
+---
+
+# 📂 Project Structure
+
+```text
+hos-route-planner/
+│
+├── 📡 api/
+│   └── index.ts
+│
+├── 🌐 public/
+│
+├── 🎨 src/
+│   ├── components/
+│   │   ├── Auth/
+│   │   ├── Compliance/
+│   │   ├── ELD/
+│   │   ├── Map/
+│   │   ├── Timeline/
+│   │   ├── TripPlanner/
+│   │   ├── TripSummary/
+│   │   └── UI/
+│   │
+│   ├── context/
+│   │   ├── AuthContext.tsx
+│   │   ├── ThemeContext.tsx
+│   │   └── ToastContext.tsx
+│   │
+│   ├── pages/
+│   │   ├── DashboardPage.tsx
+│   │   └── AboutRulesPage.tsx
+│   │
+│   ├── server/
+│   │   ├── auth.ts
+│   │   ├── api.ts
+│   │   ├── hos/
+│   │   ├── routing/
+│   │   └── tests/
+│   │
+│   └── types/
+│       └── hos.ts
+│
+├── ⚙️ server.ts
+├── ▲ vercel.json
+├── ⚡ vite.config.ts
+├── 📝 tsconfig.json
+└── 📦 package.json
+```
+
+---
+
+# 🚀 Quick Start
+
+```bash
+# Clone
+git clone <YOUR_REPOSITORY_URL>
+
+# Enter project
+cd <PROJECT_FOLDER>
+
+# Install dependencies
 npm install
-```
 
-### 5. Setup Environment Variables
-
-Copy the example environment file:
-
-```bash
+# Configure environment
 cp .env.example .env
-```
 
-*(No external API keys are required for core functionality. Routing and geocoding run via built-in logistics heuristics, OpenStreetMap Nominatim, and internal HOS scheduling engines.)*
-
-### 6. Start the Development Server
-
-Run the development command:
-
-```bash
+# Start development
 npm run dev
 ```
 
-You should see output similar to:
-```
-HOS Route Planner Server running on http://0.0.0.0:3000
-```
+Then open:
 
-### 7. Open the App in Your Browser
-
-Open your browser and navigate to:
-```
-http://localhost:3000
-```
-
-### 8. Sign In to Plan Trips & Access ELD Logs
-
-1. On the home page, you will be presented with the **Authorized Driver Sign-In** card.
-2. Click **"Sign In with Demo Driver"** for immediate instant access, or enter your own name, CDL number, and carrier details.
-3. Once authenticated, enter your pickup location (e.g. `Chicago, IL`), delivery location (e.g. `Dallas, TX`), current cycle hours used, and click **"Generate FMCSA Compliant Route & ELD Logs"**.
+### 🌐 `http://localhost:3000`
 
 ---
 
-## Deploying to Vercel
+# 👨‍💻 Development Workflow
 
-This repository is pre-configured and 100% **Vercel-ready** with zero extra setup needed.
-
-### Method 1: Deploy via Vercel Web Dashboard (Recommended)
-
-1. Push your code to your GitHub / GitLab / Bitbucket account:
-   ```bash
-   git add .
-   git commit -m "Ready for Vercel deployment"
-   git push origin main
-   ```
-2. Navigate to [Vercel Dashboard](https://vercel.com/dashboard) and click **"Add New..." > "Project"**.
-3. Import your Git repository.
-4. Vercel automatically detects the Vite framework and uses the included `vercel.json`:
-   - **Framework Preset**: `Vite`
-   - **Root Directory**: `./`
-   - **Build Command**: `vite build` (or `npm run build`)
-   - **Output Directory**: `dist`
-5. Click **Deploy**.
-6. In approximately 30-45 seconds, your app will be live with a production HTTPS URL!
-
-### Method 2: Deploy via Vercel CLI
-
-1. Install the Vercel CLI globally:
-   ```bash
-   npm i -g vercel
-   ```
-2. In the project root, login and deploy:
-   ```bash
-   vercel login
-   vercel
-   ```
-3. To deploy directly to production:
-   ```bash
-   vercel --prod
-   ```
-
-### Why Vercel Works Seamlessly:
-- `vercel.json` routes `/api/(.*)` to the serverless function `/api/index.ts`.
-- All client-side SPA routing (`/`, `/about`, etc.) fall back gracefully to `dist/index.html`.
-- API endpoints (`/api/trips/plan`, `/api/auth/*`, `/api/geocode`, `/api/rules/test`) execute serverlessly on Node.js.
-
----
-
-## Available Project Scripts
-
-Inside the project root, you can run the following scripts:
-
-| Command | Description |
-| :--- | :--- |
-| `npm run dev` | Starts the full-stack Vite development server with Express backend on port 3000 |
-| `npm run build` | Compiles the production React bundle into `dist/` and bundles `server.ts` |
-| `npm run start` | Launches the standalone production Node.js server (`dist/server.cjs`) |
-| `npm run lint` | Runs TypeScript type checking across the entire codebase (`tsc --noEmit`) |
-| `npm run test` | Runs the automated 16-test suite verifying FMCSA HOS math and split-log algorithms |
-| `npm run clean` | Cleans up previous build artifacts |
-
----
-
-## Project Structure
-
-```
-├── api/
-│   └── index.ts                 # Vercel Serverless Function entrypoint
-├── public/                      # Static assets and icons
-├── src/
-│   ├── components/
-│   │   ├── Auth/                # Driver login, register, and AuthGateCard components
-│   │   ├── Compliance/          # 8-rule FMCSA audit checklist and violation cards
-│   │   ├── ELD/                 # 24.00h SVG daily log sheet and duty status grid
-│   │   ├── Map/                 # Interactive Leaflet routing map with custom markers
-│   │   ├── Timeline/            # Chronological trip event timeline
-│   │   ├── TripPlanner/         # Origin/destination input, cycle hours, autocomplete
-│   │   ├── TripSummary/         # HOS summary cards and mileage metrics
-│   │   └── UI/                  # Dark/light mode theme toggle, toast alerts, cards
-│   ├── context/
-│   │   ├── AuthContext.tsx      # Driver session and authentication state
-│   │   ├── ThemeContext.tsx     # Light/Dark mode state
-│   │   └── ToastContext.tsx     # Toast notifications
-│   ├── pages/
-│   │   ├── DashboardPage.tsx    # Main planning dashboard and results viewer
-│   │   └── AboutRulesPage.tsx   # FMCSA regulatory handbook and 16-test suite
-│   ├── server/
-│   │   ├── auth.ts              # Driver session store and token verification
-│   │   ├── api.ts               # Express API router (/api/trips/plan, /api/auth, etc.)
-│   │   ├── hos/                 # Core HOS scheduling, limits, and validator engines
-│   │   ├── routing/             # Road router and geocoder implementations
-│   │   └── tests/               # 16 FMCSA unit tests
-│   ├── types/
-│   │   └── hos.ts               # TypeScript interfaces for trips, stops, and logs
-│   ├── App.tsx                  # Top-level React routing and layout
-│   ├── main.tsx                 # Client entrypoint
-│   └── index.css                # Tailwind CSS v4 entrypoint
-├── server.ts                    # Local Express development & container server
-├── vercel.json                  # Vercel deployment configuration & API rewrites
-├── vite.config.ts               # Vite configuration with Tailwind CSS plugin
-├── tsconfig.json                # TypeScript compiler configuration
-└── package.json                 # Project dependencies and npm scripts
+```text
+      💻 CODE
+        │
+        ▼
+    🧪 TEST
+        │
+        ▼
+  🛡️ HOS AUDIT
+        │
+        ▼
+   🏗️ BUILD
+        │
+        ▼
+   ▲ VERCEL
+        │
+        ▼
+   🚛 PRODUCTION
 ```
 
 ---
 
-## FMCSA Compliance Checklist Verified
+# ☁️ Vercel Deployment
 
-1. **49 CFR § 395.3(a)(1)**: 11-Hour Driving Rule verified across every shift.
-2. **49 CFR § 395.3(a)(2)**: 14-Hour Consecutive Duty Window strictly enforced.
-3. **49 CFR § 395.3(a)(3)(ii)**: Mandatory 30-minute rest break after 8 hours of driving.
-4. **49 CFR § 395.3(a)(1)**: 10-Hour Consecutive Off-Duty / Sleeper Berth reset.
-5. **49 CFR § 395.3(b)**: 70-Hour / 8-Day Cumulative Duty limit protection.
-6. **Commercial Refueling**: Fuel stops inserted whenever distance exceeds 850–950 miles.
-7. **Dock Operations**: 1 hour allocated for pickup loading and delivery drop-off.
-8. **24.00h Daily Reconciliation**: All logs reconcile to exactly 24 hours (1,440 minutes).
+The project is configured for Vercel deployment.
+
+```text
+GitHub
+   │
+   ▼
+Vercel
+   │
+   ├── ⚡ Vite Frontend
+   │
+   └── 📡 Serverless API
+            │
+            ├── /api/trips/plan
+            ├── /api/auth/*
+            ├── /api/geocode
+            └── /api/rules/test
+```
+
+### Deploy
+
+```bash
+npm i -g vercel
+
+vercel login
+
+vercel
+
+vercel --prod
+```
 
 ---
 
-## License
+# 📜 FMCSA Rules Implemented
 
-MIT License. Designed for commercial motor carriers, dispatchers, safety directors, and professional commercial drivers.
+The project's compliance checklist is organized around the following requirements:
+
+| Rule                          | Implementation                     |
+| ----------------------------- | ---------------------------------- |
+| ⏱️ **11-Hour Driving**        | Driving limit validation           |
+| 🕐 **14-Hour Window**         | Consecutive duty-window validation |
+| 🛌 **30-Minute Break**        | Break scheduling/validation        |
+| 🌙 **10-Hour Reset**          | Consecutive rest scheduling        |
+| 📊 **70/8 Cycle**             | Multi-day cumulative tracking      |
+| ⛽ **Fuel Stops**              | Long-haul refueling scheduling     |
+| 📦 **Dock Operations**        | Pickup/drop-off buffers            |
+| 📋 **24-Hour Reconciliation** | Daily ELD timeline validation      |
+
+The project documents these rules with references to the applicable 49 CFR Part 395 sections. For production/commercial use, the implementation should still be validated against the current FMCSA regulations and any applicable exceptions or jurisdiction-specific requirements.
+
+---
+
+# 💡 Engineering Highlights
+
+This project demonstrates several areas of practical full-stack engineering:
+
+### 🧠 Domain Logic
+
+The application translates complex operational constraints into deterministic scheduling logic.
+
+### 🛡️ Compliance Automation
+
+Instead of relying only on manual review, generated schedules are passed through automated rule checks.
+
+### 📋 Structured Event Generation
+
+Trip events become structured duty-status records that can then be rendered into daily logs.
+
+### 🌙 Time Boundary Handling
+
+Multi-day trips require careful midnight splitting and exact daily reconciliation.
+
+### 🗺️ Geospatial UX
+
+Routes, stops and logistics events are represented visually on an interactive map.
+
+### 🧪 Automated Verification
+
+A dedicated test suite validates HOS calculations and split-log algorithms.
+
+### ☁️ Serverless Deployment
+
+The API can run through Vercel serverless functions while the frontend is delivered as a Vite application.
+
+---
+
+# 🗺️ Future Roadmap
+
+### ✅ Current
+
+* [x] Commercial route planning
+* [x] HOS scheduling
+* [x] 11-hour driving validation
+* [x] 14-hour window validation
+* [x] 30-minute break scheduling
+* [x] 10-hour reset handling
+* [x] 70/8 cycle tracking
+* [x] Fuel stop scheduling
+* [x] Pickup/drop-off buffers
+* [x] Interactive Leaflet map
+* [x] ELD daily logs
+* [x] Multi-day split handling
+* [x] Automated compliance tests
+* [x] Driver authentication
+* [x] Vercel deployment
+
+### 🔮 Future Enhancements
+
+* [ ] 🛰️ Real-time traffic integration
+* [ ] ⛽ Live fuel-price integration
+* [ ] 🌦️ Weather-aware route planning
+* [ ] 🚛 Multi-driver dispatch planning
+* [ ] 📡 Fleet tracking
+* [ ] 📊 Fleet-wide compliance dashboard
+* [ ] 📱 Driver mobile application
+* [ ] 🔔 Automated compliance alerts
+* [ ] 📄 Expanded export/report formats
+* [ ] 🔗 Telematics / ELD device integrations
+
+---
+
+# 🎯 What This Project Demonstrates
+
+```text
+                    FULL-STACK ENGINEERING
+                              │
+          ┌───────────────────┼───────────────────┐
+          ▼                   ▼                   ▼
+      🎨 FRONTEND          ⚙️ BACKEND         🧠 DOMAIN LOGIC
+          │                   │                   │
+       React 19             Express            HOS Rules
+       TypeScript           APIs                Scheduling
+       Tailwind             Auth                Validation
+       Leaflet              Serverless          ELD Logic
+          │                   │                   │
+          └───────────────────┼───────────────────┘
+                              ▼
+                       🚛 LOGISTICS PLATFORM
+```
+
+---
+
+# ⭐ Project Goal
+
+> **Turn complex commercial HOS constraints into a simple, visual, and actionable trip-planning experience.**
+
+The application connects **route planning, driver schedules, regulatory rule checks, stop planning, and ELD log generation** into a single workflow.
+
+---
+
+<p align="center">
+
+## 🚛 Plan Smarter. Drive Compliant. Log Automatically.
+
+**Built with ❤️ using React • TypeScript • Express • Tailwind • Leaflet**
+
+⭐ **Star the repository if you find the project useful!**
+
+</p>
+
+---
+
+## 📄 License
+
+MIT License.
