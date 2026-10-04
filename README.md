@@ -693,7 +693,7 @@ The application connects **route planning, driver schedules, regulatory rule che
 
 **Built with ❤️ using React • TypeScript • Express • Tailwind • Leaflet**
 
-⭐ **Star the repository if you find the project useful!**
+⭐ **If you found this project useful, consider giving the repository a star**
 
 </p>
 
