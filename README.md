@@ -4,7 +4,7 @@
 
 ### **Plan Smarter. Drive Compliant. Log Automatically.**
 
-**A full-stack commercial HOS route planning and ELD RODS generation platform built for modern fleet operations.**
+**A production-ready full-stack HOS route planning and ELD RODS generation platform built for modern fleet operations.**
 
 <br/>
 
