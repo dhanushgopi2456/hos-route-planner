@@ -244,7 +244,7 @@ flowchart TD
 ```
 
 ---
-
+<a id="hours-of-service-hos"></a>
 ## 🛡️ Hours of Service (HOS)
 
 Hours of Service rules help organize driving and rest schedules for commercial drivers.
