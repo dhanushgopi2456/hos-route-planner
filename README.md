@@ -689,7 +689,6 @@ The application connects **route planning, driver schedules, regulatory rule che
 
 <p align="center">
 
-## 🚛 Plan Smarter. Drive Compliant. Log Automatically.
 
 **Built with ❤️ using React • TypeScript • Express • Tailwind • Leaflet**
 
