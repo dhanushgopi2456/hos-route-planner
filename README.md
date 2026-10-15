@@ -43,7 +43,7 @@
   <a href="#-overview">Overview</a> •
   <a href="#-features">Features</a> •
   <a href="#-technology-stack">Tech Stack</a> •
-  <a href="#-system-architecture">Architecture</a> •
+  <a href="#architecture">Architecture</a> •
   <a href="#-route-to-eld-workflow">Workflow</a> •
   <a href="#-hours-of-service-hos">HOS</a> •
   <a href="#-installation">Installation</a> •
@@ -137,7 +137,7 @@ The project aims to make commercial trip planning easier by organizing route inf
 The exact availability of each feature depends on the current implementation and configuration in the repository.
 
 ---
-<a id="system-architecture"></a>
+<a id="architecture"></a>
 ## 🏗️ System Architecture
 
 The following architecture diagram is written in Mermaid and renders directly on GitHub. It does not require an external image host.
