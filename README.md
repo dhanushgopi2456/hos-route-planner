@@ -698,6 +698,4 @@ The application connects **route planning, driver schedules, regulatory rule che
 
 ---
 
-## 📄 License
 
-MIT License.
