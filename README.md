@@ -374,7 +374,7 @@ If the frontend and backend have separate startup scripts, start them according 
 
 The project has a Vercel deployment:
 
-**Live demo:** https://hos-route-planner-ruddy.vercel.app/
+**Live demo:** https://hos-route-planner-ruddy.vercel.app
 
 Deployment requirements may include build configuration, environment variables, and backend hosting or external-service configuration. Verify these settings against the current deployment.
 
