@@ -137,7 +137,7 @@ The project aims to make commercial trip planning easier by organizing route inf
 The exact availability of each feature depends on the current implementation and configuration in the repository.
 
 ---
-
+<a id="system-architecture"></a>
 ## 🏗️ System Architecture
 
 The following architecture diagram is written in Mermaid and renders directly on GitHub. It does not require an external image host.
