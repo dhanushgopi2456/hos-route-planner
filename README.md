@@ -45,10 +45,10 @@
   <a href="#-technology-stack">Tech Stack</a> •
   <a href="#architecture">Architecture</a> •
   <a href="#-route-to-eld-workflow">Workflow</a> •
-  <a href="#-hours-of-service-hos">HOS</a> •
+  <a href="#hos">HOS</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-deployment">Deployment</a> •
-  <a href="#-roadmap">Roadmap</a>
+  <a href="#roadmap">Roadmap</a>
 </p>
 
 ---
@@ -244,7 +244,7 @@ flowchart TD
 ```
 
 ---
-<a id="hours-of-service-hos"></a>
+<a id="hos"></a>
 ## 🛡️ Hours of Service (HOS)
 
 Hours of Service rules help organize driving and rest schedules for commercial drivers.
@@ -398,7 +398,7 @@ Suggested validation checklist:
 These are suggested validation tasks, not a claim that every test already exists in the repository.
 
 ---
-
+<a id="#roadmap"></a>
 ## 🗺️ Roadmap
 
 The following are possible future improvements; they should not be interpreted as already implemented.
