@@ -370,7 +370,7 @@ Explore the key features of the HOS Route Planner & ELD Log Generator through th
 ### Trip Planner Dashboard
 
 <p align="center">
-  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160441.png" width="90%" alt="Team Task Manager dashboard"/>
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20074645.png"/>
 </p>
 
 ### Trip Details & Location Selection
