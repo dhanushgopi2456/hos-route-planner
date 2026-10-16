@@ -363,6 +363,48 @@ npm run dev
 If the frontend and backend have separate startup scripts, start them according to the repository's documentation. The commands above are general guidance; use the scripts actually present in your checkout.
 
 ---
+## 📸 Screenshots
+
+Explore the key features of the HOS Route Planner & ELD Log Generator through the screenshots below.
+
+### Trip Planner Dashboard
+
+<p align="center">
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160441.png" width="90%" alt="Team Task Manager dashboard"/>
+</p>
+
+### Trip Details & Location Selection
+
+<p align="center">
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160457.png" width="90%" alt="Team Task Manager Kanban board"/>
+</p>
+
+### Interactive Route Map
+
+<p align="center">
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160519.png" width="90%" alt="Team Task Manager calendar"/>
+</p>
+
+### Trip Schedule & HOS Timeline
+
+<p align="center">
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160542.png" width="90%" alt="Team Task Manager analytics"/>
+</p>
+
+### Daily ELD Log Sheets
+
+<p align="center">
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160542.png" width="90%" alt="Team Task Manager analytics"/>
+</p>
+
+### HOS Compliance Validation & Trip Summary
+
+<p align="center">
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160542.png" width="90%" alt="Team Task Manager analytics"/>
+</p>
+
+
+---
 
 ## 🌐 Deployment
 
