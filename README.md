@@ -382,7 +382,7 @@ Explore the key features of the HOS Route Planner & ELD Log Generator through th
 ### Interactive Route Map
 
 <p align="center">
-  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160519.png" width="90%" alt="Team Task Manager calendar"/>
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20074903.png"/>
 </p>
 
 ### Trip Schedule & HOS Timeline
