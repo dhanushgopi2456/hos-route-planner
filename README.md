@@ -1,4 +1,4 @@
-<img width="1890" height="951" alt="image" src="https://github.com/user-attachments/assets/681a4e07-9406-455e-b4a6-d958f532132a" /># 🚛 HOS Route Planner & ELD Log Generator
+# 🚛 HOS Route Planner & ELD Log Generator
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:020617,25:1D4ED8,60:0891B2,100:22D3EE&height=230&section=header&text=HOS%20Route%20Planner&fontSize=38&fontColor=FFFFFF&animation=fadeIn&fontAlignY=35&desc=Smart%20Routing%20%7C%20HOS%20Scheduling%20%7C%20ELD%20Logs&descSize=15&descAlignY=58" width="100%" alt="HOS Route Planner animated banner"/>
