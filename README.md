@@ -388,13 +388,13 @@ Explore the key features of the HOS Route Planner & ELD Log Generator through th
 ### Trip Schedule & HOS Timeline
 
 <p align="center">
-  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160542.png" width="90%" alt="Team Task Manager analytics"/>
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160542.png"/>
 </p>
 
 ### Daily ELD Log Sheets
 
 <p align="center">
-  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160542.png" width="90%" alt="Team Task Manager analytics"/>
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20074933.png"/>
 </p>
 
 ### HOS Compliance Validation & Trip Summary
