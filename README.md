@@ -376,7 +376,7 @@ Explore the key features of the HOS Route Planner & ELD Log Generator through th
 ### Trip Details & Location Selection
 
 <p align="center">
-  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-12%20160457.png" width="90%" alt="Team Task Manager Kanban board"/>
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20074716.png"/>
 </p>
 
 ### Interactive Route Map
