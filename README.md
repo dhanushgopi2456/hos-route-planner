@@ -400,7 +400,7 @@ Explore the key features of the HOS Route Planner & ELD Log Generator through th
 ### HOS Compliance Validation & Trip Summary
 
 <p align="center">
-  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20075025.png"/>
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20075025.png" width="90%"/>
 </p>
 
 
