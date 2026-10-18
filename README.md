@@ -388,7 +388,7 @@ Explore the key features of the HOS Route Planner & ELD Log Generator through th
 ### Trip Schedule & HOS Timeline
 
 <p align="center">
-  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20080103.png"/>
+  <img src="https://github.com/dhanushgopi2456/My-All-Project-Screenshots/blob/main/Screenshot%202026-10-16%20080103.png" width="90%"/>
 </p>
 
 ### Daily ELD Log Sheets
