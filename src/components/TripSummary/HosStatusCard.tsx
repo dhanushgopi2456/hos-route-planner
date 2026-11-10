@@ -34,11 +34,11 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
       transition={{ duration: 0.35 }}
       className={`uc-card-stark p-6 sm:p-7 relative overflow-hidden ${className}`}
     >
-      {/* Top Header Metrics Row */}
+      {/* Top Header Metrics Row with Spring Physics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 mb-6 border-b border-[#242424]">
         <motion.div
-          whileHover={{ y: -2 }}
-          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group"
+          whileHover={{ y: -3, scale: 1.02 }}
+          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group transition-all"
         >
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#0016CB] opacity-0 group-hover:opacity-100 transition-opacity" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block font-mono">
@@ -54,8 +54,8 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="p-4 bg-[#161616] border border-[#0016CB]/40 rounded-sm relative overflow-hidden group"
+          whileHover={{ y: -3, scale: 1.02 }}
+          className="p-4 bg-[#161616] border border-[#0016CB]/40 rounded-sm relative overflow-hidden group transition-all"
         >
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#0016CB] opacity-100" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#99A9EE] block font-mono">
@@ -71,8 +71,8 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group"
+          whileHover={{ y: -3, scale: 1.02 }}
+          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group transition-all"
         >
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#3346D7] opacity-0 group-hover:opacity-100 transition-opacity" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block font-mono">
@@ -88,8 +88,8 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
         </motion.div>
 
         <motion.div
-          whileHover={{ y: -2 }}
-          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group"
+          whileHover={{ y: -3, scale: 1.02 }}
+          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group transition-all"
         >
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-emerald-500 opacity-70" />
           <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 block font-mono">
@@ -107,10 +107,13 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
         </motion.div>
       </div>
 
-      {/* 4 HOS Regulatory Clock Gauges with Animated Progress Bars */}
+      {/* 4 HOS Regulatory Clock Gauges with Animated Progress Bars & Dynamic Color Shifts */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-5">
         {/* Gauge 1: 11-Hour Driving Limit */}
-        <div className="bg-[#161616] border border-[#242424] rounded-sm p-3.5">
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
+        >
           <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
             <span className="font-bold text-slate-200 uppercase">11H Drive Limit</span>
             <span className="font-bold text-[#6677E3]">
@@ -121,18 +124,21 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(100, (Math.min(11, drivingHours) / 11) * 100)}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="h-full bg-[#0016CB] rounded-full"
+              transition={{ duration: 1.0, ease: 'easeOut' }}
+              className="h-full bg-gradient-to-r from-[#0016CB] to-[#3346D7] rounded-full"
             />
           </div>
           <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>FMCSA CFR § 395.3(a)(1)</span>
             <span className="text-emerald-400 font-semibold">Resets with 10h sleep</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Gauge 2: 14-Hour Duty Window */}
-        <div className="bg-[#161616] border border-[#242424] rounded-sm p-3.5">
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
+        >
           <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
             <span className="font-bold text-slate-200 uppercase">14H Duty Window</span>
             <span className="font-bold text-amber-400">
@@ -143,18 +149,21 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(100, (Math.min(14, Math.max(1, drivingHours + 2)) / 14) * 100)}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
-              className="h-full bg-amber-500 rounded-full"
+              transition={{ duration: 1.0, ease: 'easeOut', delay: 0.1 }}
+              className="h-full bg-gradient-to-r from-amber-500 to-orange-400 rounded-full"
             />
           </div>
           <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>Consecutive Window</span>
             <span className="text-amber-400 font-semibold">Daily Cap</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Gauge 3: 70-Hour / 8-Day Rolling Cycle */}
-        <div className="bg-[#161616] border border-[#242424] rounded-sm p-3.5">
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
+        >
           <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
             <span className="font-bold text-slate-200 uppercase">70H / 8D Rolling Cycle</span>
             <span className="font-bold text-cyan-300">
@@ -165,9 +174,9 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${cyclePercent}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+              transition={{ duration: 1.0, ease: 'easeOut', delay: 0.2 }}
               className={`h-full rounded-full ${
-                cyclePercent > 85 ? 'bg-rose-500' : 'bg-[#0016CB]'
+                cyclePercent > 85 ? 'bg-gradient-to-r from-rose-500 to-red-600' : 'bg-gradient-to-r from-[#0016CB] to-cyan-400'
               }`}
             />
           </div>
@@ -175,10 +184,13 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
             <span>{cycleRemainingValue.toFixed(1)}h remaining</span>
             <span className="text-cyan-400 font-bold">{cyclePercent}% cycle used</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Gauge 4: 1,000-Mile Fuel Stop Interval */}
-        <div className="bg-[#161616] border border-[#242424] rounded-sm p-3.5">
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
+        >
           <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
             <span className="font-bold text-slate-200 uppercase">1,000-Mi Fuel Interval</span>
             <span className="font-bold text-[#6677E3]">
@@ -189,15 +201,15 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(100, (distanceMiles / 1000) * 100)}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
-              className="h-full bg-[#0016CB] rounded-full"
+              transition={{ duration: 1.0, ease: 'easeOut', delay: 0.3 }}
+              className="h-full bg-gradient-to-r from-[#0016CB] to-emerald-400 rounded-full"
             />
           </div>
           <div className="flex justify-between text-[10px] text-slate-400 font-mono">
             <span>Threshold: &lt; 1,000 mi</span>
             <span className="text-emerald-400 font-semibold">Tank Managed</span>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Stop Summary Pills Strip */}

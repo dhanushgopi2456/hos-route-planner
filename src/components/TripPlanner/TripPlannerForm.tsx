@@ -59,7 +59,7 @@ function calcHaversineMiles(lat1: number, lon1: number, lat2: number, lon2: numb
 const PRESET_ROUTES: PresetRoute[] = [
   {
     id: 'chicago-dallas',
-    label: 'Chicago → Indy → Dallas (USA)',
+    label: 'US Cross-Country Haul (Chicago → Indy → Dallas)',
     tag: '1,080 mi • Multi-Day Sleep & Fuel',
     origin: {
       name: 'Chicago, IL',
@@ -88,8 +88,38 @@ const PRESET_ROUTES: PresetRoute[] = [
     cycleUsed: 42.5
   },
   {
+    id: 'midwest-run',
+    label: 'Regional Midwest Run (Chicago → Effingham → St. Louis)',
+    tag: '300 mi • Same-Day Regional Haul',
+    origin: {
+      name: 'Chicago, IL',
+      city: 'Chicago',
+      state: 'IL',
+      country: 'USA',
+      lat: 41.8781,
+      lng: -87.6298
+    },
+    pickup: {
+      name: 'Effingham, IL',
+      city: 'Effingham',
+      state: 'IL',
+      country: 'USA',
+      lat: 39.1200,
+      lng: -88.5434
+    },
+    dropoff: {
+      name: 'St. Louis, MO',
+      city: 'St. Louis',
+      state: 'MO',
+      country: 'USA',
+      lat: 38.6270,
+      lng: -90.1994
+    },
+    cycleUsed: 18.0
+  },
+  {
     id: 'india-corridor',
-    label: 'Tadepalligudem → Hyderabad → Bengaluru (India)',
+    label: 'India Highway Corridor (Tadepalligudem → Hyderabad → Bengaluru)',
     tag: '580 mi • Coastal & Deccan Freight Corridor',
     origin: {
       name: 'Tadepalligudem, AP, India',
@@ -344,6 +374,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
   const [currentCycleUsed, setCurrentCycleUsed] = useState<number>(42.5);
   const [activePresetId, setActivePresetId] = useState<string>('chicago-dallas');
   const [isLocatingField, setIsLocatingField] = useState<string | null>(null);
+  const [swapRotation, setSwapRotation] = useState<number>(0);
 
   // Optional Shipping info
   const [showShippingDetails, setShowShippingDetails] = useState(false);
@@ -524,11 +555,22 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
 
   // Swap Origin and Dropoff
   const handleSwapRoute = () => {
+    setSwapRotation(prev => prev + 180);
     const temp = currentLoc;
     setCurrentLoc(dropoffLoc);
     setDropoffLoc(temp);
     setActivePresetId('');
     toastInfo('Route Inverted', `Swapped Origin (${dropoffLoc.name}) and Dropoff (${temp.name}).`);
+  };
+
+  // Swap Pickup and Dropoff
+  const handleSwapPickupDropoff = () => {
+    setSwapRotation(prev => prev + 180);
+    const temp = pickupLoc;
+    setPickupLoc(dropoffLoc);
+    setDropoffLoc(temp);
+    setActivePresetId('');
+    toastInfo('Stops Swapped', `Swapped Pickup (${dropoffLoc.name}) and Dropoff (${temp.name}).`);
   };
 
   // Helper to ensure location has valid numeric coordinates
@@ -727,11 +769,41 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSwapRoute}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
               title="Reverse route direction (Swap Origin and Dropoff)"
             >
-              <ArrowLeftRight className="w-3.5 h-3.5 text-blue-400" />
+              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35 }}>
+                <ArrowLeftRight className="w-3.5 h-3.5 text-blue-400" />
+              </motion.div>
               <span>Swap Origin ⇄ Dropoff</span>
+            </motion.button>
+
+            {/* Swap Pickup and Dropoff */}
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleSwapPickupDropoff}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
+              title="Swap Pickup and Dropoff locations"
+            >
+              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35 }}>
+                <ArrowLeftRight className="w-3.5 h-3.5 text-emerald-400" />
+              </motion.div>
+              <span>Swap Pickup ⇄ Dropoff</span>
+            </motion.button>
+
+            {/* Reset / Clear Form */}
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleResetForm}
+              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
+              title="Reset all form fields to default"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+              <span>Reset Form</span>
             </motion.button>
           </div>
 

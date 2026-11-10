@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, CheckCircle2, MapPin, Fuel, Clock, FileCheck2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Fuel, Clock, FileCheck2, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface MilestoneHighwayRoadProps {
-  onLaunchPlanner?: () => void;
+  onLaunchPlanner?: (demo?: boolean) => void;
 }
 
 export const MilestoneHighwayRoad: React.FC<MilestoneHighwayRoadProps> = ({ onLaunchPlanner }) => {
   const navigate = useNavigate();
   const [activeMilestone, setActiveMilestone] = useState<number>(0);
 
-  const handleLaunch = () => {
+  const handleLaunch = (demo = true) => {
     if (onLaunchPlanner) {
-      onLaunchPlanner();
+      onLaunchPlanner(demo);
     } else {
-      navigate('/planner');
+      navigate(demo ? '/planner?demo=1' : '/planner');
     }
   };
 
@@ -55,7 +55,7 @@ export const MilestoneHighwayRoad: React.FC<MilestoneHighwayRoadProps> = ({ onLa
   ];
 
   return (
-    <section className="relative py-28 bg-[#FFFFFF] text-[#111111] overflow-hidden">
+    <section id="milestones" className="relative py-28 bg-[#FFFFFF] text-[#111111] overflow-hidden">
       {/* Background Subtle Micro-dots */}
       <div 
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -109,15 +109,18 @@ export const MilestoneHighwayRoad: React.FC<MilestoneHighwayRoadProps> = ({ onLa
               </p>
             </div>
 
-            <div className="pt-4">
-              <button
+            <div className="pt-4 flex flex-wrap gap-4">
+              <motion.button
                 type="button"
-                onClick={handleLaunch}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#111111] hover:bg-[#0016CB] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => handleLaunch(true)}
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#111111] hover:bg-[#0016CB] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer group"
               >
+                <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
                 <span>TEST YOUR ROUTE NOW</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </motion.button>
             </div>
           </div>
 

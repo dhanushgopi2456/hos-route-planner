@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown, HelpCircle, Plus } from 'lucide-react';
 
 interface FaqItem {
   question: string;
@@ -49,57 +49,61 @@ export const FaqSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="relative py-24 bg-[#0A0A0A] border-t border-[#242424]">
+    <section id="faq" className="relative py-28 bg-[#0A0A0A] border-t border-[#242424] text-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Heading */}
-        <div className="text-center mb-14 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-widest font-mono">
-            <HelpCircle className="w-3.5 h-3.5" />
+        <div className="text-center mb-16 space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] border border-[#242424] text-[#99A9EE] text-xs font-semibold uppercase tracking-widest font-mono">
+            <HelpCircle className="w-3.5 h-3.5 text-[#0016CB]" />
             <span>FMCSA Regulatory Questions &amp; Answers</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-black uppercase text-white tracking-tight font-display">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
             Frequently Asked{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+            <span className="text-[#0016CB]">
               Questions
             </span>
           </h2>
 
-          <p className="text-slate-400 text-sm sm:text-base">
-            Everything you need to know about our commercial HOS scheduling logic, automated stops, and ELD compliance.
+          <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+            Everything you need to know about commercial HOS scheduling logic, automated stops, and ELD compliance.
           </p>
         </div>
 
-        {/* Accordion List */}
-        <div className="space-y-3">
+        {/* Accordion List with Smooth Animated Height & Rotating Icon */}
+        <div className="space-y-3.5">
           {faqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <div
+              <motion.div
                 key={idx}
-                className="rounded-2xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-md overflow-hidden transition-colors hover:border-slate-700/80"
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.08 }}
+                className="rounded-xl border border-[#242424] bg-[#121212] overflow-hidden transition-colors hover:border-[#374151]"
               >
                 <button
                   type="button"
                   onClick={() => toggleAccordion(idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none group"
                 >
-                  <span className="font-bold text-sm sm:text-base text-white font-display">
+                  <span className="font-bold text-sm sm:text-base text-white font-display group-hover:text-[#99A9EE] transition-colors">
                     {faq.question}
                   </span>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex items-center gap-3 shrink-0">
                     {faq.fmcsaRef && (
-                      <span className="hidden sm:inline-block text-[10px] font-mono font-bold text-slate-400 px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
+                      <span className="hidden sm:inline-block text-[10px] font-mono font-bold text-slate-400 px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424]">
                         {faq.fmcsaRef}
                       </span>
                     )}
                     <motion.div
                       animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center border border-slate-700/80"
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
+                      className="w-8 h-8 rounded-full bg-[#161616] text-slate-300 flex items-center justify-center border border-[#242424] group-hover:border-[#0016CB]"
                     >
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
                     </motion.div>
                   </div>
                 </button>
@@ -110,15 +114,22 @@ export const FaqSection: React.FC = () => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: 'easeInOut' }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      className="overflow-hidden"
                     >
-                      <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 font-sans">
+                      <div className="px-5 sm:px-6 pb-6 pt-1 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-[#242424]/60 font-sans">
                         <p>{faq.answer}</p>
+                        {faq.fmcsaRef && (
+                          <div className="mt-3 pt-2 text-[11px] font-mono text-[#6677E3] flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0016CB]" />
+                            <span>Statutory Code: {faq.fmcsaRef}</span>
+                          </div>
+                        )}
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             );
           })}
         </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { TimelineEvent, DutyStatus } from '../../types/hos';
 import {
   Clock,
@@ -9,19 +9,24 @@ import {
   Fuel,
   Package,
   Flag,
-  Calendar
+  Calendar,
+  Filter
 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface TripTimelineProps {
   events: TimelineEvent[];
   className?: string;
 }
 
+type TimelineFilter = 'ALL' | 'DRIVING' | 'ON_DUTY' | 'REST' | 'FUEL';
+
 export const TripTimeline: React.FC<TripTimelineProps> = ({
   events,
   className = ''
 }) => {
+  const [activeFilter, setActiveFilter] = useState<TimelineFilter>('ALL');
+
   const formatTime = (iso: string) => {
     try {
       const d = new Date(iso);
@@ -33,10 +38,36 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
     }
   };
 
+  // Filter events based on active category
+  const filteredEvents = useMemo(() => {
+    if (activeFilter === 'ALL') return events;
+    if (activeFilter === 'DRIVING') {
+      return events.filter(e => e.status === 'DRIVING');
+    }
+    if (activeFilter === 'ON_DUTY') {
+      return events.filter(e => e.status === 'ON_DUTY_NOT_DRIVING');
+    }
+    if (activeFilter === 'REST') {
+      return events.filter(e => e.status === 'SLEEPER_BERTH' || e.type === 'REST_BREAK' || e.type === 'SLEEPER_BERTH');
+    }
+    if (activeFilter === 'FUEL') {
+      return events.filter(e => e.type === 'FUEL');
+    }
+    return events;
+  }, [events, activeFilter]);
+
+  const filterOptions: { id: TimelineFilter; label: string; count: number }[] = [
+    { id: 'ALL', label: 'All Events', count: events.length },
+    { id: 'DRIVING', label: 'Driving', count: events.filter(e => e.status === 'DRIVING').length },
+    { id: 'ON_DUTY', label: 'On-Duty (Loading/Inspection)', count: events.filter(e => e.status === 'ON_DUTY_NOT_DRIVING').length },
+    { id: 'REST', label: 'Rest & Sleeper', count: events.filter(e => e.status === 'SLEEPER_BERTH' || e.type === 'REST_BREAK' || e.type === 'SLEEPER_BERTH').length },
+    { id: 'FUEL', label: 'Diesel Fuel Stops', count: events.filter(e => e.type === 'FUEL').length }
+  ];
+
   return (
     <div className={`uc-card-stark p-6 sm:p-8 ${className}`}>
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between pb-5 mb-6 border-b border-[#242424] gap-3">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-5 mb-6 border-b border-[#242424] gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] border border-[#242424] text-[#99A9EE] text-xs font-mono uppercase font-bold tracking-widest mb-1.5">
             <Clock className="w-3.5 h-3.5" />
@@ -50,136 +81,176 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[#161616] text-slate-300 border border-[#242424]">
-            {events.length} Events Total
+        {/* Filter Pills with layout animation */}
+        <div className="flex items-center gap-1.5 flex-wrap font-mono">
+          <span className="text-[11px] text-slate-400 mr-1 flex items-center gap-1">
+            <Filter className="w-3 h-3" />
+            <span>Filter:</span>
           </span>
+          {filterOptions.map(f => {
+            const isSelected = activeFilter === f.id;
+            return (
+              <motion.button
+                key={f.id}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => setActiveFilter(f.id)}
+                className={`relative px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  isSelected
+                    ? 'btn-uc-solid text-white shadow-md'
+                    : 'bg-[#161616] border border-[#242424] text-slate-400 hover:text-white'
+                }`}
+              >
+                <span>{f.label} ({f.count})</span>
+              </motion.button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Timeline Milestone Stream */}
+      {/* Timeline Milestone Stream with Glowing Vertical Line */}
       <div className="relative pl-7 space-y-6 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-[#0016CB] before:via-[#3346D7] before:to-emerald-500">
-        {events.map((ev, idx) => {
-          const start = formatTime(ev.start_time);
-          const end = formatTime(ev.end_time);
+        <AnimatePresence mode="popLayout">
+          {filteredEvents.map((ev, idx) => {
+            const start = formatTime(ev.start_time);
+            const end = formatTime(ev.end_time);
 
-          return (
-            <motion.div
-              key={ev.id || idx}
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: Math.min(idx * 0.05, 0.4) }}
-              className="relative group"
-            >
-              {/* Event Icon Pin on the Timeline Line */}
-              <div
-                className={`absolute -left-[35px] top-1.5 w-7 h-7 rounded-full border-2 border-black shadow-md flex items-center justify-center text-white ${getEventColor(
-                  ev.type,
-                  ev.status
-                )} group-hover:scale-110 transition-transform`}
+            return (
+              <motion.div
+                key={ev.id || `${ev.start_time}-${idx}`}
+                layout
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.25, delay: Math.min(idx * 0.04, 0.3) }}
+                className="relative group"
               >
-                {getEventIcon(ev.type)}
-              </div>
-
-              {/* Event Milestone Card */}
-              <div className="p-4 rounded-sm bg-[#161616] border border-[#242424] hover:border-[#374151] transition-all text-xs space-y-2">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-sm text-white font-display">
-                      {getEventTitle(ev.type, ev.reason)}
-                    </span>
-                    <span
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${getDutyStatusBadge(
-                        ev.status
-                      )}`}
-                    >
-                      {ev.status.replace(/_/g, ' ')}
-                    </span>
-                  </div>
-
-                  {/* Timestamps */}
-                  <div className="text-right font-mono font-semibold text-slate-300 text-xs">
-                    <span>{start.timePart}</span>
-                    <span className="mx-1.5 text-slate-500">→</span>
-                    <span>{end.timePart}</span>
-                    <span className="ml-2 font-bold text-blue-400">
-                      ({(ev.duration_hours ?? 0).toFixed(2)}h)
-                    </span>
-                  </div>
+                {/* Event Icon Pin on the Timeline Line */}
+                <div
+                  className={`absolute -left-[35px] top-1.5 w-7 h-7 rounded-full border-2 border-black shadow-md flex items-center justify-center text-white ${getEventColor(
+                    ev.type,
+                    ev.status
+                  )} group-hover:scale-110 transition-transform`}
+                >
+                  {getEventIcon(ev.type)}
                 </div>
 
-                {/* Subtitle & Location */}
-                <div className="flex flex-wrap items-center justify-between gap-3 text-slate-400 pt-2 border-t border-[#242424]">
-                  <div className="flex items-center gap-1.5 text-slate-200 font-medium">
-                    <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                    <span>{ev.location_name}</span>
-                  </div>
-
-                  <div className="flex items-center gap-3 font-mono text-[11px]">
-                    {(ev.distance_miles ?? 0) > 0 && (
-                      <span className="text-slate-300">
-                        Distance: <strong className="text-white">{(ev.distance_miles ?? 0).toFixed(1)} mi</strong>
+                {/* Event Milestone Card */}
+                <div className="p-4 rounded-sm bg-[#161616] border border-[#242424] hover:border-[#374151] transition-all text-xs space-y-2">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-bold text-sm text-white font-display">
+                        {getEventTitle(ev.type, ev.reason)}
                       </span>
-                    )}
-                    <span className="text-slate-600">|</span>
-                    <span className="text-cyan-400 flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>{start.datePart}</span>
-                    </span>
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${getDutyStatusBadge(
+                          ev.status
+                        )}`}
+                      >
+                        {ev.status.replace(/_/g, ' ')}
+                      </span>
+                    </div>
+
+                    <div className="text-right text-[11px] text-slate-400 font-mono">
+                      <span>{start.datePart}</span> &bull; <span>{start.timePart} → {end.timePart}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 font-mono text-[11px] text-slate-400">
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="w-3 h-3 text-slate-500" />
+                      <span className="text-slate-300 font-medium">{ev.location_name}</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span>Duration: <strong className="text-white">{ev.duration_hours.toFixed(2)}h</strong></span>
+                      {ev.distance_miles !== undefined && ev.distance_miles > 0 && (
+                        <span>Distance: <strong className="text-blue-400">{ev.distance_miles.toFixed(1)} mi</strong></span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </div>
   );
 };
 
-function getEventTitle(type: string, reason: string): string {
+function getEventIcon(type: string) {
   switch (type) {
-    case 'DRIVING': return 'CMV Driving Highway Leg';
-    case 'PICKUP': return 'Freight Pickup Loading & Inspection (1h)';
-    case 'DROPOFF': return 'Freight Delivery & Unloading (1h)';
-    case 'FUEL': return 'Commercial Diesel Fuel Stop (30m)';
-    case 'REST_BREAK': return 'Mandatory 30-Minute Rest Break';
-    case 'SLEEPER_BERTH': return '10-Hour Sleeper Berth Daily Reset';
-    case 'OFF_DUTY': return reason || 'Off Duty';
-    default: return reason || 'Scheduled Activity';
+    case 'CURRENT':
+    case 'DRIVE':
+      return <Truck className="w-3.5 h-3.5" />;
+    case 'PICKUP':
+      return <Package className="w-3.5 h-3.5" />;
+    case 'DROPOFF':
+      return <Flag className="w-3.5 h-3.5" />;
+    case 'FUEL':
+      return <Fuel className="w-3.5 h-3.5" />;
+    case 'REST_BREAK':
+      return <Coffee className="w-3.5 h-3.5" />;
+    case 'SLEEPER_BERTH':
+      return <Moon className="w-3.5 h-3.5" />;
+    default:
+      return <Clock className="w-3.5 h-3.5" />;
   }
 }
 
-function getEventColor(type: string, status: DutyStatus): string {
-  switch (type) {
-    case 'DRIVING': return 'bg-blue-600 ring-2 ring-blue-500/50';
-    case 'PICKUP': return 'bg-emerald-600 ring-2 ring-emerald-500/50';
-    case 'DROPOFF': return 'bg-rose-600 ring-2 ring-rose-500/50';
-    case 'FUEL': return 'bg-amber-500 ring-2 ring-amber-400/50';
-    case 'REST_BREAK': return 'bg-purple-600 ring-2 ring-purple-400/50';
-    case 'SLEEPER_BERTH': return 'bg-indigo-600 ring-2 ring-indigo-400/50';
-    default: return 'bg-slate-600';
-  }
-}
+function getEventColor(type: string, status: DutyStatus) {
+  if (type === 'FUEL') return 'bg-amber-500';
+  if (type === 'REST_BREAK') return 'bg-purple-500';
+  if (type === 'SLEEPER_BERTH') return 'bg-indigo-600';
+  if (type === 'PICKUP') return 'bg-emerald-500';
+  if (type === 'DROPOFF') return 'bg-rose-500';
 
-function getEventIcon(type: string): React.ReactNode {
-  switch (type) {
-    case 'DRIVING': return <Truck className="w-3.5 h-3.5" />;
-    case 'PICKUP': return <Package className="w-3.5 h-3.5" />;
-    case 'DROPOFF': return <Flag className="w-3.5 h-3.5" />;
-    case 'FUEL': return <Fuel className="w-3.5 h-3.5" />;
-    case 'REST_BREAK': return <Coffee className="w-3.5 h-3.5" />;
-    case 'SLEEPER_BERTH': return <Moon className="w-3.5 h-3.5" />;
-    default: return <Clock className="w-3.5 h-3.5" />;
-  }
-}
-
-function getDutyStatusBadge(status: DutyStatus): string {
   switch (status) {
-    case 'DRIVING': return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
-    case 'ON_DUTY_NOT_DRIVING': return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
-    case 'SLEEPER_BERTH': return 'bg-purple-500/10 text-purple-300 border-purple-500/30';
-    case 'OFF_DUTY': return 'bg-slate-800 text-slate-400 border-slate-700';
+    case 'DRIVING':
+      return 'bg-[#0016CB]';
+    case 'ON_DUTY_NOT_DRIVING':
+      return 'bg-amber-500';
+    case 'SLEEPER_BERTH':
+      return 'bg-indigo-600';
+    case 'OFF_DUTY':
+    default:
+      return 'bg-slate-700';
+  }
+}
+
+function getDutyStatusBadge(status: DutyStatus) {
+  switch (status) {
+    case 'DRIVING':
+      return 'bg-[#0016CB]/20 text-blue-300 border-[#0016CB]/40';
+    case 'ON_DUTY_NOT_DRIVING':
+      return 'bg-amber-500/10 text-amber-300 border-amber-500/30';
+    case 'SLEEPER_BERTH':
+      return 'bg-purple-500/10 text-purple-300 border-purple-500/30';
+    case 'OFF_DUTY':
+    default:
+      return 'bg-slate-800 text-slate-300 border-slate-700';
+  }
+}
+
+function getEventTitle(type: string, reason?: string) {
+  if (reason) return reason;
+  switch (type) {
+    case 'CURRENT':
+      return 'Pre-Trip Vehicle & Cargo Inspection (1.0h)';
+    case 'DRIVE':
+      return 'Interstate Line-Haul Highway Leg';
+    case 'PICKUP':
+      return 'Shipper Terminal Loading & Verification (1.0h)';
+    case 'DROPOFF':
+      return 'Consignee Delivery Unloading & Post-Trip (1.0h)';
+    case 'FUEL':
+      return 'Commercial Diesel Fueling Stop (30m)';
+    case 'REST_BREAK':
+      return 'Mandatory 30-Minute Rest Break';
+    case 'SLEEPER':
+      return '10-Hour Sleeper Berth Daily Rest & Reset';
+    default:
+      return 'Scheduled Trip Event';
   }
 }

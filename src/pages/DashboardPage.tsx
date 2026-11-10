@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { TripPlanRequest, TripPlanResponse, Stop } from '../types/hos';
 import { TripPlannerForm } from '../components/TripPlanner/TripPlannerForm';
 import { HosStatusCard } from '../components/TripSummary/HosStatusCard';
@@ -13,7 +13,10 @@ import {
   AlertCircle,
   Download,
   LogOut,
-  ArrowLeft
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Printer
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import jsPDF from 'jspdf';
@@ -23,18 +26,12 @@ import { useAuth } from '../context/AuthContext';
 export const DashboardPage: React.FC = () => {
   const { user, token, isAuthenticated, logout } = useAuth();
   const { success: toastSuccess, error: toastError, info: toastInfo } = useToast();
+  const [searchParams] = useSearchParams();
+
   const [plannedTrip, setPlannedTrip] = useState<TripPlanResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [planningStep, setPlanningStep] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Clear trip if user logs out
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setPlannedTrip(null);
-      setSelectedStop(null);
-    }
-  }, [isAuthenticated]);
 
   // Selected stop for highlighting on map
   const [selectedStop, setSelectedStop] = useState<Stop | null>(null);
@@ -44,6 +41,63 @@ export const DashboardPage: React.FC = () => {
 
   // Selected Day Log
   const [selectedDayLog, setSelectedDayLog] = useState<number>(1);
+
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Clear trip if user logs out
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setPlannedTrip(null);
+      setSelectedStop(null);
+    }
+  }, [isAuthenticated]);
+
+  // Support ?tab= in URL
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['overview', 'logs', 'timeline', 'compliance'].includes(tabParam)) {
+      setActiveTab(tabParam as any);
+    }
+  }, [searchParams]);
+
+  // Auto-plan demo route if ?demo=1 in URL
+  const demoTriggeredRef = useRef(false);
+  useEffect(() => {
+    const isDemo = searchParams.get('demo') === '1';
+    if (isDemo && !demoTriggeredRef.current && !plannedTrip && !isLoading) {
+      demoTriggeredRef.current = true;
+      handlePlanTrip({
+        current_location: {
+          name: 'Chicago, IL',
+          city: 'Chicago',
+          state: 'IL',
+          country: 'USA',
+          lat: 41.8781,
+          lng: -87.6298
+        },
+        pickup_location: {
+          name: 'Indianapolis, IN',
+          city: 'Indianapolis',
+          state: 'IN',
+          country: 'USA',
+          lat: 39.7684,
+          lng: -86.1581
+        },
+        dropoff_location: {
+          name: 'Dallas, TX',
+          city: 'Dallas',
+          state: 'TX',
+          country: 'USA',
+          lat: 32.7767,
+          lng: -96.7970
+        },
+        current_cycle_used: 42.5,
+        carrier_name: 'National Commercial Express',
+        truck_number: '702',
+        trailer_number: '4410'
+      });
+    }
+  }, [searchParams, plannedTrip, isLoading]);
 
   const handlePlanTrip = async (request: TripPlanRequest) => {
     // Ensure active driver token
@@ -109,6 +163,14 @@ export const DashboardPage: React.FC = () => {
           onClick: () => setActiveTab('logs')
         }
       );
+
+      // Auto-scroll to results
+      setTimeout(() => {
+        if (resultsRef.current) {
+          resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 250);
+
     } catch (err: any) {
       console.error('Trip planning error:', err);
       let msg = err.message || 'An unexpected error occurred while planning the trip.';
@@ -120,6 +182,19 @@ export const DashboardPage: React.FC = () => {
     } finally {
       setIsLoading(false);
       setPlanningStep('');
+    }
+  };
+
+  // Day navigation helpers
+  const handlePrevDay = () => {
+    if (selectedDayLog > 1) {
+      setSelectedDayLog(prev => prev - 1);
+    }
+  };
+
+  const handleNextDay = () => {
+    if (plannedTrip && selectedDayLog < plannedTrip.daily_logs.length) {
+      setSelectedDayLog(prev => prev + 1);
     }
   };
 
@@ -332,17 +407,19 @@ export const DashboardPage: React.FC = () => {
             {/* Planned Trip Results */}
             {plannedTrip && (
               <motion.div
+                ref={resultsRef}
+                id="planned-trip-results"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="space-y-6"
+                className="space-y-6 pt-4"
               >
                 {/* HOS Status Metrics Card */}
                 <HosStatusCard tripData={plannedTrip} />
 
-                {/* Navigation Tabs for Planned Trip */}
+                {/* Navigation Tabs for Planned Trip with Layout Indicator */}
                 <div className="uc-card-stark p-1.5 flex flex-wrap items-center justify-between gap-2 font-mono">
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-1 flex-wrap">
                     {[
                       { id: 'overview', label: 'Route & Map Telemetry' },
                       { id: 'logs', label: `ELD Daily Logs (${plannedTrip.daily_logs.length} Days)` },
@@ -491,24 +568,60 @@ export const DashboardPage: React.FC = () => {
                       transition={{ duration: 0.25 }}
                       className="space-y-6"
                     >
-                      {/* Day selector pills with micro-animations */}
-                      <div className="flex items-center space-x-2 overflow-x-auto pb-1 font-mono">
-                        <span className="text-xs font-bold text-slate-300 mr-2">Select Calendar Day:</span>
-                        {plannedTrip.daily_logs.map(log => (
+                      {/* Day selector row with Prev/Next buttons */}
+                      <div className="flex items-center justify-between gap-4 flex-wrap pb-1 font-mono">
+                        <div className="flex items-center space-x-2 overflow-x-auto">
+                          {/* Prev Day Pill */}
                           <motion.button
-                            key={`day-btn-${log.day_number}`}
-                            whileHover={{ scale: 1.04, y: -1 }}
+                            type="button"
+                            whileHover={{ scale: 1.04 }}
                             whileTap={{ scale: 0.96 }}
-                            onClick={() => setSelectedDayLog(log.day_number)}
-                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                              selectedDayLog === log.day_number
-                                ? 'btn-uc-solid shadow-md'
-                                : 'bg-[#161616] border border-[#242424] text-slate-300 hover:border-[#374151]'
+                            disabled={selectedDayLog <= 1}
+                            onClick={handlePrevDay}
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${
+                              selectedDayLog > 1
+                                ? 'bg-[#161616] border border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
+                                : 'bg-transparent border border-[#242424]/40 text-slate-600 cursor-not-allowed'
                             }`}
                           >
-                            Day {log.day_number} ({log.date})
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                            <span>Prev</span>
                           </motion.button>
-                        ))}
+
+                          {/* Individual Day Buttons */}
+                          {plannedTrip.daily_logs.map(log => (
+                            <motion.button
+                              key={`day-btn-${log.day_number}`}
+                              whileHover={{ scale: 1.04, y: -1 }}
+                              whileTap={{ scale: 0.96 }}
+                              onClick={() => setSelectedDayLog(log.day_number)}
+                              className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                                selectedDayLog === log.day_number
+                                  ? 'btn-uc-solid shadow-md'
+                                  : 'bg-[#161616] border border-[#242424] text-slate-300 hover:border-[#374151]'
+                              }`}
+                            >
+                              Day {log.day_number} ({log.date})
+                            </motion.button>
+                          ))}
+
+                          {/* Next Day Pill */}
+                          <motion.button
+                            type="button"
+                            whileHover={{ scale: 1.04 }}
+                            whileTap={{ scale: 0.96 }}
+                            disabled={selectedDayLog >= plannedTrip.daily_logs.length}
+                            onClick={handleNextDay}
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${
+                              selectedDayLog < plannedTrip.daily_logs.length
+                                ? 'bg-[#161616] border border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
+                                : 'bg-transparent border border-[#242424]/40 text-slate-600 cursor-not-allowed'
+                            }`}
+                          >
+                            <span>Next</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </motion.button>
+                        </div>
                       </div>
 
                       {/* The Active Daily Log Sheet */}
@@ -516,6 +629,10 @@ export const DashboardPage: React.FC = () => {
                         <EldLogSheet
                           log={plannedTrip.daily_logs.find(l => l.day_number === selectedDayLog)!}
                           totalDaysInTrip={plannedTrip.daily_logs.length}
+                          onPrevDay={handlePrevDay}
+                          onNextDay={handleNextDay}
+                          canPrevDay={selectedDayLog > 1}
+                          canNextDay={selectedDayLog < plannedTrip.daily_logs.length}
                         />
                       )}
                     </motion.div>

@@ -1,21 +1,26 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Truck, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Truck, ArrowRight, Play } from 'lucide-react';
 
 interface FooterCtaProps {
-  onLaunchPlanner?: () => void;
+  onLaunchPlanner?: (demo?: boolean) => void;
 }
 
 export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
   const navigate = useNavigate();
 
-  const handleLaunch = () => {
+  const handleLaunch = (demo = false) => {
     if (onLaunchPlanner) {
-      onLaunchPlanner();
+      onLaunchPlanner(demo);
     } else {
-      navigate('/planner');
+      navigate(demo ? '/planner?demo=1' : '/planner');
     }
+  };
+
+  const handleNavTab = (tab: string) => {
+    navigate(`/planner?demo=1&tab=${tab}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const scrollToTop = () => {
@@ -60,15 +65,28 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
             </div>
 
             <div className="shrink-0 flex flex-col sm:flex-row items-center gap-4">
-              <button
+              <motion.button
                 type="button"
-                onClick={handleLaunch}
-                className="w-full sm:w-auto px-10 py-5 rounded-full bg-[#0016CB] hover:bg-[#0014B5] text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-all duration-300 shadow-[0_0_40px_rgba(0,22,203,0.6)] cursor-pointer"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => handleLaunch(false)}
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#0016CB] hover:bg-[#0014B5] text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-all duration-300 shadow-[0_0_40px_rgba(0,22,203,0.6)] cursor-pointer group"
               >
-                <Truck className="w-4 h-4" />
+                <Truck className="w-4 h-4 transition-transform group-hover:scale-110" />
                 <span>LAUNCH INTERACTIVE PLANNER</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </motion.button>
+
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={() => handleLaunch(true)}
+                className="w-full sm:w-auto px-6 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 border border-white/20 transition-all cursor-pointer backdrop-blur-md"
+              >
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>LOAD DEMO TRIP</span>
+              </motion.button>
             </div>
           </div>
         </div>
@@ -102,43 +120,47 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
           {/* Navigation Links */}
           <div className="space-y-3">
             <div className="text-xs font-mono uppercase font-bold text-white tracking-wider">
-              WORKSPACE
+              WORKSPACE VIEWS
             </div>
             <ul className="space-y-2 text-xs font-mono">
               <li>
                 <button
                   type="button"
-                  onClick={handleLaunch}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  onClick={() => handleNavTab('overview')}
+                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
                 >
-                  Interactive Trip Planner
+                  <span className="text-[#0016CB]">&bull;</span>
+                  <span>Interactive Route &amp; GIS Map</span>
                 </button>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={handleLaunch}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  onClick={() => handleNavTab('logs')}
+                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
                 >
-                  Leaflet Highway GIS Map
+                  <span className="text-[#0016CB]">&bull;</span>
+                  <span>ELD Daily Log Generator (RODS)</span>
                 </button>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={handleLaunch}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  onClick={() => handleNavTab('timeline')}
+                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
                 >
-                  ELD Daily Log Generator
+                  <span className="text-[#0016CB]">&bull;</span>
+                  <span>Duty Schedule Timeline</span>
                 </button>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={handleLaunch}
-                  className="hover:text-white transition-colors cursor-pointer text-left"
+                  onClick={() => handleNavTab('compliance')}
+                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
                 >
-                  Duty Schedule Timeline
+                  <span className="text-[#0016CB]">&bull;</span>
+                  <span>Compliance Audit (8 Checks)</span>
                 </button>
               </li>
             </ul>
@@ -171,7 +193,7 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
             <button
               type="button"
               onClick={scrollToTop}
-              className="text-[#0016CB] hover:underline uppercase font-bold cursor-pointer"
+              className="text-[#0016CB] hover:underline uppercase font-bold cursor-pointer transition-colors"
             >
               Back to Top &uarr;
             </button>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Truck, ShieldCheck, Info, X, Menu, ArrowRight } from 'lucide-react';
+import { Truck, ShieldCheck, Info, X, Menu, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ThemeToggle } from './UI/ThemeToggle';
 import { UserProfileMenu } from './Auth/UserProfileMenu';
@@ -15,18 +15,39 @@ export const Navbar: React.FC = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const handleNavClick = (sectionId?: string) => {
+  const handleLogoClick = (e: React.MouseEvent) => {
     setMobileMenuOpen(false);
-    if (sectionId) {
-      if (location.pathname !== '/') {
-        navigate(`/#${sectionId}`);
-      } else {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleNavClick = (sectionId: string) => {
+    setMobileMenuOpen(false);
+    if (location.pathname !== '/') {
+      navigate(`/#${sectionId}`);
+      // Give React Router time to mount landing page
+      setTimeout(() => {
         const el = document.getElementById(sectionId);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth' });
         }
+      }, 150);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
       }
     }
+  };
+
+  const handleLaunchPlanner = () => {
+    setMobileMenuOpen(false);
+    navigate('/planner');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -37,7 +58,7 @@ export const Navbar: React.FC = () => {
           {/* Brand Logo with 3D Tilt Hover */}
           <Link
             to="/"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={handleLogoClick}
             className="flex items-center space-x-3.5 group perspective-1000"
           >
             <motion.div
@@ -72,18 +93,19 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Nav Links (United Carriers style) */}
           <nav className="hidden lg:flex items-center space-x-1">
-            <Link
-              to="/"
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all ${
+            <button
+              type="button"
+              onClick={() => handleNavClick('hero')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all cursor-pointer ${
                 isActive('/') ? 'text-white bg-white/[0.08]' : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
               Home
-            </Link>
+            </button>
 
             <button
               type="button"
-              onClick={() => handleNavClick('features')}
+              onClick={() => handleNavClick('capabilities-grid')}
               className="px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide text-slate-300 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer"
             >
               Features
@@ -91,7 +113,7 @@ export const Navbar: React.FC = () => {
 
             <button
               type="button"
-              onClick={() => handleNavClick('eld-showcase')}
+              onClick={() => handleNavClick('crane-sequence')}
               className="px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide text-slate-300 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer"
             >
               HOS Engine
@@ -99,7 +121,7 @@ export const Navbar: React.FC = () => {
 
             <button
               type="button"
-              onClick={() => handleNavClick('features')}
+              onClick={() => handleNavClick('milestones')}
               className="px-3.5 py-2 rounded-xl text-xs font-semibold tracking-wide text-slate-300 hover:text-white hover:bg-white/[0.04] transition-all cursor-pointer"
             >
               ELD Logs
@@ -138,13 +160,16 @@ export const Navbar: React.FC = () => {
             </motion.button>
 
             {/* Launch Planner Primary Pill CTA */}
-            <Link
-              to="/planner"
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.04, y: -1 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={handleLaunchPlanner}
               className="btn-uc-solid px-5 py-2.5 text-xs font-bold inline-flex items-center gap-2 group cursor-pointer shadow-[0_0_20px_rgba(0,22,203,0.5)]"
             >
               <span>Launch Planner</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-            </Link>
+            </motion.button>
 
             {/* Light / Dark Mode Toggle */}
             <ThemeToggle />
@@ -173,37 +198,44 @@ export const Navbar: React.FC = () => {
               exit={{ opacity: 0, height: 0 }}
               className="lg:hidden border-t border-slate-800 bg-[#06080E]/95 backdrop-blur-2xl px-4 py-4 space-y-2 font-sans"
             >
-              <Link
-                to="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
+              <button
+                type="button"
+                onClick={() => handleNavClick('hero')}
+                className={`w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold ${
                   isActive('/') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
                 }`}
               >
                 Home
-              </Link>
-              <Link
-                to="/planner"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
+              </button>
+              <button
+                type="button"
+                onClick={handleLaunchPlanner}
+                className={`w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold ${
                   isActive('/planner') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
                 }`}
               >
                 Trip Planner Workspace
-              </Link>
-              <button
-                type="button"
-                onClick={() => handleNavClick('features')}
-                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
-              >
-                Features
               </button>
               <button
                 type="button"
-                onClick={() => handleNavClick('eld-showcase')}
+                onClick={() => handleNavClick('capabilities-grid')}
                 className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
               >
-                HOS Engine &amp; Milestones
+                Features &amp; Capabilities
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavClick('crane-sequence')}
+                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
+              >
+                HOS Dispatch Engine
+              </button>
+              <button
+                type="button"
+                onClick={() => handleNavClick('milestones')}
+                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
+              >
+                ELD Milestones &amp; Logs
               </button>
               <Link
                 to="/about"
@@ -212,7 +244,7 @@ export const Navbar: React.FC = () => {
                   isActive('/about') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
                 }`}
               >
-                Compliance Rules &amp; Audits
+                FMCSA Compliance Rules
               </Link>
               <button
                 type="button"
@@ -221,120 +253,83 @@ export const Navbar: React.FC = () => {
               >
                 FAQ
               </button>
-
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    setShowAssumptionsModal(true);
-                  }}
-                  className="text-xs text-slate-300 hover:text-white font-medium flex items-center gap-1.5"
-                >
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>FMCSA 70h/8d Rules</span>
-                </button>
-              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </header>
 
-      {/* Auth Modal */}
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
-
-      {/* Assumptions Modal */}
+      {/* Assumptions & HOS Quick Rules Modal */}
       <AnimatePresence>
         {showAssumptionsModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md perspective-1200">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, rotateX: 20, scale: 0.9, y: 30 }}
-              animate={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
-              exit={{ opacity: 0, rotateX: -15, scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-              className="bg-slate-900/95 border border-white/10 rounded-3xl shadow-2xl max-w-lg w-full p-6 text-slate-100 overflow-hidden relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowAssumptionsModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-[#0A0A0A] border border-[#242424] rounded-2xl max-w-xl w-full p-6 text-slate-100 shadow-2xl z-10 space-y-4"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <div className="flex items-center space-x-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base text-white font-display">FMCSA Regulatory Assumptions</h3>
-                    <p className="text-[11px] text-slate-400 font-mono">49 CFR § 395 Compliance Rules</p>
-                  </div>
+              <div className="flex items-center justify-between border-b border-[#242424] pb-3">
+                <div className="flex items-center space-x-2">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                  <h3 className="font-bold text-lg text-white font-display uppercase tracking-wide">
+                    HOS Operational Rules &amp; Assumptions
+                  </h3>
                 </div>
-                <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
+                <button
+                  type="button"
                   onClick={() => setShowAssumptionsModal(false)}
-                  className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#161616] cursor-pointer"
                 >
                   <X className="w-5 h-5" />
-                </motion.button>
-              </div>
-
-              <div className="py-4 space-y-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
-                <div className="p-3.5 bg-blue-950/40 border border-blue-800/60 rounded-2xl">
-                  <span className="font-bold text-blue-300 text-xs">Property-Carrying CMV Standard:</span>
-                  <p className="text-slate-300 text-xs mt-0.5 leading-relaxed font-sans">
-                    Operates in accordance with the April 2022 FMCSA Hours of Service Regulatory Guide.
-                  </p>
-                </div>
-
-                <ul className="space-y-2 text-xs">
-                  <li className="flex items-start gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                    <span className="font-bold text-white min-w-32 font-mono">&bull; 70 Hours / 8 Days:</span>
-                    <span>Rolling cumulative on-duty ceiling before driving is prohibited.</span>
-                  </li>
-                  <li className="flex items-start gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                    <span className="font-bold text-white min-w-32 font-mono">&bull; 11-Hour Drive Limit:</span>
-                    <span>Maximum driving hours permitted following 10 consecutive hours off-duty.</span>
-                  </li>
-                  <li className="flex items-start gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                    <span className="font-bold text-white min-w-32 font-mono">&bull; 14-Hour Duty Window:</span>
-                    <span>Driving barred after 14 consecutive hours from initial on-duty start.</span>
-                  </li>
-                  <li className="flex items-start gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                    <span className="font-bold text-white min-w-32 font-mono">&bull; 30-Minute Break:</span>
-                    <span>Mandatory non-driving rest interval after 8 cumulative driving hours.</span>
-                  </li>
-                  <li className="flex items-start gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                    <span className="font-bold text-white min-w-32 font-mono">&bull; Fueling Stop:</span>
-                    <span>Scheduled at least once every 1,000 miles (threshold: 920 mi; 30m duration).</span>
-                  </li>
-                  <li className="flex items-start gap-2 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800">
-                    <span className="font-bold text-white min-w-32 font-mono">&bull; Pickup &amp; Dropoff:</span>
-                    <span>Exactly 1 hour on-duty not driving scheduled at each terminal.</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowAssumptionsModal(false);
-                    navigate('/about');
-                  }}
-                  className="text-xs text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Read Full Audit Guide</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+              </div>
 
+              <div className="space-y-3 text-xs text-slate-300 leading-relaxed font-mono">
+                <div className="p-3 rounded-lg bg-[#161616] border border-[#242424]">
+                  <strong className="text-white block mb-1">11-Hour Driving Limit (§ 395.3(a)(1)):</strong>
+                  May drive a maximum of 11 cumulative hours following 10 consecutive hours off duty or sleeper berth.
+                </div>
+                <div className="p-3 rounded-lg bg-[#161616] border border-[#242424]">
+                  <strong className="text-white block mb-1">14-Hour Duty Window (§ 395.3(a)(2)):</strong>
+                  May not drive beyond the 14th consecutive hour after coming on duty.
+                </div>
+                <div className="p-3 rounded-lg bg-[#161616] border border-[#242424]">
+                  <strong className="text-white block mb-1">30-Minute Rest Break (§ 395.3(a)(3)(ii)):</strong>
+                  Mandatory 30-minute break after 8 cumulative hours of driving without at least a 30-minute interruption.
+                </div>
+                <div className="p-3 rounded-lg bg-[#161616] border border-[#242424]">
+                  <strong className="text-white block mb-1">70-Hour / 8-Day Rolling Cycle (§ 395.3(b)(2)):</strong>
+                  May not drive after 70 hours on duty in any 8 consecutive days.
+                </div>
+                <div className="p-3 rounded-lg bg-[#161616] border border-[#242424]">
+                  <strong className="text-white block mb-1">1,000-Mile Fuel Stop Standard:</strong>
+                  Automatic 30-minute refueling stop injected before 1,000 cumulative miles.
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end">
                 <button
                   type="button"
                   onClick={() => setShowAssumptionsModal(false)}
-                  className="btn-electric-primary px-5 py-2 text-xs font-bold cursor-pointer"
+                  className="btn-uc-solid px-6 py-2.5 text-xs font-mono font-bold cursor-pointer"
                 >
-                  Close &amp; Return
+                  I Understand &bull; Close
                 </button>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
+
+      {/* Driver Auth Modal */}
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>
   );
 };

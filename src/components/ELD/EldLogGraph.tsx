@@ -1,5 +1,6 @@
 import React from 'react';
 import { DailyLog, DutyStatus, TimelineEvent } from '../../types/hos';
+import { motion } from 'motion/react';
 
 interface EldLogGraphProps {
   log: DailyLog;
@@ -100,53 +101,51 @@ export const EldLogGraph: React.FC<EldLogGraphProps> = ({
   ];
 
   return (
-    <div className={`bg-white p-3 rounded-lg border border-slate-300 shadow-xs font-sans ${className}`}>
+    <div className={className}>
       <svg
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-        className="w-full h-auto select-none"
+        className="w-full h-auto select-none overflow-visible"
         style={{ minWidth: '850px' }}
       >
-        {/* Top Header Background */}
-        <rect x="0" y="0" width={svgWidth} height="28" fill="#0f172a" rx="3" />
-        <text x="12" y="18" fill="#ffffff" fontSize="11" fontWeight="bold" fontFamily="sans-serif">
-          RECORD OF DUTY STATUS (24 HOURS)
-        </text>
-
-        {/* Top Hour Labels */}
-        {hourLabels.map((label, i) => {
-          const x = gridStartX + i * hourWidth;
-          const isMidOrNoon = i === 0 || i === 12 || i === 24;
+        {/* Top Header Hour Labels (Midnight, 1, 2... Noon... 11, Midnight) */}
+        {hourLabels.map((label, idx) => {
+          const x = gridStartX + idx * hourWidth;
+          const isKeyHour = idx === 0 || idx === 12 || idx === 24;
           return (
             <text
-              key={`hr-${i}`}
+              key={`hour-${idx}`}
               x={x}
-              y="20"
+              y="22"
               textAnchor="middle"
-              fill="#ffffff"
-              fontSize={isMidOrNoon ? '8.5' : '9'}
-              fontWeight={isMidOrNoon ? 'bold' : 'normal'}
+              fontSize={isKeyHour ? '9' : '8.5'}
+              fontWeight={isKeyHour ? 'bold' : 'normal'}
+              fill="#334155"
+              fontFamily="sans-serif"
             >
               {label}
             </text>
           );
         })}
+
+        {/* Total Hours Label at Top Right */}
         <text
           x={gridStartX + gridWidth + totalColWidth / 2}
-          y="18"
+          y="22"
           textAnchor="middle"
-          fill="#ffffff"
           fontSize="9.5"
           fontWeight="bold"
+          fill="#1e293b"
+          fontFamily="sans-serif"
         >
           TOTAL
         </text>
 
-        {/* 4 Duty Status Row Labels on Left */}
+        {/* Left Column Duty Labels */}
         {[
           { text: '1. OFF DUTY', y: gridStartY + 0.5 * rowHeight },
           { text: '2. SLEEPER BERTH', y: gridStartY + 1.5 * rowHeight },
           { text: '3. DRIVING', y: gridStartY + 2.5 * rowHeight },
-          { text: '4. ON DUTY (NOT DRIVING)', y: gridStartY + 3.5 * rowHeight }
+          { text: '4. ON DUTY (NOT DRV)', y: gridStartY + 3.5 * rowHeight }
         ].map((row, i) => (
           <g key={`row-label-${i}`}>
             <rect
@@ -212,7 +211,6 @@ export const EldLogGraph: React.FC<EldLogGraphProps> = ({
               {/* Sub-ticks inside each row for 15, 30, 45 minutes */}
               {[0, 1, 2, 3].map(rowIdx => {
                 const rowTop = gridStartY + rowIdx * rowHeight;
-                const rowBot = rowTop + rowHeight;
                 return (
                   <g key={`subticks-${hourIndex}-${rowIdx}`}>
                     {/* 15m */}
@@ -327,33 +325,42 @@ export const EldLogGraph: React.FC<EldLogGraphProps> = ({
         </text>
 
         {/* ------------------------------------------------------------- */}
-        {/* THE FMCSA ACTIVE DUTY STATUS LINE (CRISP BLUE OVERLAY) */}
+        {/* THE FMCSA ACTIVE DUTY STATUS LINE (ANIMATED 24H PATH DRAWING) */}
         {/* ------------------------------------------------------------- */}
         {pathData && (
-          <path
+          <motion.path
+            key={pathData}
             d={pathData}
             fill="none"
-            stroke="#2563eb"
-            strokeWidth="3.2"
+            stroke="#0016CB"
+            strokeWidth="3.5"
             strokeLinecap="round"
             strokeLinejoin="miter"
-            style={{ filter: 'drop-shadow(0px 1px 2px rgba(37,99,235,0.3))' }}
+            initial={{ pathLength: 0, opacity: 0.3 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,22,203,0.4))' }}
           />
         )}
 
         {/* Vertical Transition Indicators & Remarks Connectors */}
         {showRemarksPointers &&
           transitions.map((t, i) => (
-            <g key={`transition-${i}`}>
+            <motion.g
+              key={`transition-${i}`}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 + i * 0.05 }}
+            >
               {/* Dot at change of status */}
-              <circle cx={t.x} cy={t.y} r="3" fill="#1d4ed8" stroke="#ffffff" strokeWidth="1" />
+              <circle cx={t.x} cy={t.y} r="3.5" fill="#0016CB" stroke="#ffffff" strokeWidth="1.2" />
               {/* Projection dashed line down to remarks line */}
               <line
                 x1={t.x}
                 y1={t.y}
                 x2={t.x}
                 y2={gridEndY + 20}
-                stroke="#2563eb"
+                stroke="#0016CB"
                 strokeWidth="1"
                 strokeDasharray="2,2"
                 opacity="0.75"
@@ -366,11 +373,11 @@ export const EldLogGraph: React.FC<EldLogGraphProps> = ({
                 fill="#1e293b"
                 textAnchor="start"
                 transform={`rotate(45, ${t.x}, ${gridEndY + 32})`}
-                fontWeight="500"
+                fontWeight="600"
               >
                 {t.location.split(',')[0]}
               </text>
-            </g>
+            </motion.g>
           ))}
       </svg>
     </div>

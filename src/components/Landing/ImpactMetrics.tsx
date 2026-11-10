@@ -1,28 +1,113 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { ShieldCheck, ArrowUpRight, Award, CheckCircle2 } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { motion, useInView } from 'motion/react';
+import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
+
+interface MetricItem {
+  numericValue: number;
+  suffix: string;
+  prefix?: string;
+  decimals?: number;
+  label: string;
+  desc: string;
+}
+
+// Animated Counter Component using requestAnimationFrame when in view
+const AnimatedCounter: React.FC<{
+  target: number;
+  suffix?: string;
+  prefix?: string;
+  decimals?: number;
+}> = ({ target, suffix = '', prefix = '', decimals = 0 }) => {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+
+  React.useEffect(() => {
+    if (!isInView) return;
+
+    let start = 0;
+    const duration = 2000; // ms
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Easing: easeOutExpo
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const currentVal = start + (target - start) * easeProgress;
+      setCount(currentVal);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [isInView, target]);
+
+  return (
+    <span ref={ref} className="tabular-nums">
+      {prefix}
+      {count.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      })}
+      {suffix}
+    </span>
+  );
+};
 
 export const ImpactMetrics: React.FC = () => {
-  const metrics = [
+  const metrics: MetricItem[] = [
     {
-      stat: '2,500+',
+      numericValue: 2500,
+      suffix: '+',
       label: 'COMMERCIAL CORRIDORS SOLVED',
       desc: 'OSRM highway routing across continental freight lanes with dynamic diesel and sleeper stop insertion.'
     },
     {
-      stat: '98.2%',
+      numericValue: 98.2,
+      suffix: '%',
+      decimals: 1,
       label: 'CLEAN AUDIT & INSPECTION RATE',
       desc: 'Roadside Level I–III FMCSA compliance records with zero 11-hour driving or 14-hour window violations.'
     },
     {
-      stat: '8+',
+      numericValue: 8,
+      suffix: '+',
       label: 'STATUTORY COMPLIANCE ENFORCEMENTS',
       desc: '11h drive cap, 14h window, 30m rest, 70h/8-day cycle, 10h sleeper reset, 1,000-mi diesel stops, and 24.00h balanced RODS.'
     }
   ];
 
+  // Mouse spotlight tracking for the container
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
   return (
-    <section className="relative py-24 bg-[#FFFFFF] text-[#111111] overflow-hidden">
+    <section
+      id="impact-metrics"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative py-24 bg-[#FFFFFF] text-[#111111] overflow-hidden group/section"
+    >
+      {/* Subtle radial spotlight tracking mouse cursor */}
+      <div
+        className="pointer-events-none absolute -inset-px opacity-0 group-hover/section:opacity-100 transition-opacity duration-500 z-0"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0, 22, 203, 0.05), transparent 40%)`
+        }}
+      />
+
       {/* Subtle background micro-grid */}
       <div 
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -103,12 +188,12 @@ export const ImpactMetrics: React.FC = () => {
 
           </div>
 
-          {/* Right Column: 3 Massive Stat Columns with Crisp Divider Lines */}
+          {/* Right Column: 3 Massive Stat Columns with Live Count-Up Tickers */}
           <div className="lg:col-span-6 flex flex-col justify-between h-full pt-4 lg:pt-0">
             <div className="divide-y divide-[#111111]/15 border-t lg:border-t-0 border-b border-[#111111]/15">
               {metrics.map((item, index) => (
                 <motion.div
-                  key={item.stat}
+                  key={item.label}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -117,7 +202,12 @@ export const ImpactMetrics: React.FC = () => {
                 >
                   <div className="flex items-baseline justify-between">
                     <span className="text-5xl sm:text-6xl lg:text-7xl font-black font-display text-[#111111] tracking-tight tabular-nums group-hover:text-[#0016CB] transition-colors duration-300">
-                      {item.stat}
+                      <AnimatedCounter
+                        target={item.numericValue}
+                        suffix={item.suffix}
+                        prefix={item.prefix}
+                        decimals={item.decimals}
+                      />
                     </span>
                     <ArrowUpRight className="w-6 h-6 text-[#111111]/30 group-hover:text-[#0016CB] group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" />
                   </div>

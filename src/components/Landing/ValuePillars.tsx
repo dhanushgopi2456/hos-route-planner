@@ -1,6 +1,81 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Compass, ShieldAlert, BarChart3, FileSpreadsheet, ArrowUpRight } from 'lucide-react';
+
+const PillarCard: React.FC<{
+  pillar: {
+    num: string;
+    title: string;
+    subtitle: string;
+    body: string;
+    icon: any;
+    tag: string;
+  };
+  index: number;
+}> = ({ pillar, index }) => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const Icon = pillar.icon;
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -6, scale: 1.01 }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="uc-card-stark p-6 sm:p-7 flex flex-col justify-between group relative overflow-hidden transition-all duration-300"
+    >
+      {/* Radial electric-blue cursor spotlight */}
+      {isHovered && (
+        <div
+          className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-0"
+          style={{
+            background: `radial-gradient(300px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0, 22, 203, 0.22), transparent 70%)`
+          }}
+        />
+      )}
+
+      {/* Content */}
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-4xl font-black font-mono text-slate-800 group-hover:text-[#0016CB] transition-colors">
+            {pillar.num}
+          </span>
+          <span className="text-[10px] font-mono text-slate-400 bg-[#0A0A0A] px-2.5 py-1 rounded-sm border border-[#242424]">
+            {pillar.tag}
+          </span>
+        </div>
+
+        <h3 className="text-lg font-bold text-white font-display mb-1 group-hover:text-[#99A9EE] transition-colors uppercase">
+          {pillar.title}
+        </h3>
+        <p className="text-xs font-semibold text-blue-400/90 mb-3 font-mono">
+          {pillar.subtitle}
+        </p>
+        <p className="text-xs text-slate-400 leading-relaxed font-sans">
+          {pillar.body}
+        </p>
+      </div>
+
+      <div className="pt-4 mt-6 border-t border-[#242424] flex items-center justify-between text-[11px] text-slate-500 font-mono relative z-10">
+        <span className="uppercase font-semibold">FMCSA Engine Rule</span>
+        <ArrowUpRight className="w-3.5 h-3.5 text-[#0016CB] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+      </div>
+    </motion.div>
+  );
+};
 
 export const ValuePillars: React.FC = () => {
   const pillars = [
@@ -39,18 +114,18 @@ export const ValuePillars: React.FC = () => {
   ];
 
   return (
-    <section className="relative py-24 bg-[#000000] border-t border-[#242424]">
+    <section id="value-pillars" className="relative py-28 bg-[#000000] border-t border-[#242424] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="max-w-3xl mb-16 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-widest font-mono">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] border border-[#242424] text-[#99A9EE] text-xs font-semibold uppercase tracking-widest font-mono">
             <span>Built For Fleets &amp; Owner-Operators</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
             Built for fleets and drivers that{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="text-[#0016CB]">
               can't afford violations.
             </span>
           </h2>
@@ -60,49 +135,15 @@ export const ValuePillars: React.FC = () => {
           </p>
         </div>
 
-        {/* 4 Pillars Grid (United Carriers editorial style) */}
+        {/* 4 Pillars Grid with 3D Spotlight */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {pillars.map((pillar, index) => {
-            const Icon = pillar.icon;
-            return (
-              <motion.div
-                key={pillar.num}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -4 }}
-                className="uc-glass-card rounded-2xl p-6 flex flex-col justify-between group relative overflow-hidden"
-              >
-                {/* Glowing Top Number */}
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-4xl font-black font-mono text-slate-800 group-hover:text-blue-500 transition-colors">
-                      {pillar.num}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
-                      {pillar.tag}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-bold text-white font-display mb-1 group-hover:text-blue-300 transition-colors">
-                    {pillar.title}
-                  </h3>
-                  <p className="text-xs font-semibold text-blue-400/90 mb-3">
-                    {pillar.subtitle}
-                  </p>
-                  <p className="text-xs text-slate-400 leading-relaxed">
-                    {pillar.body}
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-6 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 font-mono">
-                  <span>Architecture Verified</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-blue-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </div>
-              </motion.div>
-            );
-          })}
+          {pillars.map((pillar, index) => (
+            <PillarCard
+              key={pillar.num}
+              pillar={pillar}
+              index={index}
+            />
+          ))}
         </div>
 
       </div>

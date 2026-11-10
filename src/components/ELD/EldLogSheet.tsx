@@ -1,8 +1,16 @@
 import React, { useRef } from 'react';
 import { DailyLog } from '../../types/hos';
 import { EldLogGraph } from './EldLogGraph';
-import { Printer, Download, CheckCircle2 } from 'lucide-react';
-import { motion } from 'motion/react';
+import {
+  Printer,
+  Download,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  FileSpreadsheet,
+  FileCode
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import jsPDF from 'jspdf';
 import { useToast } from '../../context/ToastContext';
 
@@ -10,12 +18,20 @@ interface EldLogSheetProps {
   log: DailyLog;
   totalDaysInTrip?: number;
   onDownloadPdf?: () => void;
+  onPrevDay?: () => void;
+  onNextDay?: () => void;
+  canPrevDay?: boolean;
+  canNextDay?: boolean;
 }
 
 export const EldLogSheet: React.FC<EldLogSheetProps> = ({
   log,
   totalDaysInTrip = 1,
-  onDownloadPdf
+  onDownloadPdf,
+  onPrevDay,
+  onNextDay,
+  canPrevDay,
+  canNextDay
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null);
   const { success: toastSuccess, info: toastInfo } = useToast();
@@ -29,6 +45,58 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
   const handlePrint = () => {
     toastInfo('Print Sheet Ready', `Preparing print layout for Day ${log.day_number} (${log.date}).`);
     window.print();
+  };
+
+  // Download raw JSON record
+  const handleExportJson = () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(log, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('download', `hos-trip-log-day-${log.day_number}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    toastSuccess(
+      'JSON Log Exported',
+      `Downloaded hos-trip-log-day-${log.day_number}.json with full event records.`
+    );
+  };
+
+  // Download tabular CSV summary
+  const handleExportCsv = () => {
+    const headers = ['Day', 'Date', 'Carrier', 'Driver', 'Truck', 'Trailer', 'OffDuty_Hrs', 'Sleeper_Hrs', 'Driving_Hrs', 'OnDuty_Hrs', 'Total_Hrs', 'Status'];
+    const row = [
+      log.day_number,
+      log.date,
+      `"${log.carrier_name}"`,
+      `"${log.driver_name}"`,
+      log.truck_number,
+      log.trailer_number,
+      (log.off_duty_hours ?? 0).toFixed(2),
+      (log.sleeper_berth_hours ?? 0).toFixed(2),
+      (log.driving_hours ?? 0).toFixed(2),
+      (log.on_duty_not_driving_hours ?? 0).toFixed(2),
+      (log.total_hours ?? 24).toFixed(2),
+      log.validation_status
+    ];
+
+    let csvContent = 'data:text/csv;charset=utf-8,' + headers.join(',') + '\n' + row.join(',') + '\n\n';
+    csvContent += 'Time,Status,Duration_Hrs,Location,Remarks\n';
+    (log.events || []).forEach(ev => {
+      csvContent += `"${ev.start_time}","${ev.status}",${ev.duration_hours.toFixed(2)},"${ev.location_name}","${ev.reason}"\n`;
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute('href', encodedUri);
+    downloadAnchor.setAttribute('download', `hos-trip-log-day-${log.day_number}.csv`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    toastSuccess(
+      'CSV Log Exported',
+      `Downloaded hos-trip-log-day-${log.day_number}.csv with timeline events.`
+    );
   };
 
   const handleExportPdf = () => {
@@ -71,7 +139,28 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
     <div className="uc-card-stark overflow-hidden print:border-none print:shadow-none print:m-0 print:bg-white">
       {/* Top Action & Duty Hours Bar (hidden in print) */}
       <div className="bg-[#0A0A0A] border-b border-[#242424] px-6 py-4 flex flex-wrap items-center justify-between gap-4 print:hidden">
+        
+        {/* Day Navigation & Status Badge */}
         <div className="flex flex-wrap items-center gap-3">
+          {/* Prev Day Button */}
+          {onPrevDay && (
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={!canPrevDay}
+              onClick={onPrevDay}
+              className={`p-1.5 rounded-full border text-xs flex items-center justify-center transition-all ${
+                canPrevDay
+                  ? 'bg-[#161616] border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
+                  : 'bg-transparent border-[#242424]/40 text-slate-600 cursor-not-allowed'
+              }`}
+              title="Previous Calendar Day"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </motion.button>
+          )}
+
           <div className="flex items-center gap-2">
             <span className="font-bold text-sm tracking-wide text-white font-display uppercase">
               DAY {log.day_number} OF {totalDaysInTrip}
@@ -79,6 +168,25 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
             <span className="text-[#374151] font-mono text-xs">|</span>
             <span className="text-slate-300 text-xs font-mono">{log.date}</span>
           </div>
+
+          {/* Next Day Button */}
+          {onNextDay && (
+            <motion.button
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled={!canNextDay}
+              onClick={onNextDay}
+              className={`p-1.5 rounded-full border text-xs flex items-center justify-center transition-all ${
+                canNextDay
+                  ? 'bg-[#161616] border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
+                  : 'bg-transparent border-[#242424]/40 text-slate-600 cursor-not-allowed'
+              }`}
+              title="Next Calendar Day"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </motion.button>
+          )}
 
           <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-mono font-bold bg-[#161616] text-emerald-400 border border-[#242424]">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -106,32 +214,66 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons: Print, PDF, CSV, JSON */}
         <div className="flex items-center space-x-2">
           <motion.button
+            type="button"
             whileHover={{ scale: 1.04, y: -1 }}
             whileTap={{ scale: 0.96 }}
             onClick={handlePrint}
-            className="btn-uc-pill px-4 py-2 text-xs cursor-pointer font-mono"
+            className="btn-uc-pill px-3 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5"
+            title="Print this 24-hour log sheet"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span>Print Sheet</span>
+            <span className="hidden sm:inline">Print Sheet</span>
           </motion.button>
+
           <motion.button
+            type="button"
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={handleExportCsv}
+            className="btn-uc-pill px-3 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5 text-emerald-400 hover:text-white"
+            title="Download CSV log summary"
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>CSV</span>
+          </motion.button>
+
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={handleExportJson}
+            className="btn-uc-pill px-3 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5 text-cyan-400 hover:text-white"
+            title="Download JSON log file"
+          >
+            <FileCode className="w-3.5 h-3.5" />
+            <span>JSON</span>
+          </motion.button>
+
+          <motion.button
+            type="button"
             whileHover={{ scale: 1.04, y: -1 }}
             whileTap={{ scale: 0.96 }}
             onClick={handleExportPdf}
-            className="btn-uc-solid px-4 py-2 text-xs cursor-pointer font-mono"
+            className="btn-uc-solid px-4 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5 shadow-md"
+            title="Download audit-proof PDF"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Download PDF</span>
+            <span>PDF</span>
           </motion.button>
         </div>
       </div>
 
       {/* The FMCSA Paper Form (Exact Visual Representation of blank-paper-log.png for Legal DOT Audits) */}
       <div className="p-4 sm:p-6 bg-[#000000]">
-        <div
+        <motion.div
+          key={`day-sheet-${log.day_number}`}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           ref={sheetRef}
           id={`eld-sheet-${log.day_number}`}
           className="p-6 md:p-8 text-slate-900 bg-white font-sans text-xs max-w-5xl mx-auto rounded-xl shadow-lg border border-slate-300"
@@ -161,212 +303,88 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
                   <span>{year}</span>
                 </div>
               </div>
-              <div className="text-[9.5px] text-slate-500 uppercase tracking-tight font-mono">
-                ORIGINAL — File at home terminal
-              </div>
-              <div className="text-[9.5px] text-slate-500 uppercase tracking-tight font-mono">
-                DUPLICATE — Driver retains in possession for 8 days
+              <div className="text-[10px] font-mono text-slate-600">
+                24-Hour Period Starting: Midnight (00:00:00)
               </div>
             </div>
           </div>
 
-          {/* Section 1: Trip Route & Vehicle Information */}
-          <div className="grid grid-cols-12 gap-3 mb-4 border border-slate-400 p-3 rounded-md bg-slate-50/50">
-            {/* From / To */}
-            <div className="col-span-12 md:col-span-6 grid grid-cols-2 gap-3">
-              <div>
-                <span className="text-[10px] font-bold uppercase text-slate-600 block">From:</span>
-                <div className="border-b border-slate-800 font-semibold text-slate-900 pb-0.5 truncate">
-                  {log.from_location}
-                </div>
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase text-slate-600 block">To:</span>
-                <div className="border-b border-slate-800 font-semibold text-slate-900 pb-0.5 truncate">
-                  {log.to_location}
-                </div>
-              </div>
+          {/* Carrier & Vehicle Header Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 border-b border-slate-300 pb-4 mb-4 font-mono text-[11px]">
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">Name of Carrier</span>
+              <span className="font-bold text-slate-900 block truncate">{log.carrier_name}</span>
             </div>
-
-            {/* Mileage Boxes */}
-            <div className="col-span-6 md:col-span-3">
-              <div className="border border-slate-400 bg-white p-1.5 rounded text-center">
-                <span className="text-[9px] font-bold uppercase text-slate-600 block">
-                  Total Miles Driving Today
-                </span>
-                <span className="text-base font-bold font-mono text-slate-950">
-                  {log.total_miles_driving_today} mi
-                </span>
-              </div>
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">Main Office Address</span>
+              <span className="font-bold text-slate-900 block truncate">{log.carrier_office}</span>
             </div>
-
-            <div className="col-span-6 md:col-span-3">
-              <div className="border border-slate-400 bg-white p-1.5 rounded text-center">
-                <span className="text-[9px] font-bold uppercase text-slate-600 block">
-                  Total Mileage Today
-                </span>
-                <span className="text-base font-bold font-mono text-slate-950">
-                  {log.total_mileage_today} mi
-                </span>
-              </div>
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">Truck / Tractor No.</span>
+              <span className="font-bold text-slate-900 block">#{log.truck_number}</span>
             </div>
-
-            {/* Vehicle & Carrier info */}
-            <div className="col-span-12 md:col-span-4">
-              <span className="text-[10px] font-bold uppercase text-slate-600 block">
-                Truck / Tractor &amp; Trailer Number:
-              </span>
-              <div className="border-b border-slate-800 font-semibold text-slate-900 pb-0.5">
-                Unit #{log.truck_number} / Trailer #{log.trailer_number}
-              </div>
-            </div>
-
-            <div className="col-span-12 md:col-span-4">
-              <span className="text-[10px] font-bold uppercase text-slate-600 block">
-                Name of Carrier or Carriers:
-              </span>
-              <div className="border-b border-slate-800 font-semibold text-slate-900 pb-0.5 truncate">
-                {log.carrier_name}
-              </div>
-            </div>
-
-            <div className="col-span-12 md:col-span-4">
-              <span className="text-[10px] font-bold uppercase text-slate-600 block">
-                Main Office Address:
-              </span>
-              <div className="border-b border-slate-800 font-semibold text-slate-900 pb-0.5 truncate">
-                {log.carrier_office}
-              </div>
-            </div>
-
-            <div className="col-span-12 md:col-span-6">
-              <span className="text-[10px] font-bold uppercase text-slate-600 block">
-                Home Terminal Address:
-              </span>
-              <div className="border-b border-slate-800 font-semibold text-slate-900 pb-0.5 truncate">
-                {log.home_terminal}
-              </div>
-            </div>
-
-            <div className="col-span-12 md:col-span-6">
-              <span className="text-[10px] font-bold uppercase text-slate-600 block">
-                Driver's Signature in Full:
-              </span>
-              <div className="border-b border-slate-800 font-serif italic text-base text-blue-900 pb-0.5">
-                {log.driver_signature}
-              </div>
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">Trailer No.(s)</span>
+              <span className="font-bold text-slate-900 block">#{log.trailer_number}</span>
             </div>
           </div>
 
-          {/* Section 2: The 24-Hour Graph Grid */}
-          <div className="mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 border-b border-slate-300 pb-4 mb-5 font-mono text-[11px]">
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">Driver Name</span>
+              <span className="font-bold text-slate-900 block truncate">{log.driver_name}</span>
+            </div>
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">Total Miles Driving Today</span>
+              <span className="font-bold text-blue-700 block">
+                {((log.driving_hours ?? 0) * 60).toFixed(0)} mi
+              </span>
+            </div>
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">From Location</span>
+              <span className="font-bold text-slate-900 block truncate">{log.from_location}</span>
+            </div>
+            <div>
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">To Location</span>
+              <span className="font-bold text-slate-900 block truncate">{log.to_location}</span>
+            </div>
+          </div>
+
+          {/* 24-Hour Graph Grid */}
+          <div className="mb-6">
             <EldLogGraph log={log} />
           </div>
 
-          {/* Section 3: Remarks Section */}
-          <div className="border border-slate-400 p-3 rounded-md mb-4 bg-white">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-1.5 mb-2">
-              <span className="font-bold uppercase tracking-wider text-xs text-slate-900">
-                REMARKS — Duty Status Changes &amp; Route Locations
-              </span>
-              <span className="text-[10px] text-slate-500 italic">
-                Enter city/town &amp; state at each duty status change. Time standard: Home terminal.
-              </span>
+          {/* Remarks & Duty Changes Table */}
+          <div className="border border-slate-300 rounded-sm mb-6 overflow-hidden">
+            <div className="bg-slate-100 px-3 py-1.5 border-b border-slate-300 font-bold text-[10px] uppercase text-slate-700 flex justify-between">
+              <span>Remarks &amp; Duty Status Changes (Time, Location &amp; Activity)</span>
+              <span className="font-mono">{log.remarks?.length || 0} Entries</span>
             </div>
-
-            {log.remarks && log.remarks.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1 text-xs">
-                {log.remarks.map((r, i) => (
-                  <div key={`remark-${i}`} className="flex items-center space-x-2 py-0.5 border-b border-slate-100">
-                    <span className="font-mono font-bold text-slate-800 w-12 shrink-0">{r.time}</span>
-                    <span className="font-semibold text-slate-900 truncate">{r.location}</span>
-                    <span className="text-slate-400">—</span>
-                    <span className="text-slate-600 italic truncate">{r.note}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-slate-400 italic text-xs py-2">No status changes on this day.</p>
-            )}
-
-            {/* Shipping document numbers & commodity */}
-            <div className="mt-3 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div>
-                <span className="text-[10px] font-bold uppercase text-slate-600 block">
-                  Shipping Document / DVL / Manifest No:
-                </span>
-                <span className="font-mono font-bold text-slate-900">{log.shipping_doc_number}</span>
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase text-slate-600 block">Shipper:</span>
-                <span className="font-medium text-slate-900">{log.shipper}</span>
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase text-slate-600 block">Commodity:</span>
-                <span className="font-medium text-slate-900">{log.commodity}</span>
-              </div>
+            <div className="divide-y divide-slate-200 max-h-48 overflow-y-auto font-mono text-[11px]">
+              {(log.remarks || []).map((rem, rIdx) => (
+                <div key={rIdx} className="px-3 py-1.5 flex items-center justify-between gap-2">
+                  <span className="font-bold text-slate-900 shrink-0">{rem.time}</span>
+                  <span className="text-slate-700 truncate flex-1">{rem.location}</span>
+                  <span className="text-slate-500 text-[10px]">{rem.note}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Section 4: 70-Hour / 8-Day Rolling Recap Table */}
-          <div className="border border-slate-900 p-3 rounded-md bg-slate-50">
-            <div className="flex items-center justify-between border-b border-slate-300 pb-1 mb-2">
-              <span className="font-bold text-xs text-slate-900 tracking-wide uppercase">
-                70 HOUR / 8 DAY DRIVERS CYCLE RECAP (Complete at end of day)
-              </span>
-              <span className="text-[10px] font-bold text-blue-700">
-                *34 consecutive hours off duty resets cycle to 70 hours
-              </span>
+          {/* Driver Certification Footer */}
+          <div className="pt-4 border-t-2 border-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="text-[10px] text-slate-600 max-w-md italic">
+              I certify that these entries are true and correct as prescribed by 49 CFR Part 395 of the Federal Motor Carrier Safety Regulations.
             </div>
-
-            <div className="grid grid-cols-4 gap-3 text-center">
-              <div className="border border-slate-300 bg-white p-2 rounded">
-                <span className="text-[9px] font-bold uppercase text-slate-600 block">
-                  On Duty Today (Lines 3 &amp; 4)
-                </span>
-                <span className="font-mono font-bold text-sm text-slate-900">
-                  {(log.recap?.on_duty_today ?? 0).toFixed(2)} h
-                </span>
-              </div>
-
-              <div className="border border-slate-300 bg-white p-2 rounded">
-                <span className="text-[9px] font-bold uppercase text-slate-600 block">
-                  A. Total On Duty Last 7 Days (inc. today)
-                </span>
-                <span className="font-mono font-bold text-sm text-slate-900">
-                  {(log.recap?.total_last_7_days ?? 0).toFixed(2)} h
-                </span>
-              </div>
-
-              <div className="border border-slate-300 bg-white p-2 rounded">
-                <span className="text-[9px] font-bold uppercase text-slate-600 block">
-                  B. Hours Available Tomorrow (70h minus A)
-                </span>
-                <span className="font-mono font-bold text-sm text-emerald-700">
-                  {(log.recap?.available_tomorrow ?? 0).toFixed(2)} h
-                </span>
-              </div>
-
-              <div className="border border-slate-300 bg-white p-2 rounded">
-                <span className="text-[9px] font-bold uppercase text-slate-600 block">
-                  C. Total On Duty Last 8 Days (inc. today)
-                </span>
-                <span className="font-mono font-bold text-sm text-slate-900">
-                  {(log.recap?.total_last_8_days ?? 0).toFixed(2)} h
-                </span>
-              </div>
-            </div>
-
-            <div className="mt-2 text-[10px] text-slate-600 flex items-center justify-between">
-              <span>
-                Driver Certification: <em>I certify that these entries are true and correct.</em>
-              </span>
-              <span className="font-serif italic text-slate-800">
-                Signed: {log.driver_signature}
+            <div className="text-right">
+              <span className="text-[9px] uppercase font-bold text-slate-500 block">Driver's Signature</span>
+              <span className="font-serif italic font-bold text-base text-blue-900 border-b border-slate-900 pb-0.5 px-4 inline-block">
+                {log.driver_signature || log.driver_name}
               </span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
