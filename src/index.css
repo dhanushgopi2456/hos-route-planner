@@ -316,7 +316,7 @@ html.light .btn-uc-pill:hover,
 html, body, #root {
   width: 100%;
   max-width: 100vw;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-overflow-scrolling: touch;
 }
 

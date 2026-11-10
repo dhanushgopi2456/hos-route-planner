@@ -51,9 +51,7 @@ export const LandingPage: React.FC = () => {
       <ImpactMetrics />
 
       {/* 4. Section 3: KV Freight Scroll Hero (Reach Stacker & Semi-Truck Sequence) */}
-      <div id="crane-sequence">
-        <KvScrollHero onLaunchPlanner={(demo, tab) => handleLaunchPlanner(demo, tab)} />
-      </div>
+      <KvScrollHero onLaunchPlanner={(demo, tab) => handleLaunchPlanner(demo, tab)} />
 
       {/* 4b. Interactive Telemetry Stage Inspector */}
       <CraneTruckInteractiveShowcase onLaunchPlanner={() => handleLaunchPlanner(false)} />

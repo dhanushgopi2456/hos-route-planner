@@ -209,17 +209,23 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
 
     if (groundBand) {
       groundBand.style.top = `${s.edgePx}px`;
+      groundBand.style.bottom = '0px';
       groundBand.style.height = `${Math.max(0, s.vh - s.edgePx)}px`;
     }
     if (sceneBgBlack) {
       sceneBgBlack.style.top = `${s.edgePx}px`;
+      sceneBgBlack.style.bottom = '0px';
     }
 
-    if (strip) {
+    if (strip && strip.scrollWidth > 0) {
       s.stripWidth = strip.scrollWidth;
+    } else {
+      s.stripWidth = Math.max(s.stripWidth, 2.5 * s.vw);
     }
-    if (giantLetters) {
+    if (giantLetters && giantLetters.scrollWidth > 0) {
       s.lettersWidth = giantLetters.scrollWidth;
+    } else {
+      s.lettersWidth = Math.max(s.lettersWidth, 1.6 * s.vw);
     }
 
     s.bViewports = ((s.stripWidth + 0.45 * s.vw) / s.vw) * 1.1;
@@ -252,11 +258,19 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
   const applyVideoSeek = useCallback((target: number) => {
     const video = videoRef.current;
     const s = stateRef.current;
-    if (!video) return;
+    if (!video || isNaN(target)) return;
 
     if (!s.isSeeking) {
       if (Math.abs(video.currentTime - target) > 1 / 60) {
-        video.currentTime = target;
+        try {
+          if (typeof (video as any).fastSeek === 'function') {
+            (video as any).fastSeek(target);
+          } else {
+            video.currentTime = target;
+          }
+        } catch {
+          video.currentTime = target;
+        }
       }
     } else {
       s.pendingSeek = target;
@@ -277,7 +291,15 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
         const next = s.pendingSeek;
         s.pendingSeek = null;
         if (video && Math.abs(video.currentTime - next) > 1 / 60) {
-          video.currentTime = next;
+          try {
+            if (typeof (video as any).fastSeek === 'function') {
+              (video as any).fastSeek(next);
+            } else {
+              video.currentTime = next;
+            }
+          } catch {
+            video.currentTime = next;
+          }
         }
       }
     };
@@ -285,6 +307,21 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     if (video) {
       video.addEventListener('seeking', onSeeking);
       video.addEventListener('seeked', onSeeked);
+      const handleReady = () => {
+        applyVideoSeek(0);
+        computeLayout();
+      };
+      video.addEventListener('loadedmetadata', handleReady);
+      video.addEventListener('canplay', handleReady, { once: true });
+      if (video.readyState >= 1) {
+        handleReady();
+      }
+    }
+
+    if (typeof document !== 'undefined' && 'fonts' in document) {
+      document.fonts.ready.then(() => {
+        computeLayout();
+      });
     }
 
     const onFrame = (now: number) => {
@@ -306,11 +343,11 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
       s.lastTime = now;
 
       // Track relative scroll position:
-      // When KV Hero is embedded on the page, calculate offset relative to trackRef
-      let relScroll = sy;
+      // Uses getBoundingClientRect for 100% resilient viewport-relative scrolling
+      let relScroll = 0;
       if (trackRef.current) {
-        const trackTop = trackRef.current.offsetTop;
-        relScroll = Math.max(0, sy - trackTop);
+        const rect = trackRef.current.getBoundingClientRect();
+        relScroll = Math.max(0, -rect.top);
       }
 
       const q = Math.min(1, Math.max(0, relScroll / (A_VIEWPORTS * s.vh)));
@@ -334,10 +371,12 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
         document.documentElement.style.setProperty('--edge-px', `${s.edgePx}px`);
         if (groundBandRef.current) {
           groundBandRef.current.style.top = `${s.edgePx}px`;
+          groundBandRef.current.style.bottom = '0px';
           groundBandRef.current.style.height = `${Math.max(0, s.vh - s.edgePx)}px`;
         }
         if (sceneBgBlackRef.current) {
           sceneBgBlackRef.current.style.top = `${s.edgePx}px`;
+          sceneBgBlackRef.current.style.bottom = '0px';
         }
       }
 
@@ -421,13 +460,13 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
       {/* Sticky Scene Container */}
       <div
         ref={sceneRef}
-        className="sticky top-0 left-0 w-screen h-screen overflow-hidden bg-white"
+        className="sticky top-0 left-0 w-full h-screen overflow-hidden bg-white z-20"
         style={{ height: '100lvh' }}
       >
         {/* Black background band below edge-px */}
         <div
           ref={sceneBgBlackRef}
-          className="absolute left-0 w-full bottom-0 bg-[#111111] z-0 pointer-events-none"
+          className="absolute left-0 right-0 w-full bottom-0 bg-[#111111] z-0 pointer-events-none"
         />
 
         {/* Video: Frame-accurate scrubbed freight clip */}
@@ -466,7 +505,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
             settled ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
           }`}
           style={{
-            top: 'calc(26 * var(--u))',
+            top: 'max(88px, calc(26 * var(--u)))',
             left: 'calc(52 * var(--u))',
             fontSize: 'calc(10.5 * var(--u))',
           }}
@@ -477,7 +516,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
         {/* Dark Ground Band: From edge-px to bottom holding the sliding cards */}
         <div
           ref={groundBandRef}
-          className="absolute left-0 w-screen bg-[#111111] z-[3] overflow-hidden"
+          className="absolute left-0 right-0 w-full bottom-0 bg-[#111111] z-[3] overflow-hidden"
         >
           {/* Horizontal Sliding Strip */}
           <div
