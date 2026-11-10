@@ -18,9 +18,9 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ showLabel = false, cla
         whileHover={{ scale: 1.08, rotate: resolvedTheme === 'dark' ? -15 : 15 }}
         whileTap={{ scale: 0.92 }}
         onClick={toggleTheme}
-        className={`p-2 rounded-xl border transition-colors cursor-pointer flex items-center gap-2 ${
+        className={`p-2 rounded-full border transition-colors cursor-pointer flex items-center gap-2 ${
           resolvedTheme === 'dark'
-            ? 'bg-slate-800/90 hover:bg-slate-700/90 text-amber-300 border-slate-700 shadow-md shadow-black/20'
+            ? 'bg-[#161616] hover:bg-[#242424] text-amber-300 border-[#242424] shadow-md shadow-black/40'
             : 'bg-white/90 hover:bg-slate-100 text-amber-600 border-slate-200 shadow-xs'
         }`}
         title={`Current mode: ${theme} (click to toggle)`}

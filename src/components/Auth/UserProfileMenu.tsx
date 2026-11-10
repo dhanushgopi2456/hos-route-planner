@@ -40,7 +40,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
         whileHover={{ scale: 1.04, y: -1 }}
         whileTap={{ scale: 0.96 }}
         onClick={onOpenAuthModal}
-        className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-blue-500/25 flex items-center gap-1.5 cursor-pointer border border-white/20"
+        className="btn-uc-solid px-4 py-2 text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer"
       >
         <UserIcon className="w-3.5 h-3.5" />
         <span>Sign In</span>
@@ -52,31 +52,31 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
   const hoursRemaining = Math.max(0, 70 - userCycleUsed);
 
   return (
-    <div ref={menuRef} className="relative">
+    <div ref={menuRef} className="relative font-mono">
       <motion.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1.5 pl-2 rounded-2xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-white text-xs cursor-pointer shadow-md shadow-black/20"
+        className="flex items-center gap-2 p-1.5 pl-2 rounded-full bg-[#161616] hover:bg-[#242424] border border-[#242424] text-white text-xs cursor-pointer shadow-md"
       >
         {user.avatar_url ? (
           <img
             src={user.avatar_url}
             alt={user.name}
-            className="w-7 h-7 rounded-xl object-cover border border-blue-400/50"
+            className="w-7 h-7 rounded-full object-cover border border-[#0016CB]/50"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs border border-white/20">
+          <div className="w-7 h-7 rounded-full bg-[#0016CB] flex items-center justify-center text-white font-bold text-xs">
             {user.name.charAt(0)}
           </div>
         )}
 
         <div className="text-left hidden sm:block">
-          <div className="font-bold text-white leading-none truncate max-w-28">
+          <div className="font-bold text-white leading-none truncate max-w-28 font-display">
             {user.name}
           </div>
-          <div className="text-[10px] text-blue-300 font-mono flex items-center gap-1 mt-0.5">
+          <div className="text-[10px] text-[#99A9EE] font-mono flex items-center gap-1 mt-0.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse" />
             <span className="capitalize">{user.role}</span>
           </div>
@@ -84,7 +84,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
 
         <ChevronDown
           className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-            isOpen ? 'rotate-180 text-blue-400' : ''
+            isOpen ? 'rotate-180 text-[#6677E3]' : ''
           }`}
         />
       </motion.button>
@@ -97,34 +97,34 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="absolute right-0 mt-2 w-72 rounded-3xl bg-slate-900/95 backdrop-blur-xl border border-slate-800 text-slate-100 shadow-2xl p-4 z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-72 rounded-sm bg-[#0A0A0A] border border-[#242424] text-white shadow-2xl p-4 z-50 overflow-hidden"
           >
             {/* User Profile Card Header */}
-            <div className="flex items-center gap-3 pb-3 border-b border-slate-800">
+            <div className="flex items-center gap-3 pb-3 border-b border-[#242424]">
               {user.avatar_url ? (
                 <img
                   src={user.avatar_url}
                   alt={user.name}
-                  className="w-11 h-11 rounded-2xl object-cover border-2 border-blue-500/50 shadow-md shadow-blue-500/20"
+                  className="w-11 h-11 rounded-sm object-cover border border-[#0016CB]/50 shadow-md"
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-black text-base shadow-md">
+                <div className="w-11 h-11 rounded-sm bg-[#0016CB] flex items-center justify-center text-white font-black text-base shadow-md">
                   {user.name.charAt(0)}
                 </div>
               )}
               <div className="overflow-hidden">
-                <div className="font-black text-sm text-white truncate">{user.name}</div>
+                <div className="font-black text-sm text-white truncate font-display">{user.name}</div>
                 <div className="text-xs text-slate-400 truncate">{user.email}</div>
-                <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-bold border border-blue-500/30">
-                  <Shield className="w-3 h-3" />
+                <div className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full bg-[#161616] text-[#99A9EE] text-[10px] font-bold border border-[#242424]">
+                  <Shield className="w-3 h-3 text-[#6677E3]" />
                   <span className="capitalize">{user.role}</span>
                 </div>
               </div>
             </div>
 
             {/* Carrier & Tractor Details */}
-            <div className="py-3 space-y-2 text-xs border-b border-slate-800 text-slate-300">
+            <div className="py-3 space-y-2 text-xs border-b border-[#242424] text-slate-300">
               <div className="flex items-center justify-between">
                 <span className="text-slate-400 flex items-center gap-1.5">
                   <Building className="w-3.5 h-3.5 text-slate-500" />
@@ -148,7 +148,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
               {user.cdl_number && (
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">CDL Number:</span>
-                  <span className="font-mono text-blue-300">{user.cdl_number}</span>
+                  <span className="font-mono text-[#99A9EE]">{user.cdl_number}</span>
                 </div>
               )}
 
@@ -160,9 +160,9 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
                     {userCycleUsed.toFixed(1)}h / 70.0h
                   </span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div className="w-full h-1.5 bg-[#242424] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-emerald-400 rounded-full"
+                    className="h-full bg-[#0016CB] rounded-full"
                     style={{ width: `${Math.min(100, (userCycleUsed / 70) * 100)}%` }}
                   />
                 </div>
@@ -177,7 +177,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-sm text-xs text-slate-300 hover:text-white hover:bg-[#161616] transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-2">
                   {resolvedTheme === 'dark' ? (
@@ -199,7 +199,7 @@ export const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ onOpenAuthModa
                   setIsOpen(false);
                   await logout();
                 }}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-rose-900/40 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-sm text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 border border-rose-900/40 transition-colors cursor-pointer font-mono uppercase"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log Out</span>

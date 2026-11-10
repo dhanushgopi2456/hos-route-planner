@@ -22,15 +22,15 @@ export const AnimatedBackground: React.FC = () => {
     window.addEventListener('resize', handleResize);
 
     // Create transit network nodes / particles
-    const particleCount = Math.min(45, Math.floor((width * height) / 32000));
+    const particleCount = Math.min(35, Math.floor((width * height) / 38000));
     const particles = Array.from({ length: particleCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.45,
-      vy: (Math.random() - 0.5) * 0.45,
-      radius: Math.random() * 2 + 1,
-      color: Math.random() > 0.5 ? 'rgba(59, 130, 246, ' : 'rgba(99, 102, 241, ',
-      alpha: Math.random() * 0.35 + 0.15,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      radius: Math.random() * 1.5 + 1,
+      color: Math.random() > 0.5 ? 'rgba(0, 22, 203, ' : 'rgba(51, 70, 215, ',
+      alpha: Math.random() * 0.25 + 0.1,
     }));
 
     let mouseX = -1000;
@@ -83,7 +83,7 @@ export const AnimatedBackground: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(96, 165, 250, ${lineAlpha})`;
+            ctx.strokeStyle = `rgba(0, 22, 203, ${lineAlpha})`;
             ctx.lineWidth = 0.75;
             ctx.stroke();
           }
@@ -103,8 +103,8 @@ export const AnimatedBackground: React.FC = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-      {/* Soft Ambient Floating Glowing Orbs */}
+    <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden bg-[#000000]">
+      {/* Soft Ambient Floating Glowing Orbs in Electric Blue */}
       <motion.div
         animate={{
           x: [0, 40, -30, 0],
@@ -116,7 +116,7 @@ export const AnimatedBackground: React.FC = () => {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute -top-32 -left-32 w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-blue-400/10 to-indigo-500/10 blur-3xl"
+        className="absolute -top-32 -left-32 w-[550px] h-[550px] rounded-full bg-[#0016CB]/5 blur-3xl"
       />
 
       <motion.div
@@ -130,7 +130,7 @@ export const AnimatedBackground: React.FC = () => {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute top-1/3 -right-32 w-[600px] h-[600px] rounded-full bg-gradient-to-bl from-cyan-400/8 to-blue-600/8 blur-3xl"
+        className="absolute top-1/3 -right-32 w-[600px] h-[600px] rounded-full bg-[#0016CB]/5 blur-3xl"
       />
 
       <motion.div
@@ -144,7 +144,7 @@ export const AnimatedBackground: React.FC = () => {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute -bottom-40 left-1/4 w-[650px] h-[650px] rounded-full bg-gradient-to-tr from-indigo-500/8 to-purple-500/8 blur-3xl"
+        className="absolute -bottom-40 left-1/4 w-[650px] h-[650px] rounded-full bg-[#0016CB]/4 blur-3xl"
       />
 
       {/* Subtle Highway Network Canvas */}

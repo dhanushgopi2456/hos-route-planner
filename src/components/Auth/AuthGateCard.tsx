@@ -129,20 +129,20 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Main Container */}
-      <div className="uc-glass-card rounded-2xl overflow-hidden shadow-2xl transition-all">
+      <div className="uc-card-stark overflow-hidden shadow-2xl transition-all">
         {/* Top Banner */}
-        <div className="bg-[#0B0F19] border-b border-white/10 p-6 sm:p-8 text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="bg-[#0A0A0A] border-b border-[#242424] p-6 sm:p-8 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[#0016CB]/10 rounded-full blur-3xl pointer-events-none" />
           
           <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 text-xs font-mono font-bold tracking-wider mb-2">
-                <Lock className="w-3.5 h-3.5 text-blue-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] text-[#99A9EE] border border-[#242424] text-xs font-mono font-bold tracking-wider mb-2">
+                <Lock className="w-3.5 h-3.5 text-[#6677E3]" />
                 <span>Authorized Driver Access</span>
                 <span className="text-slate-600">&bull;</span>
                 <span className="text-emerald-400 font-sans">FMCSA Verified</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white font-display">
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white font-display uppercase">
                 Sign In to Plan Trips &amp; Access HOS Logs
               </h2>
               <p className="text-slate-300 text-xs sm:text-sm mt-1.5 max-w-xl leading-relaxed font-sans">
@@ -152,26 +152,24 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
             </div>
 
             <div className="shrink-0">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 p-0.5 shadow-lg shadow-blue-500/30 hidden sm:flex items-center justify-center">
-                <div className="w-full h-full bg-slate-900/60 rounded-[14px] flex items-center justify-center text-white">
-                  <Truck className="w-8 h-8 text-blue-400" />
-                </div>
+              <div className="w-16 h-16 rounded-sm bg-[#161616] border border-[#242424] p-0.5 shadow-lg hidden sm:flex items-center justify-center">
+                <Truck className="w-8 h-8 text-[#6677E3]" />
               </div>
             </div>
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-2 mt-6 pt-4 border-t border-white/10 overflow-x-auto font-display">
+          <div className="flex items-center gap-2 mt-6 pt-4 border-t border-[#242424] overflow-x-auto font-mono">
             <button
               type="button"
               onClick={() => {
                 setActiveTab('demo');
                 setErrorMessage(null);
               }}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'demo'
-                  ? 'btn-electric-primary shadow-md shadow-blue-600/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'btn-uc-solid shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-[#161616]'
               }`}
             >
               <Sparkles className="w-4 h-4 text-cyan-300" />
@@ -187,10 +185,10 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                 setActiveTab('login');
                 setErrorMessage(null);
               }}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'login'
-                  ? 'btn-electric-primary shadow-md shadow-blue-600/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'btn-uc-solid shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-[#161616]'
               }`}
             >
               <UserIcon className="w-4 h-4" />
@@ -203,10 +201,10 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                 setActiveTab('register');
                 setErrorMessage(null);
               }}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'register'
-                  ? 'btn-electric-primary shadow-md shadow-blue-600/30'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                  ? 'btn-uc-solid shadow-md'
+                  : 'text-slate-400 hover:text-white hover:bg-[#161616]'
               }`}
             >
               <ShieldCheck className="w-4 h-4" />
@@ -216,7 +214,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
         </div>
 
         {/* Tab Content Body */}
-        <div className="p-6 sm:p-8 bg-[#06080E]/90">
+        <div className="p-6 sm:p-8 bg-[#000000]">
           {/* Alerts */}
           <AnimatePresence>
             {errorMessage && (
@@ -265,7 +263,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => !isSubmitting && handleDemoSelect(demo.email)}
-                    className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-850 hover:border-blue-500/60 transition-all cursor-pointer shadow-sm group flex flex-col justify-between"
+                    className="p-5 rounded-sm border border-[#242424] bg-[#161616] hover:border-[#0016CB] transition-all cursor-pointer shadow-sm group flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center gap-3 mb-3">
@@ -273,16 +271,16 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                           <img
                             src={demo.avatar_url}
                             alt={demo.name}
-                            className="w-11 h-11 rounded-xl object-cover border border-blue-400/40 shrink-0 shadow-sm"
+                            className="w-11 h-11 rounded-sm object-cover border border-[#0016CB]/40 shrink-0 shadow-sm"
                             referrerPolicy="no-referrer"
                           />
                         ) : (
-                          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-sm">
+                          <div className="w-11 h-11 rounded-sm bg-[#0016CB] text-white flex items-center justify-center font-bold text-sm">
                             {demo.name.charAt(0)}
                           </div>
                         )}
                         <div>
-                          <h4 className="font-bold text-sm text-white group-hover:text-blue-400 transition-colors font-display">
+                          <h4 className="font-bold text-sm text-white group-hover:text-[#6677E3] transition-colors font-display">
                             {demo.name}
                           </h4>
                           <span className="text-[11px] font-mono font-bold text-cyan-400 uppercase tracking-wider capitalize">
@@ -314,7 +312,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     <button
                       type="button"
                       disabled={isSubmitting}
-                      className="w-full py-2.5 px-3 rounded-xl btn-electric-primary text-xs font-mono font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-blue-600/30"
+                      className="w-full py-2.5 px-3 rounded-full btn-uc-solid text-xs font-mono font-bold flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <span>Sign In as {demo.name.split(' ')[0]}</span>
                       <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -339,7 +337,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     value={loginEmail}
                     onChange={e => setLoginEmail(e.target.value)}
                     placeholder="e.g. john.doe@trucking.com"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white text-sm focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none transition-all"
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 mt-1">
@@ -357,7 +355,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     type="password"
                     value={loginPassword}
                     onChange={e => setLoginPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white text-sm focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none transition-all"
                   />
                 </div>
               </div>
@@ -365,7 +363,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-xl btn-electric-primary text-xs font-bold font-mono uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-600/30"
+                className="w-full py-3 rounded-full btn-uc-solid text-xs font-bold font-mono uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Authorize &amp; Enter Workspace</span>
                 <ArrowRight className="w-4 h-4" />
@@ -384,7 +382,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     value={regName}
                     onChange={e => setRegName(e.target.value)}
                     placeholder="e.g. Dhanush Gopi"
-                    className="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none"
                   />
                 </div>
 
@@ -395,7 +393,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     value={regEmail}
                     onChange={e => setRegEmail(e.target.value)}
                     placeholder="e.g. dhanush@commercialfleet.com"
-                    className="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none"
                   />
                 </div>
 
@@ -405,7 +403,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     type="text"
                     value={regCdl}
                     onChange={e => setRegCdl(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none"
                   />
                 </div>
 
@@ -415,7 +413,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     type="text"
                     value={regCarrier}
                     onChange={e => setRegCarrier(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none"
                   />
                 </div>
 
@@ -425,7 +423,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     type="text"
                     value={regTruck}
                     onChange={e => setRegTruck(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none"
                   />
                 </div>
 
@@ -438,7 +436,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                     max="69"
                     value={regCycleUsed}
                     onChange={e => setRegCycleUsed(parseFloat(e.target.value) || 0)}
-                    className="w-full p-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full p-2.5 rounded-sm border border-[#242424] bg-[#161616] text-white focus:border-[#0016CB] focus:ring-1 focus:ring-[#0016CB] outline-none"
                   />
                 </div>
               </div>
@@ -447,7 +445,7 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3 rounded-xl btn-electric-primary text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-600/30"
+                  className="w-full py-3 rounded-full btn-uc-solid text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Register &amp; Launch Planner</span>
                   <ArrowRight className="w-4 h-4" />

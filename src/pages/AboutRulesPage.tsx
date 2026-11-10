@@ -144,25 +144,25 @@ export const AboutRulesPage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
         {/* Core Rules Grid */}
-        <div className="uc-glass-card rounded-2xl p-6 md:p-8">
+        <div className="uc-card-stark p-6 md:p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-black text-white flex items-center gap-2.5 font-display">
-              <div className="w-8 h-8 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
+            <h2 className="text-lg font-black text-white flex items-center gap-2.5 font-display uppercase">
+              <div className="w-8 h-8 rounded-sm bg-[#161616] text-[#6677E3] flex items-center justify-center border border-[#242424]">
                 <Clock className="w-4 h-4" />
               </div>
               <span>Core FMCSA Property-Carrying CMV Limits</span>
             </h2>
-            <span className="text-[11px] font-mono text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">
+            <span className="text-[11px] font-mono text-slate-400 bg-[#161616] px-3 py-1 rounded-full border border-[#242424]">
               49 CFR § 395.3
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Rule 1 */}
-            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+            <div className="p-5 rounded-sm border border-[#242424] bg-[#161616] flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <div className="p-2 rounded-sm bg-[#0A0A0A] text-[#6677E3] border border-[#242424]">
                     <Truck className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-sm text-white font-display">11-Hour Driving Limit</h3>
@@ -171,16 +171,16 @@ export const AboutRulesPage: React.FC = () => {
                   May drive a maximum of 11 hours after 10 consecutive hours off duty. Once 11 driving hours are reached, further driving is strictly prohibited.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-blue-400 font-bold">
+              <div className="mt-4 pt-3 border-t border-[#242424] text-[10px] font-mono text-[#6677E3] font-bold">
                 Rule: § 395.3(a)(1)
               </div>
             </div>
 
             {/* Rule 2 */}
-            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+            <div className="p-5 rounded-sm border border-[#242424] bg-[#161616] flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <div className="p-2 rounded-sm bg-[#0A0A0A] text-amber-400 border border-[#242424]">
                     <Clock className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-sm text-white font-display">14-Hour Duty Window</h3>
@@ -189,16 +189,16 @@ export const AboutRulesPage: React.FC = () => {
                   May not drive beyond the 14th consecutive hour after coming on duty, following 10 consecutive hours off duty. Off-duty time does not extend the 14-hour window.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-amber-400 font-bold">
+              <div className="mt-4 pt-3 border-t border-[#242424] text-[10px] font-mono text-amber-400 font-bold">
                 Rule: § 395.3(a)(2)
               </div>
             </div>
 
             {/* Rule 3 */}
-            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+            <div className="p-5 rounded-sm border border-[#242424] bg-[#161616] flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                  <div className="p-2 rounded-sm bg-[#0A0A0A] text-purple-400 border border-[#242424]">
                     <Coffee className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-sm text-white font-display">30-Minute Rest Break</h3>
@@ -207,16 +207,16 @@ export const AboutRulesPage: React.FC = () => {
                   Driving is not permitted if more than 8 consecutive or cumulative hours have passed without at least a 30-minute non-driving rest interval.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-purple-400 font-bold">
+              <div className="mt-4 pt-3 border-t border-[#242424] text-[10px] font-mono text-purple-400 font-bold">
                 Rule: § 395.3(a)(3)(ii)
               </div>
             </div>
 
             {/* Rule 4 */}
-            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+            <div className="p-5 rounded-sm border border-[#242424] bg-[#161616] flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <div className="p-2 rounded-sm bg-[#0A0A0A] text-emerald-400 border border-[#242424]">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-sm text-white font-display">70-Hour / 8-Day Rolling Cycle</h3>
@@ -225,16 +225,16 @@ export const AboutRulesPage: React.FC = () => {
                   May not drive after 70 hours on duty in any 8 consecutive days. A driver may restart the 70-hour period after taking 34 or more consecutive hours off duty.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-emerald-400 font-bold">
+              <div className="mt-4 pt-3 border-t border-[#242424] text-[10px] font-mono text-emerald-400 font-bold">
                 Rule: § 395.3(b)(2)
               </div>
             </div>
 
             {/* Rule 5 */}
-            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+            <div className="p-5 rounded-sm border border-[#242424] bg-[#161616] flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <div className="p-2 rounded-sm bg-[#0A0A0A] text-[#6677E3] border border-[#242424]">
                     <Fuel className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-sm text-white font-display">1,000-Mile Fueling Limit</h3>
@@ -243,16 +243,16 @@ export const AboutRulesPage: React.FC = () => {
                   Every commercial motor vehicle must refuel at least once every 1,000 miles. Our engine schedules fuel stops before 1,000 miles with a 30-minute duration.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-cyan-400 font-bold">
+              <div className="mt-4 pt-3 border-t border-[#242424] text-[10px] font-mono text-cyan-400 font-bold">
                 Fleet Efficiency Standard
               </div>
             </div>
 
             {/* Rule 6 */}
-            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+            <div className="p-5 rounded-sm border border-[#242424] bg-[#161616] flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  <div className="p-2 rounded-sm bg-[#0A0A0A] text-indigo-400 border border-[#242424]">
                     <Moon className="w-4 h-4" />
                   </div>
                   <h3 className="font-bold text-sm text-white font-display">10-Hour Sleeper Berth Reset</h3>
@@ -261,7 +261,7 @@ export const AboutRulesPage: React.FC = () => {
                   Taking 10 consecutive hours in the sleeper berth fully resets both the 11-hour driving clock and the 14-hour duty window for the next calendar day.
                 </p>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-indigo-400 font-bold">
+              <div className="mt-4 pt-3 border-t border-[#242424] text-[10px] font-mono text-indigo-400 font-bold">
                 Rule: § 395.1(g)
               </div>
             </div>
@@ -269,12 +269,12 @@ export const AboutRulesPage: React.FC = () => {
         </div>
 
         {/* Operating Assumptions Table */}
-        <div className="uc-glass-card rounded-2xl p-6 md:p-8">
+        <div className="uc-card-stark p-6 md:p-8">
           <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-8 h-8 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
+            <div className="w-8 h-8 rounded-sm bg-[#161616] text-[#6677E3] flex items-center justify-center border border-[#242424]">
               <Info className="w-4 h-4" />
             </div>
-            <h2 className="text-lg font-black text-white font-display">
+            <h2 className="text-lg font-black text-white font-display uppercase">
               Configured Operating Assumptions
             </h2>
           </div>
@@ -282,19 +282,19 @@ export const AboutRulesPage: React.FC = () => {
             Explicit constraints configured for automated trip calculation:
           </p>
 
-          <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/80 font-mono text-xs">
+          <div className="overflow-x-auto rounded-sm border border-[#242424] bg-[#161616] font-mono text-xs">
             <table className="w-full text-left">
-              <thead className="bg-slate-950 text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-slate-800">
+              <thead className="bg-[#0A0A0A] text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-[#242424]">
                 <tr>
                   <th className="py-3 px-4">Constraint</th>
                   <th className="py-3 px-4">Configured Value</th>
                   <th className="py-3 px-4">FMCSA Regulatory Reference</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 text-slate-300">
+              <tbody className="divide-y divide-[#242424] text-slate-300">
                 <tr>
                   <td className="py-3 px-4 font-bold text-white">Average Travel Speed</td>
-                  <td className="py-3 px-4 text-blue-400">~60 MPH (0.01667 h/mile)</td>
+                  <td className="py-3 px-4 text-[#6677E3]">~60 MPH (0.01667 h/mile)</td>
                   <td className="py-3 px-4 text-slate-500">Commercial Standard Estimate</td>
                 </tr>
                 <tr>
@@ -328,14 +328,14 @@ export const AboutRulesPage: React.FC = () => {
         </div>
 
         {/* Automated Test Suite Verification Panel */}
-        <div className="uc-glass-card rounded-2xl p-6 md:p-8 space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
+        <div className="uc-card-stark p-6 md:p-8 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#242424]">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono font-bold tracking-wider border border-emerald-500/25 mb-1">
-                <CheckCircle2 className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161616] text-emerald-400 text-xs font-mono font-bold tracking-wider border border-[#242424] mb-1">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Automated Mathematical Test Harness</span>
               </div>
-              <h2 className="text-xl font-bold text-white font-display">
+              <h2 className="text-xl font-bold text-white font-display uppercase">
                 Automated FMCSA Compliance Test Suite (16 Scenarios)
               </h2>
               <p className="text-xs text-slate-400 mt-0.5 font-sans">
@@ -345,7 +345,7 @@ export const AboutRulesPage: React.FC = () => {
 
             <div className="flex items-center gap-3">
               {testSummary && (
-                <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-emerald-400">
+                <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-full bg-[#161616] border border-[#242424] text-emerald-400">
                   {testSummary.passed} / {testSummary.total} PASSED
                 </div>
               )}
@@ -354,7 +354,7 @@ export const AboutRulesPage: React.FC = () => {
                 type="button"
                 onClick={() => fetchAndRunTests(true)}
                 disabled={isRunningTests}
-                className="btn-electric-primary px-4 py-2 text-xs font-bold inline-flex items-center gap-2 cursor-pointer font-mono"
+                className="btn-uc-solid px-4 py-2 text-xs font-bold inline-flex items-center gap-2 cursor-pointer font-mono"
               >
                 {isRunningTests ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -371,7 +371,7 @@ export const AboutRulesPage: React.FC = () => {
             {filteredTests.map((t, idx) => (
               <div
                 key={t.id}
-                className="p-4 rounded-xl border border-slate-800 bg-slate-900/90 space-y-2 hover:border-slate-700 transition-colors"
+                className="p-4 rounded-sm border border-[#242424] bg-[#161616] space-y-2 hover:border-[#374151] transition-colors"
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-bold text-white font-display text-sm">
@@ -380,8 +380,8 @@ export const AboutRulesPage: React.FC = () => {
                   <span
                     className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                       t.passed
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                        : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                        ? 'bg-[#0A0A0A] text-emerald-400 border-emerald-500/30'
+                        : 'bg-[#0A0A0A] text-rose-400 border-rose-500/30'
                     }`}
                   >
                     {t.passed ? 'PASSED' : 'FAILED'}
@@ -392,7 +392,7 @@ export const AboutRulesPage: React.FC = () => {
                   {t.notes}
                 </div>
 
-                <div className="pt-2 border-t border-slate-800 flex justify-between text-[10px] text-slate-500">
+                <div className="pt-2 border-t border-[#242424] flex justify-between text-[10px] text-slate-500">
                   <span>Actual: <strong className="text-slate-300">{t.actual}</strong></span>
                   <span className="text-emerald-400 font-semibold">Verified</span>
                 </div>

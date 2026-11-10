@@ -76,11 +76,11 @@ export const CustomCursor: React.FC = () => {
         }}
         animate={{
           scale: isClicking ? 0.75 : isHovered ? 1.6 : 1,
-          borderColor: isHovered ? 'rgba(59, 130, 246, 0.9)' : 'rgba(99, 102, 241, 0.5)',
-          backgroundColor: isHovered ? 'rgba(59, 130, 246, 0.12)' : 'transparent',
+          borderColor: isHovered ? 'rgba(0, 22, 203, 0.9)' : 'rgba(102, 119, 227, 0.4)',
+          backgroundColor: isHovered ? 'rgba(0, 22, 203, 0.15)' : 'transparent',
         }}
         transition={{ duration: 0.15 }}
-        className="fixed w-9 h-9 rounded-full border border-blue-400/60 backdrop-blur-3xs shadow-sm shadow-blue-500/20 pointer-events-none"
+        className="fixed w-9 h-9 rounded-full border border-[#0016CB]/60 pointer-events-none"
       />
 
       {/* Inner Pinpoint Glowing Dot */}
@@ -93,10 +93,10 @@ export const CustomCursor: React.FC = () => {
         }}
         animate={{
           scale: isClicking ? 1.4 : isHovered ? 0.6 : 1,
-          backgroundColor: isHovered ? '#3b82f6' : '#60a5fa',
+          backgroundColor: isHovered ? '#0016CB' : '#6677E3',
         }}
         transition={{ duration: 0.08 }}
-        className="fixed w-2 h-2 rounded-full pointer-events-none shadow-md shadow-blue-400"
+        className="fixed w-2 h-2 rounded-full pointer-events-none shadow-md shadow-[#0016CB]"
       />
     </div>
   );

@@ -270,26 +270,26 @@ export const DashboardPage: React.FC = () => {
         ) : (
           <>
             {/* Active Driver Credentials Card */}
-            <div className="mb-6 p-4 sm:p-5 rounded-2xl uc-glass-card shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="mb-6 p-4 sm:p-5 uc-card-stark flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex items-center gap-3.5">
                 {user?.avatar_url ? (
                   <img
                     src={user.avatar_url}
                     alt={user.name}
-                    className="w-12 h-12 rounded-2xl object-cover border border-blue-500/40 shrink-0 shadow-xs"
+                    className="w-12 h-12 rounded-sm object-cover border border-[#0016CB]/50 shrink-0 shadow-xs"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-base shrink-0 shadow-md shadow-blue-500/30">
+                  <div className="w-12 h-12 rounded-sm bg-[#0016CB] text-white flex items-center justify-center font-black text-base shrink-0 shadow-md">
                     {user?.name?.charAt(0) || 'D'}
                   </div>
                 )}
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-base text-white font-display">
+                    <span className="font-bold text-base text-white font-display uppercase">
                       {user?.name}
                     </span>
-                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1 font-mono">
+                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-[#161616] text-emerald-400 border border-[#242424] flex items-center gap-1 font-mono">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       <span>Authorized {user?.role || 'Driver'}</span>
                     </span>
@@ -301,7 +301,7 @@ export const DashboardPage: React.FC = () => {
                     <span>&bull;</span>
                     <span>Unit: #{user?.truck_number || '101'}</span>
                     <span>&bull;</span>
-                    <span className="text-cyan-400 font-bold">
+                    <span className="text-[#99A9EE] font-bold">
                       Cycle: {Number(user?.current_cycle_used ?? 0).toFixed(1)}h / 70.0h
                     </span>
                   </div>
@@ -312,7 +312,7 @@ export const DashboardPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => logout()}
-                  className="px-3.5 py-2 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold cursor-pointer transition-all flex items-center gap-1.5 font-mono"
+                  className="btn-uc-pill px-4 py-2 text-xs font-mono font-bold cursor-pointer transition-all flex items-center gap-1.5"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>Switch Driver / Sign Out</span>
@@ -341,7 +341,7 @@ export const DashboardPage: React.FC = () => {
                 <HosStatusCard tripData={plannedTrip} />
 
                 {/* Navigation Tabs for Planned Trip */}
-                <div className="uc-glass-card rounded-2xl p-1.5 flex flex-wrap items-center justify-between gap-2">
+                <div className="uc-card-stark p-1.5 flex flex-wrap items-center justify-between gap-2 font-mono">
                   <div className="flex items-center space-x-1">
                     {[
                       { id: 'overview', label: 'Route & Map Telemetry' },
@@ -356,17 +356,17 @@ export const DashboardPage: React.FC = () => {
                           whileHover={{ scale: 1.02, y: -1 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setActiveTab(tab.id as any)}
-                          className={`relative px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer font-display ${
+                          className={`relative px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer font-mono ${
                             isCurrent
-                              ? 'text-white shadow-md shadow-blue-500/25'
-                              : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                              ? 'text-white shadow-md'
+                              : 'text-slate-400 hover:text-white hover:bg-[#161616]'
                           }`}
                         >
                           <span className="relative z-10">{tab.label}</span>
                           {isCurrent && (
                             <motion.div
                               layoutId="activeSubTab"
-                              className="absolute inset-0 btn-electric-primary rounded-xl"
+                              className="absolute inset-0 btn-uc-solid rounded-full"
                               transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                             />
                           )}
@@ -380,7 +380,7 @@ export const DashboardPage: React.FC = () => {
                       whileHover={{ scale: 1.03, y: -1 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={handleDownloadAllLogsPdf}
-                      className="btn-electric-primary px-4 py-2 text-xs font-bold inline-flex items-center space-x-1.5 cursor-pointer font-mono shadow-md shadow-blue-600/30"
+                      className="btn-uc-solid px-4 py-2 text-xs font-bold inline-flex items-center space-x-1.5 cursor-pointer font-mono shadow-md"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download All Logs (PDF)</span>
@@ -402,10 +402,10 @@ export const DashboardPage: React.FC = () => {
                     >
                       {/* Left: Interactive Map */}
                       <div className="lg:col-span-8">
-                        <div className="uc-glass-card rounded-2xl p-4">
+                        <div className="uc-card-stark p-4">
                           <div className="flex items-center justify-between mb-3">
-                            <h3 className="font-bold text-sm text-white flex items-center gap-1.5 font-display">
-                              <MapPin className="w-4 h-4 text-blue-400" />
+                            <h3 className="font-bold text-sm text-white flex items-center gap-1.5 font-display uppercase">
+                              <MapPin className="w-4 h-4 text-[#6677E3]" />
                               <span>Highway Route &amp; Scheduled Stops Map</span>
                             </h3>
                             <span className="text-[11px] text-slate-400 font-mono">
@@ -419,7 +419,7 @@ export const DashboardPage: React.FC = () => {
                             totalDistance={plannedTrip.trip?.distance_miles}
                             drivingHours={plannedTrip.trip?.driving_hours}
                             totalDuration={plannedTrip.trip?.total_duration_hours}
-                            className="h-[520px] w-full rounded-xl overflow-hidden shadow-inner"
+                            className="h-[520px] w-full rounded-sm overflow-hidden"
                             selectedStopId={selectedStop?.id}
                             onSelectStop={setSelectedStop}
                           />
@@ -428,9 +428,9 @@ export const DashboardPage: React.FC = () => {
 
                       {/* Right: Scheduled Stops List */}
                       <div className="lg:col-span-4">
-                        <div className="uc-glass-card rounded-2xl p-4 h-[585px] flex flex-col">
-                          <div className="pb-3 border-b border-slate-800 mb-3">
-                            <h3 className="font-bold text-sm text-white font-display">
+                        <div className="uc-card-stark p-4 h-[585px] flex flex-col">
+                          <div className="pb-3 border-b border-[#242424] mb-3">
+                            <h3 className="font-bold text-sm text-white font-display uppercase">
                               Scheduled Stops Breakdown
                             </h3>
                             <p className="text-[11px] text-slate-400 mt-0.5 font-mono">
@@ -438,7 +438,7 @@ export const DashboardPage: React.FC = () => {
                             </p>
                           </div>
 
-                          <div className="overflow-y-auto space-y-2.5 flex-1 pr-1">
+                          <div className="overflow-y-auto space-y-2.5 flex-1 pr-1 font-mono">
                             {plannedTrip.stops.map((stop, i) => (
                               <motion.div
                                 key={stop.id}
@@ -450,17 +450,17 @@ export const DashboardPage: React.FC = () => {
                                     `${stop.reason} (${stop.duration_hours}h duration) at Mile ${Math.round(stop.distance_from_start_miles)}. HOS Impact: ${stop.hos_impact}`
                                   );
                                 }}
-                                className={`p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                                className={`p-3 rounded-sm border text-xs cursor-pointer transition-all ${
                                   selectedStop?.id === stop.id
-                                    ? 'border-blue-500 bg-blue-950/50 shadow-md shadow-blue-500/20'
-                                    : 'border-slate-800 hover:border-slate-700 bg-slate-900/60'
+                                    ? 'border-[#0016CB] bg-[#161616] shadow-md shadow-[#0016CB]/20'
+                                    : 'border-[#242424] hover:border-[#374151] bg-[#161616]'
                                 }`}
                               >
                                 <div className="flex items-center justify-between gap-1 mb-1">
                                   <span className="font-bold text-white truncate font-display">
                                     {i + 1}. {stop.location.name}
                                   </span>
-                                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-800 border border-slate-700 text-blue-300">
+                                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-sm bg-[#0A0A0A] border border-[#242424] text-[#99A9EE]">
                                     {stop.duration_hours}h
                                   </span>
                                 </div>
@@ -469,9 +469,9 @@ export const DashboardPage: React.FC = () => {
                                   {stop.reason}
                                 </div>
 
-                                <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-slate-800 font-mono">
+                                <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-[#242424] font-mono">
                                   <span>Mile {Math.round(stop.distance_from_start_miles)}</span>
-                                  <span className="font-medium text-cyan-400">{stop.hos_impact}</span>
+                                  <span className="font-medium text-[#6677E3]">{stop.hos_impact}</span>
                                 </div>
                               </motion.div>
                             ))}
@@ -500,10 +500,10 @@ export const DashboardPage: React.FC = () => {
                             whileHover={{ scale: 1.04, y: -1 }}
                             whileTap={{ scale: 0.96 }}
                             onClick={() => setSelectedDayLog(log.day_number)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                               selectedDayLog === log.day_number
-                                ? 'btn-electric-primary shadow-lg shadow-blue-600/30'
-                                : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800 hover:border-slate-700'
+                                ? 'btn-uc-solid shadow-md'
+                                : 'bg-[#161616] border border-[#242424] text-slate-300 hover:border-[#374151]'
                             }`}
                           >
                             Day {log.day_number} ({log.date})

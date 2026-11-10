@@ -34,15 +34,15 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
   };
 
   return (
-    <div className={`uc-glass-card rounded-2xl p-6 sm:p-8 ${className}`}>
+    <div className={`uc-card-stark p-6 sm:p-8 ${className}`}>
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between pb-5 mb-6 border-b border-slate-800 gap-3">
+      <div className="flex flex-wrap items-center justify-between pb-5 mb-6 border-b border-[#242424] gap-3">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono uppercase font-bold tracking-widest mb-1.5">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] border border-[#242424] text-[#99A9EE] text-xs font-mono uppercase font-bold tracking-widest mb-1.5">
             <Clock className="w-3.5 h-3.5" />
             <span>United Carriers Milestone Tracker</span>
           </div>
-          <h3 className="font-bold text-xl text-white font-display flex items-center gap-2">
+          <h3 className="font-bold text-xl text-white font-display flex items-center gap-2 uppercase tracking-tight">
             <span>HOS Duty Schedule &amp; Milestone Timeline</span>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5 font-sans">
@@ -51,14 +51,14 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-slate-900 text-slate-300 border border-slate-700">
+          <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[#161616] text-slate-300 border border-[#242424]">
             {events.length} Events Total
           </span>
         </div>
       </div>
 
       {/* Timeline Milestone Stream */}
-      <div className="relative pl-7 space-y-6 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-blue-600 before:via-cyan-500 before:to-emerald-500">
+      <div className="relative pl-7 space-y-6 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-[#0016CB] before:via-[#3346D7] before:to-emerald-500">
         {events.map((ev, idx) => {
           const start = formatTime(ev.start_time);
           const end = formatTime(ev.end_time);
@@ -74,7 +74,7 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
             >
               {/* Event Icon Pin on the Timeline Line */}
               <div
-                className={`absolute -left-[35px] top-1.5 w-7 h-7 rounded-full border-2 border-slate-900 shadow-md flex items-center justify-center text-white ${getEventColor(
+                className={`absolute -left-[35px] top-1.5 w-7 h-7 rounded-full border-2 border-black shadow-md flex items-center justify-center text-white ${getEventColor(
                   ev.type,
                   ev.status
                 )} group-hover:scale-110 transition-transform`}
@@ -83,7 +83,7 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
               </div>
 
               {/* Event Milestone Card */}
-              <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all text-xs space-y-2 group-hover:shadow-lg group-hover:shadow-blue-500/5">
+              <div className="p-4 rounded-sm bg-[#161616] border border-[#242424] hover:border-[#374151] transition-all text-xs space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-bold text-sm text-white font-display">
@@ -110,7 +110,7 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
                 </div>
 
                 {/* Subtitle & Location */}
-                <div className="flex flex-wrap items-center justify-between gap-3 text-slate-400 pt-2 border-t border-slate-800/80">
+                <div className="flex flex-wrap items-center justify-between gap-3 text-slate-400 pt-2 border-t border-[#242424]">
                   <div className="flex items-center gap-1.5 text-slate-200 font-medium">
                     <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                     <span>{ev.location_name}</span>

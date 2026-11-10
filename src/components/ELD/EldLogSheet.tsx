@@ -68,19 +68,19 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
   };
 
   return (
-    <div className="uc-glass-card rounded-2xl overflow-hidden print:border-none print:shadow-none print:m-0 print:bg-white">
+    <div className="uc-card-stark overflow-hidden print:border-none print:shadow-none print:m-0 print:bg-white">
       {/* Top Action & Duty Hours Bar (hidden in print) */}
-      <div className="bg-[#0B0F19]/90 border-b border-white/10 px-6 py-4 flex flex-wrap items-center justify-between gap-4 print:hidden">
+      <div className="bg-[#0A0A0A] border-b border-[#242424] px-6 py-4 flex flex-wrap items-center justify-between gap-4 print:hidden">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-sm tracking-wide text-white font-display">
+            <span className="font-bold text-sm tracking-wide text-white font-display uppercase">
               DAY {log.day_number} OF {totalDaysInTrip}
             </span>
-            <span className="text-slate-500 font-mono text-xs">|</span>
+            <span className="text-[#374151] font-mono text-xs">|</span>
             <span className="text-slate-300 text-xs font-mono">{log.date}</span>
           </div>
 
-          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-mono font-bold bg-[#161616] text-emerald-400 border border-[#242424]">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
             <span>24.00h Balanced</span>
           </span>
@@ -88,20 +88,20 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
 
         {/* 4 Summary Stat Pills */}
         <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-          <div className="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700 text-slate-300">
-            <span className="text-slate-500 mr-1.5">Off:</span>
+          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-slate-300">
+            <span className="text-slate-500 mr-1.5">OFF:</span>
             <strong className="text-white font-bold">{(log.off_duty_hours ?? 0).toFixed(2)}h</strong>
           </div>
-          <div className="px-2.5 py-1 rounded-lg bg-purple-950/40 border border-purple-800/60 text-purple-300">
-            <span className="text-purple-400 mr-1.5">Sleep:</span>
+          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-purple-300">
+            <span className="text-purple-400 mr-1.5">SLEEP:</span>
             <strong className="text-white font-bold">{(log.sleeper_berth_hours ?? 0).toFixed(2)}h</strong>
           </div>
-          <div className="px-2.5 py-1 rounded-lg bg-blue-950/40 border border-blue-800/60 text-blue-300">
-            <span className="text-blue-400 mr-1.5">Drive:</span>
+          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-blue-300">
+            <span className="text-blue-400 mr-1.5">DRIVE:</span>
             <strong className="text-white font-bold">{(log.driving_hours ?? 0).toFixed(2)}h</strong>
           </div>
-          <div className="px-2.5 py-1 rounded-lg bg-amber-950/40 border border-amber-800/60 text-amber-300">
-            <span className="text-amber-400 mr-1.5">On-Duty:</span>
+          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-amber-300">
+            <span className="text-amber-400 mr-1.5">ON-DUTY:</span>
             <strong className="text-white font-bold">{(log.on_duty_not_driving_hours ?? 0).toFixed(2)}h</strong>
           </div>
         </div>
@@ -112,7 +112,7 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
             whileHover={{ scale: 1.04, y: -1 }}
             whileTap={{ scale: 0.96 }}
             onClick={handlePrint}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-all cursor-pointer font-mono"
+            className="btn-uc-pill px-4 py-2 text-xs cursor-pointer font-mono"
           >
             <Printer className="w-3.5 h-3.5" />
             <span>Print Sheet</span>
@@ -121,7 +121,7 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
             whileHover={{ scale: 1.04, y: -1 }}
             whileTap={{ scale: 0.96 }}
             onClick={handleExportPdf}
-            className="btn-electric-primary px-4 py-1.5 text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer font-mono shadow-md shadow-blue-600/30"
+            className="btn-uc-solid px-4 py-2 text-xs cursor-pointer font-mono"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Download PDF</span>
@@ -130,7 +130,7 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
       </div>
 
       {/* The FMCSA Paper Form (Exact Visual Representation of blank-paper-log.png for Legal DOT Audits) */}
-      <div className="p-4 sm:p-6 bg-slate-950/60">
+      <div className="p-4 sm:p-6 bg-[#000000]">
         <div
           ref={sheetRef}
           id={`eld-sheet-${log.day_number}`}

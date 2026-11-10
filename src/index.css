@@ -288,35 +288,26 @@ h1, h2, h3, h4, .font-display {
   transform: translateY(-1px);
 }
 
-/* United Carriers Signature Glassmorphic Surface */
+/* United Carriers Signature Surface */
 .uc-glass-card {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 
-    0 20px 40px -15px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  background: #0A0A0A;
+  border: 1px solid #242424;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .uc-glass-card:hover {
-  border-color: rgba(0, 82, 255, 0.4);
+  border-color: #374151;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.8),
-    0 0 30px -5px rgba(0, 82, 255, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 25px 50px -12px rgba(0, 0, 0, 0.95),
+    0 0 30px -5px rgba(0, 22, 203, 0.25);
 }
 
 /* Light / subtle glass card */
 .glass-panel-3d {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 
-    0 15px 35px -10px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: #0A0A0A;
+  border: 1px solid #242424;
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.8);
 }
 
 /* Electric Blue Action Button with Radial Hover Shimmer */
@@ -369,7 +360,7 @@ h1, h2, h3, h4, .font-display {
 
 /* Leaflet Dark Customization */
 .leaflet-container {
-  background: #0B0F19 !important;
+  background: #000000 !important;
   font-family: var(--font-sans) !important;
 }
 
@@ -378,25 +369,24 @@ h1, h2, h3, h4, .font-display {
 }
 
 .leaflet-popup-content-wrapper {
-  background: rgba(11, 15, 25, 0.95) !important;
-  backdrop-filter: blur(12px) !important;
+  background: #0A0A0A !important;
   color: #FFFFFF !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid #242424 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important;
 }
 
 .leaflet-popup-tip {
-  background: rgba(11, 15, 25, 0.95) !important;
+  background: #0A0A0A !important;
 }
 
 .leaflet-control-zoom a {
-  background: rgba(15, 23, 42, 0.9) !important;
+  background: #161616 !important;
   color: #FFFFFF !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  border-color: #242424 !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: #0052FF !important;
+  background: #0016CB !important;
   color: #FFFFFF !important;
 }

@@ -17,15 +17,15 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({
   const compliant = violations.length === 0;
 
   return (
-    <div className={`uc-glass-card rounded-2xl p-6 sm:p-8 ${className}`}>
+    <div className={`uc-card-stark p-6 sm:p-8 ${className}`}>
       {/* Header with status badge */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b border-[#242424]">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono uppercase font-bold tracking-widest mb-1.5">
-            <ShieldCheck className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] border border-[#242424] text-[#99A9EE] text-xs font-mono uppercase font-bold tracking-widest mb-1.5">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#6677E3]" />
             <span>FMCSA CFR Part 395 Standard Audit</span>
           </div>
-          <h3 className="font-bold text-xl text-white font-display flex items-center gap-2">
+          <h3 className="font-bold text-xl text-white font-display flex items-center gap-2 uppercase tracking-tight">
             <span>FMCSA HOS Compliance Verification Audit</span>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5 font-sans">
@@ -35,10 +35,10 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({
 
         <motion.div
           whileHover={{ scale: 1.05 }}
-          className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider shadow-md ${
+          className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider ${
             compliant
-              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 shadow-emerald-500/10'
-              : 'bg-rose-500/15 text-rose-400 border border-rose-500/40 shadow-rose-500/10'
+              ? 'bg-[#161616] text-emerald-400 border border-emerald-500/40'
+              : 'bg-[#161616] text-rose-400 border border-rose-500/40'
           }`}
         >
           {compliant ? (
@@ -66,7 +66,7 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({
             {violations.map((violation, i) => (
               <div
                 key={`violation-${i}`}
-                className="p-3.5 bg-rose-950/40 border border-rose-800/80 rounded-xl text-xs text-rose-200"
+                className="p-3.5 bg-rose-950/40 border border-rose-800/80 rounded-sm text-xs text-rose-200"
               >
                 <div className="font-bold text-white flex items-center gap-1.5 font-display">
                   <XCircle className="w-3.5 h-3.5 text-rose-400" />
@@ -91,9 +91,9 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({
             key={check.id || `check-${i}`}
             whileHover={{ y: -2, scale: 1.01 }}
             transition={{ duration: 0.2 }}
-            className={`p-4 rounded-xl border transition-all ${
+            className={`p-4 rounded-sm border transition-all ${
               check.passed
-                ? 'bg-slate-900/80 border-slate-800 hover:border-emerald-500/40 hover:bg-slate-900'
+                ? 'bg-[#161616] border-[#242424] hover:border-[#374151]'
                 : 'bg-rose-950/40 border-rose-800/80'
             }`}
           >
