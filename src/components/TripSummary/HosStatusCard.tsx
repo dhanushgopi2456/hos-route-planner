@@ -66,23 +66,21 @@ const RadialClockGauge: React.FC<RadialGaugeProps> = ({
   const strokeDashoffset = circumference - (clampedPercent / 100) * circumference;
 
   return (
-    <motion.div
-      whileHover={{ y: -3, scale: 1.015 }}
-      transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-      className="p-4 rounded-xl bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200/90 shadow-sm hover:border-[#0016CB]/60 dark:hover:border-[#3346D7]/60 transition-all flex flex-col justify-between"
+    <div
+      className="p-4 rounded-lg bg-[#141415] border border-[#232325] transition-colors flex flex-col justify-between"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div>
-          <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+          <div className="flex items-center gap-1.5 text-xs font-mono font-medium text-[#ededed]">
             {icon}
             <span>{title}</span>
           </div>
-          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 block">
+          <span className="text-[10px] font-mono text-[#85858b] mt-0.5 block">
             {subtitle}
           </span>
         </div>
 
-        <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>
+        <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${badgeColor}`}>
           {badge}
         </span>
       </div>
@@ -99,7 +97,7 @@ const RadialClockGauge: React.FC<RadialGaugeProps> = ({
               stroke="currentColor"
               strokeWidth={strokeWidth}
               fill="transparent"
-              className="text-slate-200 dark:text-slate-800"
+              className="text-[#232325]"
             />
             {/* Animated Progress Ring */}
             <motion.circle
@@ -118,7 +116,7 @@ const RadialClockGauge: React.FC<RadialGaugeProps> = ({
           </svg>
           {/* Centered Percentage */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-xs font-black font-mono text-slate-900 dark:text-white leading-none">
+            <span className="text-xs font-medium font-mono text-white leading-none tabular-nums">
               {Math.round(clampedPercent)}%
             </span>
           </div>
@@ -126,14 +124,14 @@ const RadialClockGauge: React.FC<RadialGaugeProps> = ({
 
         {/* Value and Limit Readout */}
         <div className="flex-1 min-w-0">
-          <div className="text-lg font-black font-mono text-slate-900 dark:text-white leading-tight">
+          <div className="text-base font-semibold font-mono text-white leading-tight tabular-nums">
             {valueStr}
           </div>
-          <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
-            Limit: <span className="font-bold text-slate-700 dark:text-slate-300">{limitStr}</span>
+          <div className="text-[11px] font-mono text-[#85858b] mt-0.5 tabular-nums">
+            Limit: <span className="text-[#ededed] font-medium">{limitStr}</span>
           </div>
           {/* Linear Mini Bar */}
-          <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+          <div className="w-full bg-[#232325] h-1.5 rounded-full overflow-hidden mt-2">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${clampedPercent}%` }}
@@ -144,7 +142,7 @@ const RadialClockGauge: React.FC<RadialGaugeProps> = ({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -182,87 +180,76 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
   const duty14Percent = Math.min(100, (currentDutyWindow / 14) * 100);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      className={`uc-card-stark p-6 sm:p-7 relative overflow-hidden ${className}`}
+    <div
+      className={`rounded-xl bg-[#19191b] border border-[#232325] p-5 sm:p-6 text-[#ededed] ${className}`}
     >
       {/* Top Header Metrics Row with Count-Up Tickers */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 mb-6 border-b border-slate-200 dark:border-[#242424]">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pb-5 mb-5 border-b border-[#232325]">
         {/* Metric 1: Distance */}
-        <motion.div
-          whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200 rounded-xl relative overflow-hidden group shadow-sm transition-all"
+        <div
+          className="p-3.5 bg-[#141415] border border-[#232325] rounded-lg"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-[#0016CB] opacity-80 group-hover:opacity-100 transition-opacity" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block font-mono">
-            Total Distance
+          <span className="text-[11px] font-mono text-[#85858b] block">
+            Total distance
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono mt-1 tabular-nums">
+          <div className="text-xl sm:text-2xl font-semibold text-white font-mono mt-0.5 tabular-nums">
             {animatedDistance.toFixed(0)}{' '}
-            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">mi</span>
+            <span className="text-xs font-normal text-[#85858b]">mi</span>
           </div>
-          <span className="text-[11px] text-[#0016CB] dark:text-[#6677E3] font-mono mt-1 block font-semibold">
+          <span className="text-[10px] text-blue-400 font-mono mt-0.5 block">
             OSRM road network
           </span>
-        </motion.div>
+        </div>
 
         {/* Metric 2: Driving Time */}
-        <motion.div
-          whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#0016CB]/40 rounded-xl relative overflow-hidden group shadow-sm transition-all"
+        <div
+          className="p-3.5 bg-[#141415] border border-[#232325] rounded-lg"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-[#0016CB] opacity-100" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#0016CB] dark:text-[#99A9EE] block font-mono">
-            Driving Time
+          <span className="text-[11px] font-mono text-[#85858b] block">
+            Driving time
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono mt-1 tabular-nums">
+          <div className="text-xl sm:text-2xl font-semibold text-white font-mono mt-0.5 tabular-nums">
             {animatedDriveHours.toFixed(1)}{' '}
-            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">hrs</span>
+            <span className="text-xs font-normal text-[#85858b]">hrs</span>
           </div>
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1 block">
+          <span className="text-[10px] text-[#85858b] font-mono mt-0.5 block">
             @ avg ~60 mph
           </span>
-        </motion.div>
+        </div>
 
         {/* Metric 3: Elapsed Trip Duration */}
-        <motion.div
-          whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200 rounded-xl relative overflow-hidden group shadow-sm transition-all"
+        <div
+          className="p-3.5 bg-[#141415] border border-[#232325] rounded-lg"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-[#3346D7] opacity-80 group-hover:opacity-100 transition-opacity" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block font-mono">
-            Elapsed Trip Duration
+          <span className="text-[11px] font-mono text-[#85858b] block">
+            Elapsed duration
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono mt-1 tabular-nums">
+          <div className="text-xl sm:text-2xl font-semibold text-white font-mono mt-0.5 tabular-nums">
             {animatedDuration.toFixed(1)}{' '}
-            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">hrs</span>
+            <span className="text-xs font-normal text-[#85858b]">hrs</span>
           </div>
-          <span className="text-[11px] text-[#0016CB] dark:text-[#6677E3] font-mono mt-1 block font-semibold">
+          <span className="text-[10px] text-blue-400 font-mono mt-0.5 block">
             Inc. stops &amp; sleep
           </span>
-        </motion.div>
+        </div>
 
         {/* Metric 4: ELD Daily Logs */}
-        <motion.div
-          whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200 rounded-xl relative overflow-hidden group shadow-sm transition-all"
+        <div
+          className="p-3.5 bg-[#141415] border border-[#232325] rounded-lg"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-emerald-500 opacity-90" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block font-mono">
-            ELD Daily Logs
+          <span className="text-[11px] font-mono text-[#85858b] block">
+            ELD daily logs
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 tabular-nums">
+          <div className="text-xl sm:text-2xl font-semibold text-emerald-400 font-mono mt-0.5 tabular-nums">
             {Math.round(animatedLogs)}{' '}
-            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-normal text-[#85858b]">
               {dailyLogsCount === 1 ? 'day' : 'days'}
             </span>
           </div>
-          <span className="text-[11px] text-emerald-600/90 dark:text-emerald-400/90 font-mono mt-1 block font-semibold">
+          <span className="text-[10px] text-emerald-400 font-mono mt-0.5 block">
             24.00h balanced RODS
           </span>
-        </motion.div>
+        </div>
       </div>
 
       {/* 4 HOS Regulatory Clock Gauges with SVG Circular Progress Rings */}
@@ -325,33 +312,33 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
       </div>
 
       {/* Stop Summary Pills Strip */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-[#242424]">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#232325]">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mr-1 uppercase font-bold">
-            Stops Scheduled:
+          <span className="text-[11px] font-mono text-[#85858b] mr-1">
+            Stops scheduled:
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616]/80 dark:bg-[#161616]/80 bg-slate-100 text-amber-600 dark:text-amber-300 border border-amber-500/20">
-            <Fuel className="w-3.5 h-3.5 text-amber-500" />
-            <span>{fuelStopsCount} Fuel Stop{fuelStopsCount !== 1 ? 's' : ''}</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-[#141415] text-amber-300 border border-amber-500/20">
+            <Fuel className="w-3.5 h-3.5 text-amber-400" />
+            <span>{fuelStopsCount} fuel stop{fuelStopsCount !== 1 ? 's' : ''}</span>
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616]/80 dark:bg-[#161616]/80 bg-slate-100 text-purple-600 dark:text-purple-300 border border-purple-500/20">
-            <Moon className="w-3.5 h-3.5 text-purple-500" />
-            <span>{sleeperStopsCount} 10h Sleeper Reset{sleeperStopsCount !== 1 ? 's' : ''}</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-[#141415] text-blue-300 border border-blue-500/20">
+            <Moon className="w-3.5 h-3.5 text-blue-400" />
+            <span>{sleeperStopsCount} 10h sleeper reset{sleeperStopsCount !== 1 ? 's' : ''}</span>
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616]/80 dark:bg-[#161616]/80 bg-slate-100 text-blue-600 dark:text-blue-300 border border-blue-500/20">
-            <Coffee className="w-3.5 h-3.5 text-blue-500" />
-            <span>{breakStopsCount} 30-Min Rest Break{breakStopsCount !== 1 ? 's' : ''}</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono bg-[#141415] text-[#ededed] border border-[#232325]">
+            <Coffee className="w-3.5 h-3.5 text-blue-400" />
+            <span>{breakStopsCount} 30-min rest break{breakStopsCount !== 1 ? 's' : ''}</span>
           </span>
         </div>
 
-        <div className="text-xs font-mono flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span className="text-emerald-600 dark:text-emerald-400 font-bold">100% FMCSA Compliant</span>
+        <div className="text-xs font-mono flex items-center gap-1.5">
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span className="text-emerald-400 font-medium">100% FMCSA compliant</span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };

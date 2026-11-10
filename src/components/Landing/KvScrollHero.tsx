@@ -5,7 +5,7 @@ interface KvScrollHeroProps {
 }
 
 const VIDEO_DURATION = 4.04;
-const A_VIEWPORTS = 2.4;
+const A_VIEWPORTS = 1.8;
 const VIDEO_ASPECT = 1920 / 1080;
 
 interface ServiceCardData {
@@ -114,9 +114,9 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
   const stateRef = useRef({
     vw: typeof window !== 'undefined' ? window.innerWidth : 1440,
     vh: typeof window !== 'undefined' ? window.innerHeight : 960,
-    bViewports: 2.0,
-    trackHeight: 3000,
-    stripWidth: 2000,
+    bViewports: 1.8,
+    trackHeight: 4000,
+    stripWidth: 2200,
     lettersWidth: 1600,
     edgePx: 0,
     videoTop: 0,
@@ -127,7 +127,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     lastTime: performance.now(),
     smoothedSpeed: 0,
     isSeeking: false,
-    pendingSeek: null as number | null,
+    lastSeekTimestamp: 0,
     rafId: 0,
   });
 
@@ -195,7 +195,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     s.videoTop = videoTop;
     s.videoH = videoH;
 
-    // Dynamic ground line: 82.9% (0.829) until 3.1s, rising to 44.8% (0.448) by 3.75s
+    // Dynamic ground line: 82.9% until 3.1s, rising to 44.8% by 3.75s
     let groundFrac = 0.829;
     if (s.curTime > 3.1 && s.curTime < 3.75) {
       const p = (s.curTime - 3.1) / (3.75 - 3.1);
@@ -210,7 +210,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     if (groundBand) {
       groundBand.style.top = `${s.edgePx}px`;
       groundBand.style.bottom = '0px';
-      groundBand.style.height = `${Math.max(0, s.vh - s.edgePx)}px`;
+      groundBand.style.height = `${Math.max(0, s.vh - s.edgePx + 2)}px`;
     }
     if (sceneBgBlack) {
       sceneBgBlack.style.top = `${s.edgePx}px`;
@@ -220,15 +220,15 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     if (strip && strip.scrollWidth > 0) {
       s.stripWidth = strip.scrollWidth;
     } else {
-      s.stripWidth = Math.max(s.stripWidth, 2.5 * s.vw);
+      s.stripWidth = Math.max(s.stripWidth, 2.4 * s.vw);
     }
     if (giantLetters && giantLetters.scrollWidth > 0) {
       s.lettersWidth = giantLetters.scrollWidth;
     } else {
-      s.lettersWidth = Math.max(s.lettersWidth, 1.6 * s.vw);
+      s.lettersWidth = Math.max(s.lettersWidth, 1.5 * s.vw);
     }
 
-    s.bViewports = ((s.stripWidth + 0.45 * s.vw) / s.vw) * 1.1;
+    s.bViewports = ((s.stripWidth + 0.45 * s.vw) / s.vw) * 1.0;
     s.trackHeight = (1 + A_VIEWPORTS + s.bViewports) * s.vh;
 
     if (track) {
@@ -249,7 +249,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
       const titleEl = card.querySelector('.kv-card-title') as HTMLElement | null;
       const bodyEl = card.querySelector('.kv-card-body') as HTMLElement | null;
 
-      const grad = `linear-gradient(90deg, #ffffff 0%, #ffffff ${sProgress - 34}%, #2f63ff ${sProgress - 6}%, rgba(255,255,255,0) ${sProgress + 26}%)`;
+      const grad = `linear-gradient(90deg, #ffffff 0%, #ffffff ${sProgress - 34}%, #2563EB ${sProgress - 6}%, rgba(255,255,255,0.7) ${sProgress + 26}%)`;
       if (titleEl) titleEl.style.backgroundImage = grad;
       if (bodyEl) bodyEl.style.backgroundImage = grad;
     });
@@ -260,20 +260,28 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     const s = stateRef.current;
     if (!video || isNaN(target)) return;
 
+    const clampedTarget = Math.max(0, Math.min(VIDEO_DURATION - 0.04, target));
+    const now = performance.now();
+
+    // Reset seek lock if watchdog timed out (> 90ms)
+    if (s.isSeeking && now - s.lastSeekTimestamp > 90) {
+      s.isSeeking = false;
+    }
+
     if (!s.isSeeking) {
-      if (Math.abs(video.currentTime - target) > 1 / 60) {
+      if (Math.abs(video.currentTime - clampedTarget) > 0.03) {
+        s.isSeeking = true;
+        s.lastSeekTimestamp = now;
         try {
           if (typeof (video as any).fastSeek === 'function') {
-            (video as any).fastSeek(target);
+            (video as any).fastSeek(clampedTarget);
           } else {
-            video.currentTime = target;
+            video.currentTime = clampedTarget;
           }
         } catch {
-          video.currentTime = target;
+          video.currentTime = clampedTarget;
         }
       }
-    } else {
-      s.pendingSeek = target;
     }
   }, []);
 
@@ -283,39 +291,38 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
 
     const onSeeking = () => {
       s.isSeeking = true;
+      s.lastSeekTimestamp = performance.now();
     };
 
     const onSeeked = () => {
       s.isSeeking = false;
-      if (s.pendingSeek !== null) {
-        const next = s.pendingSeek;
-        s.pendingSeek = null;
-        if (video && Math.abs(video.currentTime - next) > 1 / 60) {
-          try {
-            if (typeof (video as any).fastSeek === 'function') {
-              (video as any).fastSeek(next);
-            } else {
-              video.currentTime = next;
-            }
-          } catch {
-            video.currentTime = next;
-          }
-        }
-      }
     };
 
     if (video) {
       video.addEventListener('seeking', onSeeking);
       video.addEventListener('seeked', onSeeked);
+
+      // Warm up hardware video decoder
+      video.muted = true;
+      video.playsInline = true;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            video.pause();
+            video.currentTime = 0.001;
+            computeLayout();
+          })
+          .catch(() => {
+            // Autoplay permitted due to muted
+          });
+      }
+
       const handleReady = () => {
-        applyVideoSeek(0);
         computeLayout();
       };
       video.addEventListener('loadedmetadata', handleReady);
       video.addEventListener('canplay', handleReady, { once: true });
-      if (video.readyState >= 1) {
-        handleReady();
-      }
     }
 
     if (typeof document !== 'undefined' && 'fonts' in document) {
@@ -343,7 +350,6 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
       s.lastTime = now;
 
       // Track relative scroll position:
-      // Uses getBoundingClientRect for 100% resilient viewport-relative scrolling
       let relScroll = 0;
       if (trackRef.current) {
         const rect = trackRef.current.getBoundingClientRect();
@@ -354,10 +360,11 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
       const maxTime = Math.max(0, VIDEO_DURATION - 1 / 48);
       s.targetTime = q * maxTime;
 
-      s.curTime += (s.targetTime - s.curTime) * 0.2;
+      // Smooth seek interpolation
+      s.curTime += (s.targetTime - s.curTime) * 0.25;
       applyVideoSeek(s.curTime);
 
-      // Update dynamic ground edge as video scrubs (ground line rises from 82.9% to 44.8%)
+      // Dynamic ground line
       let groundFrac = 0.829;
       if (s.curTime > 3.1 && s.curTime < 3.75) {
         const p = (s.curTime - 3.1) / (3.75 - 3.1);
@@ -372,7 +379,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
         if (groundBandRef.current) {
           groundBandRef.current.style.top = `${s.edgePx}px`;
           groundBandRef.current.style.bottom = '0px';
-          groundBandRef.current.style.height = `${Math.max(0, s.vh - s.edgePx)}px`;
+          groundBandRef.current.style.height = `${Math.max(0, s.vh - s.edgePx + 2)}px`;
         }
         if (sceneBgBlackRef.current) {
           sceneBgBlackRef.current.style.top = `${s.edgePx}px`;
@@ -380,11 +387,12 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
         }
       }
 
-      const isSettled = q >= 0.94;
+      const isSettled = q >= 0.85;
       setSettled(isSettled);
       document.documentElement.style.setProperty('--ph', isSettled ? '1' : '0');
 
-      const r = Math.min(1, Math.max(0, (relScroll - A_VIEWPORTS * s.vh) / (s.bViewports * s.vh)));
+      // Card strip scrolls in synchronized with Phase B
+      const r = Math.min(1, Math.max(0, (relScroll - A_VIEWPORTS * s.vh * 0.8) / (s.bViewports * s.vh)));
 
       const stripX = s.vw - r * (s.stripWidth + 0.45 * s.vw);
       if (stripRef.current) {
@@ -406,31 +414,6 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     computeLayout();
     s.rafId = requestAnimationFrame(onFrame);
 
-    // Support Recorder mode (?rec=1)
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('rec') === '1') {
-        (window as unknown as { __recTime: (vid: HTMLVideoElement, t: number) => number }).__recTime = (vid: HTMLVideoElement, t: number) => {
-          const totalDur = 11.0;
-          const pNorm = Math.min(1, Math.max(0, t / totalDur));
-          let prog = 0;
-          if (pNorm <= 0.04) {
-            prog = 0;
-          } else if (pNorm >= 0.96) {
-            prog = 1;
-          } else {
-            const u = (pNorm - 0.04) / 0.92;
-            prog = u * u * (3 - 2 * u);
-          }
-          const targetScrollY = prog * (s.trackHeight - s.vh);
-          window.scrollTo(0, targetScrollY);
-          const scriptedSpeed = Math.round(prog > 0.05 && prog < 0.95 ? 42 + Math.sin(prog * Math.PI) * 28 : 0);
-          setSpeedText(`${String(scriptedSpeed).padStart(2, '0')} KM/H`);
-          return vid.currentTime;
-        };
-      }
-    }
-
     const onResize = () => {
       computeLayout();
     };
@@ -451,9 +434,9 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     <div
       ref={trackRef}
       id="crane-sequence"
-      className="relative w-full bg-white select-none overflow-visible"
+      className="relative w-full bg-[#111111] select-none overflow-visible"
       style={{
-        // Define fluid unit: u = min(100vw/1440, 100vh/960)
+        minHeight: '380vh',
         '--u': 'min(100vw / 1440, 100vh / 960)',
       } as React.CSSProperties}
     >
@@ -485,7 +468,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
           />
         </video>
 
-        {/* Giant letters "OUR SERVICES" in Anton with mix-blend-mode: darken */}
+        {/* Giant letters "OUR SERVICES" with mix-blend-mode: darken */}
         <div
           ref={giantLettersRef}
           className="absolute top-0 left-0 font-['Anton',sans-serif] text-[#e9e9e9] whitespace-nowrap z-[2] pointer-events-none select-none will-change-transform"
@@ -517,6 +500,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
         <div
           ref={groundBandRef}
           className="absolute left-0 right-0 w-full bottom-0 bg-[#111111] z-[3] overflow-hidden"
+          style={{ minHeight: '180px' }}
         >
           {/* Horizontal Sliding Strip */}
           <div
@@ -538,11 +522,11 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
               >
                 EVERYTHING YOUR<br />
                 FREIGHT NEEDS.<br />
-                <span className="text-[#2f63ff] block">UNDER ONE GROUP.</span>
+                <span className="text-[#2563EB] block">UNDER ONE GROUP.</span>
               </h2>
 
               <div
-                className="flex flex-col font-['Archivo',sans-serif] text-white/60 leading-relaxed whitespace-normal"
+                className="flex flex-col font-['Archivo',sans-serif] text-white/70 leading-relaxed whitespace-normal"
                 style={{
                   width: 'calc(250 * var(--u))',
                   gap: 'calc(14 * var(--u))',
@@ -576,7 +560,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
               >
                 {/* Micro Badge */}
                 <span
-                  className="font-['Archivo',sans-serif] text-[#2f63ff] tracking-widest uppercase font-semibold block"
+                  className="font-['Archivo',sans-serif] text-[#2563EB] tracking-widest uppercase font-semibold block"
                   style={{ fontSize: 'calc(8.5 * var(--u))' }}
                 >
                   {card.badge}
@@ -584,7 +568,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
 
                 {/* 38u Line Icon */}
                 <div
-                  className="transition-transform duration-300 group-hover:scale-110 group-hover:stroke-[#2f63ff]"
+                  className="transition-transform duration-300 group-hover:scale-110 group-hover:stroke-[#2563EB]"
                   style={{
                     width: 'calc(38 * var(--u))',
                     height: 'calc(38 * var(--u))',
@@ -593,52 +577,36 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
                   {card.icon}
                 </div>
 
-                {/* Title with cobalt shimmer text gradient */}
+                {/* Title */}
                 <h3
-                  className="kv-card-title font-['Anton',sans-serif] uppercase tracking-wide leading-tight bg-clip-text text-transparent"
+                  className="kv-card-title font-['Anton',sans-serif] uppercase tracking-wide leading-tight text-white"
                   style={{
                     fontSize: 'calc(26 * var(--u))',
-                    backgroundImage: 'linear-gradient(90deg, #ffffff 0%, #2f63ff 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
+                    whiteSpace: 'pre-line',
                   }}
                 >
-                  {card.title.split('\n').map((line, lIdx) => (
-                    <span key={lIdx} className="block">{line}</span>
-                  ))}
+                  {card.title}
                 </h3>
 
-                {/* Body with cobalt shimmer text gradient */}
+                {/* Body */}
                 <p
-                  className="kv-card-body font-['Archivo',sans-serif] text-sm leading-relaxed bg-clip-text text-transparent"
+                  className="kv-card-body font-['Archivo',sans-serif] text-white/70 leading-relaxed"
                   style={{
                     fontSize: 'calc(12.4 * var(--u))',
-                    backgroundImage: 'linear-gradient(90deg, #ffffff 0%, #2f63ff 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
                   }}
                 >
                   {card.body}
                 </p>
-
-                {/* Action Trigger Arrow */}
-                <div
-                  className="inline-flex items-center gap-1.5 font-['Archivo',sans-serif] text-[#2f63ff] group-hover:text-white transition-colors uppercase tracking-widest font-medium"
-                  style={{ fontSize: 'calc(9.5 * var(--u))' }}
-                >
-                  <span>Plan Route</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-                </div>
               </div>
             ))}
           </div>
 
-          {/* Centered Outline Pill "Our services" */}
+          {/* Outline pill "Our services" centred 36u from bottom */}
           <button
             type="button"
-            onClick={() => onLaunchPlanner?.(true, 'summary')}
-            className={`absolute left-1/2 -translate-x-1/2 font-['Archivo',sans-serif] font-medium uppercase tracking-widest text-white border border-white/30 rounded-full transition-all duration-300 hover:border-[#2f63ff] hover:bg-[#2f63ff]/15 z-10 cursor-pointer ${
-              settled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            onClick={() => onLaunchPlanner?.(true, 'features')}
+            className={`absolute left-1/2 -translate-x-1/2 font-['Archivo',sans-serif] font-medium uppercase tracking-widest text-white border border-white/30 rounded-md transition-all duration-300 hover:border-[#2563EB] hover:bg-[#2563EB]/15 z-10 cursor-pointer ${
+              settled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'
             }`}
             style={{
               bottom: 'calc(36 * var(--u))',
@@ -649,12 +617,12 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
             Our services
           </button>
 
-          {/* Direct CTA pill to Launch Planner */}
+          {/* Floating Bridge back to HOS Route Planner */}
           <button
             type="button"
             onClick={() => onLaunchPlanner?.(false)}
-            className={`absolute font-['Archivo',sans-serif] font-medium uppercase tracking-widest text-[#2f63ff] border border-[#2f63ff]/40 bg-[#111111]/80 rounded-full transition-all duration-300 hover:bg-[#2f63ff] hover:text-white z-10 cursor-pointer ${
-              settled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            className={`absolute font-['Archivo',sans-serif] font-medium uppercase tracking-widest text-[#2563EB] border border-[#2563EB]/40 bg-[#111111]/90 rounded-md transition-all duration-300 hover:bg-[#2563EB] hover:text-white z-10 cursor-pointer ${
+              settled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'
             }`}
             style={{
               bottom: 'calc(36 * var(--u))',
@@ -663,7 +631,7 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
               padding: 'calc(8 * var(--u)) calc(20 * var(--u))',
             }}
           >
-            Launch HOS Engine →
+            Launch planner →
           </button>
         </div>
       </div>

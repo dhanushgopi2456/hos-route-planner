@@ -144,125 +144,113 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
         <div className="flex flex-wrap items-center gap-3">
           {/* Prev Day Button */}
           {onPrevDay && (
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               disabled={!canPrevDay}
               onClick={onPrevDay}
-              className={`p-1.5 rounded-full border text-xs flex items-center justify-center transition-all ${
+              className={`p-1.5 rounded-md border text-xs flex items-center justify-center transition-colors ${
                 canPrevDay
-                  ? 'bg-[#161616] border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
-                  : 'bg-transparent border-[#242424]/40 text-slate-600 cursor-not-allowed'
+                  ? 'bg-[#19191b] border-[#232325] text-[#a1a1a6] hover:text-white hover:border-[#2e2e32] cursor-pointer'
+                  : 'bg-transparent border-[#232325]/40 text-[#85858b]/40 cursor-not-allowed'
               }`}
               title="Previous Calendar Day"
             >
               <ChevronLeft className="w-4 h-4" />
-            </motion.button>
+            </button>
           )}
 
           <div className="flex items-center gap-2">
-            <span className="font-bold text-sm tracking-wide text-white font-display uppercase">
-              DAY {log.day_number} OF {totalDaysInTrip}
+            <span className="font-medium text-xs sm:text-sm text-white font-mono">
+              Day {log.day_number} of {totalDaysInTrip}
             </span>
-            <span className="text-[#374151] font-mono text-xs">|</span>
-            <span className="text-slate-300 text-xs font-mono">{log.date}</span>
+            <span className="text-[#232325] font-mono text-xs">|</span>
+            <span className="text-[#a1a1a6] text-xs font-mono">{log.date}</span>
           </div>
 
           {/* Next Day Button */}
           {onNextDay && (
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
               disabled={!canNextDay}
               onClick={onNextDay}
-              className={`p-1.5 rounded-full border text-xs flex items-center justify-center transition-all ${
+              className={`p-1.5 rounded-md border text-xs flex items-center justify-center transition-colors ${
                 canNextDay
-                  ? 'bg-[#161616] border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
-                  : 'bg-transparent border-[#242424]/40 text-slate-600 cursor-not-allowed'
+                  ? 'bg-[#19191b] border-[#232325] text-[#a1a1a6] hover:text-white hover:border-[#2e2e32] cursor-pointer'
+                  : 'bg-transparent border-[#232325]/40 text-[#85858b]/40 cursor-not-allowed'
               }`}
               title="Next Calendar Day"
             >
               <ChevronRight className="w-4 h-4" />
-            </motion.button>
+            </button>
           )}
 
-          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-mono font-bold bg-[#161616] text-emerald-400 border border-[#242424]">
+          <span className="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-md font-mono font-medium bg-[#141415] text-emerald-400 border border-emerald-500/20">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>24.00h Balanced</span>
+            <span>24.00h balanced</span>
           </span>
         </div>
 
         {/* 4 Summary Stat Pills */}
-        <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-slate-300">
-            <span className="text-slate-500 mr-1.5">OFF:</span>
-            <strong className="text-white font-bold">{(log.off_duty_hours ?? 0).toFixed(2)}h</strong>
+        <div className="flex flex-wrap items-center gap-2 font-mono text-xs tabular-nums">
+          <div className="px-2.5 py-1 rounded-md bg-[#141415] border border-[#232325] text-[#a1a1a6]">
+            <span className="text-[#85858b] mr-1.5">OFF:</span>
+            <strong className="text-white font-medium">{(log.off_duty_hours ?? 0).toFixed(2)}h</strong>
           </div>
-          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-purple-300">
-            <span className="text-purple-400 mr-1.5">SLEEP:</span>
-            <strong className="text-white font-bold">{(log.sleeper_berth_hours ?? 0).toFixed(2)}h</strong>
+          <div className="px-2.5 py-1 rounded-md bg-[#141415] border border-[#232325] text-[#a1a1a6]">
+            <span className="text-blue-400 mr-1.5">SLEEP:</span>
+            <strong className="text-white font-medium">{(log.sleeper_berth_hours ?? 0).toFixed(2)}h</strong>
           </div>
-          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-blue-300">
+          <div className="px-2.5 py-1 rounded-md bg-[#141415] border border-[#232325] text-[#a1a1a6]">
             <span className="text-blue-400 mr-1.5">DRIVE:</span>
-            <strong className="text-white font-bold">{(log.driving_hours ?? 0).toFixed(2)}h</strong>
+            <strong className="text-white font-medium">{(log.driving_hours ?? 0).toFixed(2)}h</strong>
           </div>
-          <div className="px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424] text-amber-300">
+          <div className="px-2.5 py-1 rounded-md bg-[#141415] border border-[#232325] text-[#a1a1a6]">
             <span className="text-amber-400 mr-1.5">ON-DUTY:</span>
-            <strong className="text-white font-bold">{(log.on_duty_not_driving_hours ?? 0).toFixed(2)}h</strong>
+            <strong className="text-white font-medium">{(log.on_duty_not_driving_hours ?? 0).toFixed(2)}h</strong>
           </div>
         </div>
 
         {/* Action Buttons: Print, PDF, CSV, JSON */}
         <div className="flex items-center space-x-2">
-          <motion.button
+          <button
             type="button"
-            whileHover={{ scale: 1.04, y: -1 }}
-            whileTap={{ scale: 0.96 }}
             onClick={handlePrint}
-            className="btn-uc-pill px-3 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5"
+            className="px-2.5 py-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] border border-[#2e2e32] text-xs font-mono text-[#a1a1a6] hover:text-white cursor-pointer flex items-center gap-1.5 transition-colors"
             title="Print this 24-hour log sheet"
           >
             <Printer className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Print Sheet</span>
-          </motion.button>
+            <span className="hidden sm:inline">Print sheet</span>
+          </button>
 
-          <motion.button
+          <button
             type="button"
-            whileHover={{ scale: 1.04, y: -1 }}
-            whileTap={{ scale: 0.96 }}
             onClick={handleExportCsv}
-            className="btn-uc-pill px-3 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5 text-emerald-400 hover:text-white"
+            className="px-2.5 py-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] border border-[#2e2e32] text-xs font-mono text-[#a1a1a6] hover:text-white cursor-pointer flex items-center gap-1.5 transition-colors"
             title="Download CSV log summary"
           >
             <FileSpreadsheet className="w-3.5 h-3.5" />
             <span>CSV</span>
-          </motion.button>
+          </button>
 
-          <motion.button
+          <button
             type="button"
-            whileHover={{ scale: 1.04, y: -1 }}
-            whileTap={{ scale: 0.96 }}
             onClick={handleExportJson}
-            className="btn-uc-pill px-3 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5 text-cyan-400 hover:text-white"
+            className="px-2.5 py-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] border border-[#2e2e32] text-xs font-mono text-[#a1a1a6] hover:text-white cursor-pointer flex items-center gap-1.5 transition-colors"
             title="Download JSON log file"
           >
             <FileCode className="w-3.5 h-3.5" />
             <span>JSON</span>
-          </motion.button>
+          </button>
 
-          <motion.button
+          <button
             type="button"
-            whileHover={{ scale: 1.04, y: -1 }}
-            whileTap={{ scale: 0.96 }}
             onClick={handleExportPdf}
-            className="btn-uc-solid px-4 py-1.5 text-xs cursor-pointer font-mono flex items-center gap-1.5 shadow-md"
+            className="btn-electric-primary px-3 py-1.5 text-xs font-medium cursor-pointer font-mono flex items-center gap-1.5"
             title="Download audit-proof PDF"
           >
             <Download className="w-3.5 h-3.5" />
             <span>PDF</span>
-          </motion.button>
+          </button>
         </div>
       </div>
 

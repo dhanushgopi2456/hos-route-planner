@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, HelpCircle, Plus } from 'lucide-react';
+import { ChevronDown, HelpCircle } from 'lucide-react';
 
 interface FaqItem {
   question: string;
@@ -28,7 +28,7 @@ export const FaqSection: React.FC = () => {
       question: 'How does the planner calculate commercial fuel stops?',
       answer:
         'Commercial diesel semi-trucks typically have a maximum range between 900 to 1,200 miles on dual 150-gallon tanks. The planner automatically identifies highway points before 1,000 cumulative miles of travel and injects a 30-minute fueling stop (categorized as Off-Duty or On-Duty based on carrier preference), ensuring the truck never runs empty.',
-      fmcsaRef: 'Fleet Efficiency Standard'
+      fmcsaRef: 'Fleet efficiency standard'
     },
     {
       question: 'How are 24-hour daily ELD log sheets generated and split at midnight?',
@@ -49,62 +49,55 @@ export const FaqSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="relative py-28 bg-[#0A0A0A] border-t border-[#242424] text-white">
+    <section id="faq" className="relative py-20 bg-[#0f0f10] border-t border-[#232325] text-[#ededed]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Heading */}
-        <div className="text-center mb-16 space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] border border-[#242424] text-[#99A9EE] text-xs font-semibold uppercase tracking-widest font-mono">
-            <HelpCircle className="w-3.5 h-3.5 text-[#0016CB]" />
-            <span>FMCSA Regulatory Questions &amp; Answers</span>
+        <div className="max-w-2xl mb-12 space-y-2.5">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-[#141415] border border-[#232325] text-blue-400 text-xs font-mono">
+            <HelpCircle className="w-3.5 h-3.5" />
+            <span>FMCSA regulatory questions &amp; answers</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
-            Frequently Asked{' '}
-            <span className="text-[#0016CB]">
-              Questions
-            </span>
+          <h2 className="text-3xl sm:text-4xl font-semibold text-white tracking-tight leading-tight">
+            Frequently asked questions.
           </h2>
 
-          <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+          <p className="text-[#a1a1a6] text-xs sm:text-sm leading-relaxed font-normal">
             Everything you need to know about commercial HOS scheduling logic, automated stops, and ELD compliance.
           </p>
         </div>
 
-        {/* Accordion List with Smooth Animated Height & Rotating Icon */}
-        <div className="space-y-3.5">
+        {/* Accordion List */}
+        <div className="space-y-3">
           {faqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <motion.div
+              <div
                 key={idx}
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.08 }}
-                className="rounded-xl border border-[#242424] bg-[#121212] overflow-hidden transition-colors hover:border-[#374151]"
+                className="rounded-lg border border-[#232325] bg-[#19191b] overflow-hidden transition-colors"
               >
                 <button
                   type="button"
                   onClick={() => toggleAccordion(idx)}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none group"
+                  className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none group"
                 >
-                  <span className="font-bold text-sm sm:text-base text-white font-display group-hover:text-[#99A9EE] transition-colors">
+                  <span className="font-medium text-xs sm:text-sm text-[#ededed] group-hover:text-white transition-colors">
                     {faq.question}
                   </span>
-                  <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center gap-2.5 shrink-0">
                     {faq.fmcsaRef && (
-                      <span className="hidden sm:inline-block text-[10px] font-mono font-bold text-slate-400 px-2.5 py-1 rounded-sm bg-[#161616] border border-[#242424]">
+                      <span className="hidden sm:inline-block text-[10px] font-mono text-[#85858b] px-2 py-0.5 rounded bg-[#141415] border border-[#232325]">
                         {faq.fmcsaRef}
                       </span>
                     )}
-                    <motion.div
-                      animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.25, ease: 'easeInOut' }}
-                      className="w-8 h-8 rounded-full bg-[#161616] text-slate-300 flex items-center justify-center border border-[#242424] group-hover:border-[#0016CB]"
-                    >
-                      <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
-                    </motion.div>
+                    <div className="w-6 h-6 rounded-md bg-[#232325] text-[#a1a1a6] flex items-center justify-center">
+                      <ChevronDown
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                          isOpen ? 'rotate-180 text-blue-400' : ''
+                        }`}
+                      />
+                    </div>
                   </div>
                 </button>
 
@@ -114,22 +107,16 @@ export const FaqSection: React.FC = () => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      transition={{ duration: 0.2, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 sm:px-6 pb-6 pt-1 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-[#242424]/60 font-sans">
-                        <p>{faq.answer}</p>
-                        {faq.fmcsaRef && (
-                          <div className="mt-3 pt-2 text-[11px] font-mono text-[#6677E3] flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#0016CB]" />
-                            <span>Statutory Code: {faq.fmcsaRef}</span>
-                          </div>
-                        )}
+                      <div className="px-4 sm:px-5 pb-5 pt-1 text-[#a1a1a6] text-xs sm:text-sm leading-relaxed border-t border-[#232325] font-sans">
+                        {faq.answer}
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             );
           })}
         </div>

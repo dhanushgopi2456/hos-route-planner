@@ -5,7 +5,6 @@ import {
   Truck,
   Package,
   Flag,
-  Sparkles,
   ChevronDown,
   Loader2,
   Sliders,
@@ -22,7 +21,6 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Card3D } from '../UI/Card3D';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
@@ -733,118 +731,107 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
   };
 
   return (
-    <Card3D depth={6} className="w-full">
+    <div className="w-full">
       <form
         onSubmit={handleSubmit}
-        className="uc-glass-card rounded-2xl p-6 md:p-8 relative overflow-hidden preserve-3d"
+        className="bg-[#19191b] border border-[#232325] rounded-xl p-5 sm:p-6 relative text-[#ededed]"
       >
         {/* Logged in Driver Sync Banner */}
         {isAuthenticated && user && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-5 p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 flex flex-wrap items-center justify-between gap-2.5 text-xs text-blue-200"
-          >
+          <div className="mb-4 p-3 rounded-lg bg-[#141415] border border-[#232325] flex flex-wrap items-center justify-between gap-2.5 text-xs text-[#a1a1a6]">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
-                <UserCheck className="w-3.5 h-3.5" />
+              <div className="w-5 h-5 rounded bg-[#2563EB] text-white flex items-center justify-center shrink-0">
+                <UserCheck className="w-3 h-3" />
               </div>
               <div>
-                <span className="font-bold text-white">Active Driver: </span>
+                <span className="font-medium text-white">Active driver: </span>
                 <span>{user.name} ({user.carrier_name})</span>
                 {user.cdl_number && (
-                  <span className="font-mono text-[11px] text-blue-300 ml-1.5">
+                  <span className="font-mono text-[11px] text-[#85858b] ml-1.5">
                     [{user.cdl_number}]
                   </span>
                 )}
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border border-emerald-500/30 font-mono">
-                ELD AUTO-POPULATED
+              <span className="px-2 py-0.5 rounded bg-[#232325] text-emerald-400 text-[10px] font-mono border border-emerald-500/20">
+                ELD auto-populated
               </span>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Top Banner with Quick Presets */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-5 border-b border-slate-800">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-[#232325]">
           <div>
-            <h2 className="text-lg font-black text-white tracking-tight flex items-center gap-2.5 font-display">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30">
-                <Truck className="w-4 h-4" />
+            <h2 className="text-sm sm:text-base font-semibold text-[#ededed] tracking-tight flex items-center gap-2">
+              <div className="w-7 h-7 rounded-md bg-[#2563EB] flex items-center justify-center text-white shrink-0">
+                <Truck className="w-3.5 h-3.5" />
               </div>
-              <span>Trip Route &amp; Cycle Configuration</span>
+              <span>Trip route &amp; cycle configuration</span>
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-[#85858b] mt-0.5">
               Select origin, pickup, dropoff locations, or pick a rapid-test corridor below:
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.05, rotate: -45 }}
-              whileTap={{ scale: 0.95 }}
               onClick={handleResetForm}
-              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-700"
+              className="p-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] text-[#a1a1a6] hover:text-white transition-colors cursor-pointer border border-[#2e2e32]"
               title="Reset to default route"
             >
-              <RotateCcw className="w-4 h-4" />
-            </motion.button>
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
 
         {/* Quick Corridor Presets Bar */}
-        <div className="mb-6">
-          <div className="flex items-center gap-2 mb-2.5 text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">
+        <div className="mb-5">
+          <div className="flex items-center gap-1.5 mb-2 text-xs font-medium text-[#85858b] font-mono">
             <Compass className="w-3.5 h-3.5 text-blue-400" />
-            <span>Commercial Corridor Presets:</span>
+            <span>Commercial corridor presets:</span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
             {PRESET_ROUTES.map(preset => {
               const isSelected = activePresetId === preset.id;
               return (
-                <motion.button
+                <button
                   key={preset.id}
                   type="button"
-                  whileHover={{ scale: 1.03, y: -4 }}
-                  whileTap={{ scale: 0.97 }}
                   onClick={() => handleApplyPreset(preset)}
-                  className={`p-3 rounded-xl text-left border transition-all cursor-pointer relative overflow-hidden ${
+                  className={`p-3 rounded-lg text-left border transition-colors cursor-pointer relative ${
                     isSelected
-                      ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-blue-400 shadow-[0_0_25px_rgba(0,22,203,0.5)] ring-2 ring-blue-400/50'
-                      : 'bg-black/40 hover:bg-white/[0.08] backdrop-blur-md border-white/10 hover:border-blue-500/60 text-slate-200 shadow-sm hover:shadow-md'
+                      ? 'bg-[#2563EB] text-white border-blue-400 shadow-xs'
+                      : 'bg-[#141415] hover:bg-[#232325] border-[#232325] hover:border-[#2e2e32] text-[#ededed]'
                   }`}
                 >
-                  <div className="font-bold text-xs flex items-center justify-between">
-                    <span>{preset.label}</span>
-                    {isSelected && <Sparkles className="w-3.5 h-3.5 text-blue-200 animate-pulse" />}
+                  <div className="font-medium text-xs">
+                    {preset.label}
                   </div>
                   <div
-                    className={`text-[10px] mt-1 font-mono ${
-                      isSelected ? 'text-blue-100' : 'text-slate-400'
+                    className={`text-[10px] mt-1 font-mono tabular-nums ${
+                      isSelected ? 'text-blue-100' : 'text-[#85858b]'
                     }`}
                   >
                     {preset.tag}
                   </div>
-                </motion.button>
+                </button>
               );
             })}
           </div>
         </div>
 
         {/* Quick Route Actions Toolbar: GPS, Swap, Reset */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 mb-4 p-2.5 rounded-xl bg-black/35 backdrop-blur-md border border-white/10">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4 p-2 rounded-lg bg-[#141415] border border-[#232325]">
+          <div className="flex flex-wrap items-center gap-1.5">
             {/* Direct GPS Button */}
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.96 }}
               onClick={() => handleAcquireCurrentLocation('origin')}
               disabled={isLocatingField === 'origin'}
-              className="btn-electric-primary px-3.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-60 shadow-[0_0_15px_rgba(0,22,203,0.4)] hover:shadow-[0_0_25px_rgba(0,22,203,0.7)]"
+              className="btn-electric-primary px-3 py-1.5 text-xs font-medium flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
               title="Detect your device GPS location and set as origin"
             >
               {isLocatingField === 'origin' ? (
@@ -852,56 +839,46 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               ) : (
                 <Crosshair className="w-3.5 h-3.5" />
               )}
-              <span>Use My Current Location</span>
-            </motion.button>
+              <span>Use my current location</span>
+            </button>
 
             {/* Invert / Swap Route Button */}
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.96 }}
               onClick={handleSwapRoute}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_18px_rgba(56,189,248,0.35)] text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
+              className="px-2.5 py-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] text-[#a1a1a6] hover:text-white border border-[#2e2e32] text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
               title="Reverse route direction (Swap Origin and Dropoff)"
             >
-              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35, ease: 'easeInOut' }}>
-                <ArrowLeftRight className="w-3.5 h-3.5 text-blue-400" />
-              </motion.div>
-              <span>Swap Origin ⇄ Dropoff</span>
-            </motion.button>
+              <ArrowLeftRight className="w-3.5 h-3.5 text-blue-400" />
+              <span>Swap origin ⇄ dropoff</span>
+            </button>
 
             {/* Swap Pickup and Dropoff */}
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.96 }}
               onClick={handleSwapPickupDropoff}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-emerald-400/50 hover:shadow-[0_0_18px_rgba(16,185,129,0.35)] text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
+              className="px-2.5 py-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] text-[#a1a1a6] hover:text-white border border-[#2e2e32] text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
               title="Swap Pickup and Dropoff locations"
             >
-              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35, ease: 'easeInOut' }}>
-                <ArrowLeftRight className="w-3.5 h-3.5 text-emerald-400" />
-              </motion.div>
-              <span>Swap Pickup ⇄ Dropoff</span>
-            </motion.button>
+              <ArrowLeftRight className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Swap pickup ⇄ dropoff</span>
+            </button>
 
             {/* Reset / Clear Form */}
-            <motion.button
+            <button
               type="button"
-              whileHover={{ scale: 1.04, y: -2 }}
-              whileTap={{ scale: 0.96 }}
               onClick={handleResetForm}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 hover:border-rose-400/40 hover:shadow-[0_0_18px_rgba(244,63,94,0.35)] text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm group"
+              className="px-2.5 py-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] text-[#a1a1a6] hover:text-white border border-[#2e2e32] text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
               title="Reset all form fields to default"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-[-360deg] transition-transform duration-500" />
-              <span>Reset Form</span>
-            </motion.button>
+              <RotateCcw className="w-3.5 h-3.5 text-[#85858b]" />
+              <span>Reset</span>
+            </button>
           </div>
 
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-            <Globe className="w-3.5 h-3.5 text-blue-500" />
-            <span>Global routing across all countries</span>
+          <div className="text-[11px] text-[#85858b] flex items-center gap-1 font-mono">
+            <Globe className="w-3.5 h-3.5 text-blue-400" />
+            <span>Global highway routing</span>
           </div>
         </div>
 
@@ -1031,12 +1008,10 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
             </label>
             <motion.div
               key={currentCycleUsed}
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              className="flex items-center gap-1 font-mono text-sm font-black text-cyan-300 bg-slate-800 px-3 py-1 rounded-xl border border-slate-700 shadow-xs"
+              className="flex items-center gap-1 font-mono text-xs font-semibold text-white bg-[#141415] px-2.5 py-1 rounded-md border border-[#232325] tabular-nums"
             >
               <span>{(currentCycleUsed ?? 0).toFixed(1)}</span>
-              <span className="text-slate-400 font-normal text-xs">/ 70.0 hrs</span>
+              <span className="text-[#85858b] font-normal text-xs">/ 70.0 hrs</span>
             </motion.div>
           </div>
 
@@ -1048,40 +1023,39 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               step="0.5"
               value={currentCycleUsed ?? 0}
               onChange={e => setCurrentCycleUsed(parseFloat(e.target.value) || 0)}
-              className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#0052FF]"
+              className="w-full h-2 bg-[#141415] border border-[#232325] rounded-md appearance-none cursor-pointer accent-[#2563EB]"
             />
-            <div className="flex justify-between text-[11px] text-slate-400 font-mono">
-              <span>0.0 hrs (Fresh cycle)</span>
-              <span className="text-cyan-400 font-bold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-blue-500 inline-block animate-ping" />
-                <span>{(70 - (currentCycleUsed ?? 0)).toFixed(1)} hrs available</span>
+            <div className="flex justify-between text-[11px] text-[#85858b] font-mono tabular-nums">
+              <span>0.0 hrs (Fresh restart)</span>
+              <span className="text-blue-400 font-medium">
+                {(70 - (currentCycleUsed ?? 0)).toFixed(1)} hrs available
               </span>
               <span>69.0 hrs (Near limit)</span>
             </div>
           </div>
 
           {/* Quick Select Cycle Chips */}
-          <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-800">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1 font-mono">
-              Quick Presets:
+          <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#232325]">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-[#85858b] mr-1 font-mono">
+              Presets:
             </span>
             {[
-              { label: '0.0h Fresh Restart', val: 0 },
-              { label: '20.0h Light Duty', val: 20 },
-              { label: '42.5h Mid-Week', val: 42.5 },
-              { label: '62.0h Near Max', val: 62 }
+              { label: '0.0h Fresh restart', val: 0 },
+              { label: '20.0h Light duty', val: 20 },
+              { label: '42.5h Mid-week', val: 42.5 },
+              { label: '62.0h Near max', val: 62 }
             ].map(chip => (
               <button
                 key={chip.label}
                 type="button"
                 onClick={() => {
                   setCurrentCycleUsed(chip.val);
-                  toastInfo('Cycle Hours Updated', `Set 70-hour cycle used to ${chip.val} hrs.`);
+                  toastInfo('Cycle hours updated', `Set 70-hour cycle used to ${chip.val} hrs.`);
                 }}
-                className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors cursor-pointer border ${
+                className={`px-2.5 py-1 rounded-md text-xs font-mono tabular-nums transition-colors cursor-pointer border ${
                   Math.abs((currentCycleUsed ?? 0) - chip.val) < 0.2
-                    ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/30'
-                    : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
+                    ? 'bg-[#2563EB] text-white border-blue-400'
+                    : 'bg-[#141415] text-[#a1a1a6] border-[#232325] hover:bg-[#232325] hover:text-white'
                 }`}
               >
                 {chip.label}
@@ -1091,22 +1065,22 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
         </div>
 
         {/* Carrier & Shipping Details Accordion */}
-        <div className="mb-6 border border-slate-800 rounded-2xl overflow-hidden shadow-xs bg-slate-900/60">
-          <motion.button
+        <div className="mb-5 border border-[#232325] rounded-lg overflow-hidden bg-[#141415]">
+          <button
             type="button"
             onClick={() => setShowShippingDetails(!showShippingDetails)}
-            className="w-full flex items-center justify-between px-5 py-3.5 bg-slate-900/90 text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer hover:bg-slate-850"
+            className="w-full flex items-center justify-between px-4 py-3 bg-[#141415] text-left text-xs font-medium text-[#ededed] transition-colors cursor-pointer hover:bg-[#19191b]"
           >
-            <div className="flex items-center gap-2 font-mono">
-              <FileText className="w-4 h-4 text-blue-400" />
-              <span>Carrier, Driver &amp; Shipping Manifest Details (Optional)</span>
+            <div className="flex items-center gap-2">
+              <FileText className="w-3.5 h-3.5 text-blue-400" />
+              <span>Carrier, driver and shipping manifest details (optional)</span>
             </div>
             <ChevronDown
-              className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
+              className={`w-3.5 h-3.5 text-[#85858b] transition-transform duration-200 ${
                 showShippingDetails ? 'rotate-180 text-blue-400' : ''
               }`}
             />
-          </motion.button>
+          </button>
 
           <AnimatePresence>
             {showShippingDetails && (
@@ -1114,71 +1088,71 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.25 }}
+                transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="p-5 bg-[#080D1A] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs border-t border-slate-800 font-mono">
+                <div className="p-4 bg-[#141415] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs border-t border-[#232325]">
                   <div>
-                    <label className="font-semibold text-slate-300 block mb-1">Carrier Name:</label>
+                    <label className="text-[#a1a1a6] block mb-1">Carrier name:</label>
                     <input
                       type="text"
                       value={carrierName}
                       onChange={e => setCarrierName(e.target.value)}
-                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2 border border-[#232325] bg-[#19191b] text-white rounded-md focus:border-[#2563EB] focus:outline-hidden text-xs"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-300 block mb-1">Carrier Office Address:</label>
+                    <label className="text-[#a1a1a6] block mb-1">Carrier office address:</label>
                     <input
                       type="text"
                       value={carrierOffice}
                       onChange={e => setCarrierOffice(e.target.value)}
-                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2 border border-[#232325] bg-[#19191b] text-white rounded-md focus:border-[#2563EB] focus:outline-hidden text-xs"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-300 block mb-1">Driver Name / Signature:</label>
+                    <label className="text-[#a1a1a6] block mb-1">Driver name / signature:</label>
                     <input
                       type="text"
                       value={driverName}
                       onChange={e => setDriverName(e.target.value)}
-                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2 border border-[#232325] bg-[#19191b] text-white rounded-md focus:border-[#2563EB] focus:outline-hidden text-xs"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-300 block mb-1">Tractor / Truck #:</label>
+                    <label className="text-[#a1a1a6] block mb-1">Tractor / truck #:</label>
                     <input
                       type="text"
                       value={truckNumber}
                       onChange={e => setTruckNumber(e.target.value)}
-                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2 border border-[#232325] bg-[#19191b] text-white rounded-md focus:border-[#2563EB] focus:outline-hidden text-xs font-mono"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-300 block mb-1">Trailer #:</label>
+                    <label className="text-[#a1a1a6] block mb-1">Trailer #:</label>
                     <input
                       type="text"
                       value={trailerNumber}
                       onChange={e => setTrailerNumber(e.target.value)}
-                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2 border border-[#232325] bg-[#19191b] text-white rounded-md focus:border-[#2563EB] focus:outline-hidden text-xs font-mono"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-300 block mb-1">Shipping Doc / DVL #:</label>
+                    <label className="text-[#a1a1a6] block mb-1">Shipping doc / DVL #:</label>
                     <input
                       type="text"
                       value={shippingDocNumber}
                       onChange={e => setShippingDocNumber(e.target.value)}
-                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2 border border-[#232325] bg-[#19191b] text-white rounded-md focus:border-[#2563EB] focus:outline-hidden text-xs font-mono"
                     />
                   </div>
                   <div className="md:col-span-2 lg:col-span-3">
-                    <label className="font-semibold text-slate-300 block mb-1">Commodity:</label>
+                    <label className="text-[#a1a1a6] block mb-1">Commodity:</label>
                     <input
                       type="text"
                       value={commodity}
                       onChange={e => setCommodity(e.target.value)}
-                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2 border border-[#232325] bg-[#19191b] text-white rounded-md focus:border-[#2563EB] focus:outline-hidden text-xs"
                     />
                   </div>
                 </div>
@@ -1187,40 +1161,26 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
           </AnimatePresence>
         </div>
 
-        {/* Primary Submit Button with 3D Pop & Shimmer */}
+        {/* Primary Submit Button */}
         <div className="space-y-3">
-          <motion.button
+          <button
             type="submit"
             disabled={isLoading}
-            whileHover={{ scale: 1.01, y: -2 }}
-            whileTap={{ scale: 0.99 }}
-            className="btn-uc-solid w-full py-4 px-6 text-sm sm:text-base font-bold tracking-wider flex items-center justify-center space-x-2.5 cursor-pointer shadow-[0_0_30px_rgba(0,22,203,0.45)] font-mono"
+            className="btn-electric-primary w-full py-3 px-5 text-sm font-medium flex items-center justify-center space-x-2 cursor-pointer"
           >
-            {/* Animated Light Shimmer Beam */}
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
-
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin text-white" />
-                <motion.span
-                  key={telemetryStageIdx}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.2 }}
-                  className="font-bold tracking-wider"
-                >
-                  {planningStep || TELEMETRY_STAGES[telemetryStageIdx]}
-                </motion.span>
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <span>{planningStep || TELEMETRY_STAGES[telemetryStageIdx]}</span>
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-5 h-5 transition-transform group-hover:scale-125 text-emerald-400" />
-                <span className="font-bold tracking-wider">PLAN COMPLIANT TRIP</span>
-                <ArrowRight className="w-4 h-4 opacity-80 group-hover:translate-x-1.5 transition-transform" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Plan compliant trip</span>
+                <ArrowRight className="w-4 h-4" />
               </>
             )}
-          </motion.button>
+          </button>
 
           {/* Live Step Progress Indicator */}
           <AnimatePresence>
@@ -1229,16 +1189,16 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
-                className="p-4 bg-blue-950/40 border border-blue-500/40 rounded-2xl text-xs text-blue-300 flex items-center gap-3 shadow-sm font-mono"
+                className="p-3 bg-[#141415] border border-[#232325] rounded-lg text-xs text-[#a1a1a6] flex items-center gap-2.5 font-mono"
               >
-                <Loader2 className="w-4 h-4 animate-spin text-blue-400 shrink-0" />
-                <span className="font-bold">{planningStep || 'Analyzing highway network & calculating HOS rules...'}</span>
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-400 shrink-0" />
+                <span>{planningStep || 'Analyzing highway network & calculating HOS rules...'}</span>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </form>
-    </Card3D>
+    </div>
   );
 };
 
@@ -1326,7 +1286,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
   return (
     <div ref={containerRef} className="relative">
       <div className="flex items-center justify-between mb-1.5">
-        <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+        <label className="text-xs font-medium text-[#ededed] flex items-center gap-1.5">
           {icon}
           <span>{label}</span>
         </label>
@@ -1335,7 +1295,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
             type="button"
             onClick={onLocateMe}
             disabled={isLocating}
-            className="text-[11px] text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-50 transition-colors"
+            className="text-[11px] text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1 cursor-pointer disabled:opacity-50 transition-colors font-mono"
             title="Locate with device GPS"
           >
             {isLocating ? (
@@ -1375,19 +1335,19 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
             }
           }}
           placeholder={placeholder}
-          className="w-full p-3.5 pl-9 pr-16 text-xs font-bold text-white bg-black/40 backdrop-blur-md border border-white/15 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 shadow-inner group-hover:border-white/30 transition-colors font-sans placeholder-slate-400"
+          className="w-full py-2.5 pl-8 pr-14 text-xs font-normal text-white bg-[#141415] border border-[#232325] rounded-md focus:outline-hidden focus:border-[#2563EB] transition-colors font-sans placeholder-[#85858b]"
         />
-        <div className="absolute left-3 top-4 text-slate-400 pointer-events-none transition-colors group-hover:text-blue-400">
-          <MapPin className="w-4 h-4" />
+        <div className="absolute left-2.5 top-3 text-[#85858b] pointer-events-none transition-colors group-hover:text-blue-400">
+          <MapPin className="w-3.5 h-3.5" />
         </div>
 
         {/* Action icons on right: clear & GPS */}
-        <div className="absolute right-2.5 top-2.5 flex items-center gap-1">
+        <div className="absolute right-2 top-2 flex items-center gap-1">
           {query && (
             <button
               type="button"
               onClick={handleClear}
-              className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md transition-colors cursor-pointer"
+              className="p-1 text-[#85858b] hover:text-white rounded-md transition-colors cursor-pointer"
               title="Clear input"
             >
               <X className="w-3.5 h-3.5" />
@@ -1395,7 +1355,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
           )}
 
           {isSearching ? (
-            <div className="p-1 text-blue-600 dark:text-blue-400">
+            <div className="p-1 text-blue-400">
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
             </div>
           ) : onLocateMe ? (
@@ -1403,10 +1363,10 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
               type="button"
               onClick={onLocateMe}
               disabled={isLocating}
-              className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition-colors cursor-pointer disabled:opacity-50"
+              className="p-1 text-[#85858b] hover:text-blue-400 rounded-md transition-colors cursor-pointer disabled:opacity-50"
               title="Acquire current GPS position"
             >
-              <Crosshair className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin text-blue-600' : ''}`} />
+              <Crosshair className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin text-blue-400' : ''}`} />
             </button>
           ) : null}
         </div>
@@ -1415,36 +1375,35 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
       <AnimatePresence>
         {isOpen && suggestions.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, y: -6, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-[#0B0F19]/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl z-50 max-h-56 overflow-y-auto"
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="absolute left-0 right-0 top-full mt-1.5 bg-[#19191b] border border-[#2e2e32] rounded-md shadow-xl z-50 max-h-56 overflow-y-auto"
           >
             {suggestions.map((sug, i) => (
-              <motion.button
+              <button
                 key={`sug-${i}`}
                 type="button"
-                whileHover={{ scale: 1.01 }}
                 onClick={() => handleSelect(sug)}
-                className="w-full px-3.5 py-2.5 text-left border-b border-slate-100 dark:border-slate-800 last:border-none flex items-start gap-2.5 text-xs text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
+                className="w-full px-3 py-2 text-left border-b border-[#232325] last:border-none flex items-start gap-2 text-xs text-[#ededed] hover:bg-[#232325] transition-colors cursor-pointer"
               >
-                <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                <MapPin className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">
-                  <div className="font-bold text-slate-900 dark:text-white flex items-center justify-between">
+                  <div className="font-medium text-white flex items-center justify-between">
                     <span>{sug.name}</span>
                     {sug.country && (
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 ml-2 shrink-0">
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#232325] text-[#85858b] ml-2 shrink-0">
                         {sug.country}
                       </span>
                     )}
                   </div>
                   {sug.address && (
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-full">
+                    <div className="text-[10px] text-[#85858b] truncate max-w-full font-mono">
                       {sug.address}
                     </div>
                   )}
                 </div>
-              </motion.button>
+              </button>
             ))}
           </motion.div>
         )}

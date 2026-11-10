@@ -23,222 +23,161 @@ export const MilestoneHighwayRoad: React.FC<MilestoneHighwayRoadProps> = ({ onLa
     {
       step: '01',
       title: 'Pre-Trip Inspection & Window Initiation',
-      tag: '14-HOUR ON-DUTY WINDOW',
+      tag: '14-hour on-duty window',
       icon: Clock,
       description: 'The driver logs 1.0 hour On-Duty (Not Driving) for pre-trip vehicle and cargo inspection. This officially starts the consecutive 14-hour duty clock under FMCSA 49 CFR § 395.3(a)(2).',
-      telemetry: 'Baseline Set • 14.0h Duty Window Active • 0 mi Traveled'
+      telemetry: 'Baseline set • 14.0h duty window active • 0 mi traveled'
     },
     {
       step: '02',
       title: 'OSRM Highway Geometry & Diesel Refueling',
-      tag: '< 1,000 MILE MANDATORY FUEL STOP',
+      tag: '< 1,000-mile fuel interval',
       icon: Fuel,
-      description: 'Real interstate corridors are computed with accurate speed telemetry. If any single leg or cumulative route exceeds 1,000 miles, the engine automatically schedules a 0.5-hour On-Duty commercial diesel fuel stop.',
-      telemetry: 'Commercial Diesel Inserted • Fuel Reserve Protected'
+      description: 'Real interstate corridors are computed with accurate speed telemetry. If any single leg or cumulative route exceeds 1,000 miles, the engine automatically schedules a 0.5-hour commercial diesel fuel stop.',
+      telemetry: 'Commercial diesel inserted • Fuel reserve protected'
     },
     {
       step: '03',
       title: 'Mandatory 30-Min Rest & 10-Hr Sleeper Reset',
-      tag: 'CFR § 395.3(a)(3) REST ENFORCEMENT',
+      tag: '49 CFR § 395.3(a)(3) rest enforcement',
       icon: CheckCircle2,
       description: 'Before cumulative driving reaches 8.0 hours without a break, a 30-minute off-duty rest interval is enforced. When driving hits 11.0 hours or 14.0 hours duty, a mandatory 10.0-hour sleeper berth reset is scheduled.',
-      telemetry: '30m Break Inserted • 10.0h Sleeper Berth Reset Applied'
+      telemetry: '30m break inserted • 10.0h sleeper berth reset applied'
     },
     {
       step: '04',
       title: 'Consignee Delivery & 24.00h Balanced RODS',
-      tag: 'FMCSA 24.00H BALANCED LOG SHEET',
+      tag: 'FMCSA 24.00h balanced log sheet',
       icon: FileCheck2,
       description: '1.0 hour On-Duty is allocated for post-trip inspection and consignee dropoff unloading. The system compiles every duty status segment into a balanced 24.00-hour graphical log sheet with remarks and recap.',
-      telemetry: 'Midnight Day Rollovers • Exactly 24.00h per Day • Audit-Ready'
+      telemetry: 'Midnight day rollovers • Exactly 24.00h per day • Audit-ready'
     }
   ];
 
   return (
-    <section id="milestones" className="relative py-28 bg-[#FFFFFF] text-[#111111] overflow-hidden">
-      {/* Background Subtle Micro-dots */}
-      <div 
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(#000000 1px, transparent 1px)',
-          backgroundSize: '24px 24px'
-        }}
-      />
-
+    <section id="milestones" className="relative py-20 bg-[#FFFFFF] text-[#111111] overflow-hidden border-t border-[#111111]/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Top Section Breadcrumb */}
-        <div className="flex items-center gap-4 text-xs font-mono tracking-widest text-[#111111]/60 mb-6">
-          <span className="text-[#0016CB] font-bold">03 / 05</span>
-          <span>|</span>
-          <span className="uppercase tracking-[0.2em] text-[#111111] font-bold">OPERATIONAL MILESTONES</span>
-          <span>|</span>
-          <span className="text-[#0016CB] font-bold">FMCSA AUDIT ARCHITECTURE</span>
+        <div className="flex items-center gap-3 text-xs font-mono text-[#111111]/60 mb-4">
+          <span className="text-[#1D4ED8] font-medium">03 / 05</span>
+          <span>&bull;</span>
+          <span>Operational milestones</span>
+          <span>&bull;</span>
+          <span className="text-[#1D4ED8]">FMCSA audit architecture</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           
-          {/* Left Column: Monumental Staggered Headline */}
-          <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-28">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-1"
-            >
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-[#111111] font-display leading-[0.95]">
-                RELIABILITY <br />
-                <span className="text-[#111111]">AT EVERY</span> <br />
-                <span className="text-[#0016CB]">MILESTONE</span>
-              </h2>
-            </motion.div>
+          {/* Left Column: Headline and intro */}
+          <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-[#111111] leading-tight">
+              Reliability at every milestone.
+            </h2>
 
-            <p className="text-base sm:text-lg text-[#111111]/80 max-w-md leading-relaxed">
+            <p className="text-sm sm:text-base text-[#111111]/75 max-w-md leading-relaxed font-normal">
               From terminal departure to consignee delivery, every second of driver duty, continuous line-haul, diesel refueling, and sleeper berth rest is mapped and verified.
             </p>
 
-            {/* Quick Status Pill */}
-            <div className="p-4 rounded-none bg-[#111111]/5 border-l-4 border-[#0016CB] space-y-2">
-              <div className="flex items-center justify-between text-xs font-mono font-bold text-[#111111]">
-                <span>CORRIDOR SIMULATION</span>
-                <span className="text-[#0016CB]">ACTIVE</span>
+            {/* Quick Status Box */}
+            <div className="p-3.5 rounded-lg bg-[#111111]/5 border-l-2 border-[#1D4ED8] space-y-1">
+              <div className="flex items-center justify-between text-xs font-mono font-medium text-[#111111]">
+                <span>Corridor simulation</span>
+                <span className="text-[#1D4ED8]">Active</span>
               </div>
               <p className="text-xs text-[#111111]/70 leading-relaxed">
                 Zero roadside violations, zero driving-over-hours citations, and guaranteed 24.00-hour log compliance.
               </p>
             </div>
 
-            <div className="pt-4 flex flex-wrap gap-4">
-              <motion.button
+            <div className="pt-2 flex flex-wrap gap-3">
+              <button
                 type="button"
-                whileHover={{ scale: 1.05, y: -3 }}
-                whileTap={{ scale: 0.96 }}
                 onClick={() => handleLaunch(true)}
-                className="relative overflow-hidden inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#111111] hover:bg-[#0016CB] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.25)] hover:shadow-[0_15px_35px_rgba(0,22,203,0.4)] cursor-pointer group font-mono"
+                className="btn-electric-primary px-5 py-2.5 text-xs font-medium inline-flex items-center gap-2 cursor-pointer"
               >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
-                <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
-                <span>TEST YOUR ROUTE NOW</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
-              </motion.button>
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>Test route dispatch</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
-          {/* Right Column: Vertical Winding Highway Road with Top-Down Truck & Milestones */}
+          {/* Right Column: Highway Road & Milestones */}
           <div className="lg:col-span-7 relative">
             
-            {/* The Vertical Highway Road track (from United Carriers Template) */}
-            <div className="absolute left-6 sm:left-10 top-0 bottom-0 w-20 sm:w-24 bg-[#111111] rounded-t-3xl shadow-xl flex flex-col items-center justify-between py-6 overflow-hidden z-0">
+            {/* The Vertical Highway Road track */}
+            <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-16 sm:w-20 bg-[#111111] rounded-t-xl flex flex-col items-center justify-between py-6 overflow-hidden z-0">
               {/* White Dashed Center-line */}
               <div 
-                className="w-1.5 h-full opacity-80"
+                className="w-1 h-full opacity-60"
                 style={{
                   backgroundImage: 'linear-gradient(to bottom, #FFFFFF 50%, transparent 50%)',
-                  backgroundSize: '100% 32px'
+                  backgroundSize: '100% 28px'
                 }}
               />
 
-              {/* Animated Top-Down Semi-Truck (cab + container) moving down the road */}
-              <motion.div
-                animate={{
-                  y: ['0%', '420%', '0%']
-                }}
-                transition={{
-                  duration: 22,
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
-                className="absolute top-8 left-1/2 -translate-x-1/2 flex flex-col items-center z-10 pointer-events-none drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]"
-              >
-                <img
-                  src="/assets/uc/truck_top_view.avif"
-                  alt="Semi-Truck Top View"
-                  className="w-10 sm:w-12 h-auto object-contain"
-                />
-                <img
-                  src="/assets/uc/container_top_view.avif"
-                  alt="Intermodal Container Top View"
-                  className="w-9 sm:w-11 h-auto -mt-1 object-contain"
-                />
-              </motion.div>
-
-              {/* Glowing Electric-Blue GPS Waypoint Puck traveling down the highway track */}
+              {/* Waypoint Marker traveling down track */}
               <motion.div
                 animate={{
                   top: `${14 + activeMilestone * 24}%`
                 }}
-                transition={{ type: 'spring', stiffness: 180, damping: 22 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                 className="absolute left-1/2 -translate-x-1/2 z-20 pointer-events-none"
               >
-                <div className="relative flex items-center justify-center">
-                  <span className="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-[#0016CB] opacity-60" />
-                  <div className="relative w-4 h-4 rounded-full bg-[#0016CB] border-2 border-white shadow-[0_0_18px_#0016CB] flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-300" />
-                  </div>
+                <div className="w-3.5 h-3.5 rounded-full bg-[#1D4ED8] border-2 border-white flex items-center justify-center">
+                  <div className="w-1 h-1 rounded-full bg-white" />
                 </div>
               </motion.div>
             </div>
 
-            {/* Sequential Milestones positioned alongside the road */}
-            <div className="relative z-10 pl-24 sm:pl-32 space-y-10 sm:space-y-12">
+            {/* Sequential Milestones */}
+            <div className="relative z-10 pl-20 sm:pl-28 space-y-6 sm:space-y-8">
               {milestones.map((m, index) => {
-                const Icon = m.icon;
                 const isSelected = activeMilestone === index;
 
                 return (
-                  <motion.div
+                  <div
                     key={m.step}
-                    initial={{ opacity: 0, x: 24 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
                     onClick={() => setActiveMilestone(index)}
-                    className={`relative p-6 sm:p-8 rounded-none border transition-all duration-300 cursor-pointer ${
+                    className={`relative p-5 sm:p-6 rounded-lg border transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-[#0A0A0A] text-white border-[#0016CB] shadow-[0_0_35px_rgba(0,22,203,0.35)] scale-[1.02]'
-                        : 'bg-white text-[#111111] border-[#111111]/15 hover:border-[#0016CB]/50 hover:bg-slate-50'
+                        ? 'bg-[#19191b] text-white border-[#1D4ED8] shadow-md'
+                        : 'bg-white text-[#111111] border-[#111111]/15 hover:border-[#111111]/30'
                     }`}
                   >
-                    {/* Connecting Waypoint Pin towards the road */}
-                    <div className={`absolute -left-12 sm:-left-14 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                      isSelected ? 'bg-[#0016CB] border-white ring-4 ring-[#0016CB]/30' : 'bg-white border-[#111111] shadow'
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full ${isSelected ? 'bg-white' : 'bg-[#111111]'}`} />
-                    </div>
-
-                    <div className="flex items-center justify-between mb-3">
-                      <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-none border ${
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`text-[10px] font-mono font-medium px-2 py-0.5 rounded ${
                         isSelected 
-                          ? 'bg-[#0016CB] text-white border-[#0016CB]' 
-                          : 'bg-[#111111]/5 text-[#111111] border-[#111111]/10'
+                          ? 'bg-[#1D4ED8] text-white' 
+                          : 'bg-[#111111]/5 text-[#111111]'
                       }`}>
                         {m.tag}
                       </span>
-                      <span className={`text-base font-mono font-black ${isSelected ? 'text-[#0016CB]' : 'text-[#111111]/40'}`}>
+                      <span className={`text-xs font-mono font-medium ${isSelected ? 'text-blue-400' : 'text-[#111111]/40'}`}>
                         {m.step}
                       </span>
                     </div>
 
-                    <h3 className={`text-lg sm:text-xl font-black uppercase tracking-tight font-display mb-2 ${
+                    <h3 className={`text-sm sm:text-base font-semibold mb-1.5 ${
                       isSelected ? 'text-white' : 'text-[#111111]'
                     }`}>
                       {m.title}
                     </h3>
 
-                    <p className={`text-xs sm:text-sm leading-relaxed mb-4 ${
-                      isSelected ? 'text-slate-300' : 'text-[#111111]/70'
+                    <p className={`text-xs leading-relaxed mb-3 ${
+                      isSelected ? 'text-[#a1a1a6]' : 'text-[#111111]/70'
                     }`}>
                       {m.description}
                     </p>
 
-                    <div className={`pt-3 border-t text-[11px] font-mono flex items-center gap-2 ${
-                      isSelected ? 'border-white/10 text-emerald-400' : 'border-[#111111]/10 text-[#0016CB]'
+                    <div className={`pt-2.5 border-t text-[11px] font-mono flex items-center gap-2 ${
+                      isSelected ? 'border-white/10 text-emerald-400' : 'border-[#111111]/10 text-[#1D4ED8]'
                     }`}>
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       <span>{m.telemetry}</span>
                     </div>
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>

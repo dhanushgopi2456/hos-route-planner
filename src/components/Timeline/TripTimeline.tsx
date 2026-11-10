@@ -65,51 +65,50 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
   ];
 
   return (
-    <div className={`uc-card-stark p-6 sm:p-8 ${className}`}>
+    <div className={`rounded-xl bg-[#19191b] border border-[#232325] p-5 sm:p-6 text-[#ededed] ${className}`}>
       {/* Top Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-5 mb-6 border-b border-[#242424] gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-4 mb-5 border-b border-[#232325] gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161616] border border-[#242424] text-[#99A9EE] text-xs font-mono uppercase font-bold tracking-widest mb-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#141415] border border-[#232325] text-blue-400 text-xs font-mono mb-1.5">
             <Clock className="w-3.5 h-3.5" />
-            <span>United Carriers Milestone Tracker</span>
+            <span>Milestone tracker</span>
           </div>
-          <h3 className="font-bold text-xl text-white font-display flex items-center gap-2 uppercase tracking-tight">
-            <span>HOS Duty Schedule &amp; Milestone Timeline</span>
+          <h3 className="font-semibold text-base sm:text-lg text-white">
+            HOS duty schedule &amp; milestone timeline
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5 font-sans">
+          <p className="text-xs text-[#85858b] mt-0.5">
             Normalized FMCSA event sequence — single source of truth for highway map, ELD logs, and compliance.
           </p>
         </div>
 
-        {/* Filter Pills with layout animation */}
+        {/* Filter Buttons */}
         <div className="flex items-center gap-1.5 flex-wrap font-mono">
-          <span className="text-[11px] text-slate-400 mr-1 flex items-center gap-1">
+          <span className="text-[11px] text-[#85858b] mr-1 flex items-center gap-1">
             <Filter className="w-3 h-3" />
             <span>Filter:</span>
           </span>
           {filterOptions.map(f => {
             const isSelected = activeFilter === f.id;
             return (
-              <motion.button
+              <button
                 key={f.id}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
+                type="button"
                 onClick={() => setActiveFilter(f.id)}
-                className={`relative px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                className={`relative px-2.5 py-1 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                   isSelected
-                    ? 'btn-uc-solid text-white shadow-md'
-                    : 'bg-[#161616] border border-[#242424] text-slate-400 hover:text-white'
+                    ? 'bg-[#2563EB] text-white border border-blue-400'
+                    : 'bg-[#141415] border border-[#232325] text-[#a1a1a6] hover:text-white'
                 }`}
               >
                 <span>{f.label} ({f.count})</span>
-              </motion.button>
+              </button>
             );
           })}
         </div>
       </div>
 
-      {/* Timeline Milestone Stream with Glowing Vertical Line */}
-      <div className="relative pl-7 space-y-6 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-[#0016CB] before:via-[#3346D7] before:to-emerald-500">
+      {/* Timeline Milestone Stream */}
+      <div className="relative pl-7 space-y-4 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[1px] before:bg-[#232325]">
         <AnimatePresence mode="popLayout">
           {filteredEvents.map((ev, idx) => {
             const start = formatTime(ev.start_time);
@@ -122,28 +121,28 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.25, delay: Math.min(idx * 0.04, 0.3) }}
+                transition={{ duration: 0.2 }}
                 className="relative group"
               >
-                {/* Event Icon Pin on the Timeline Line */}
+                {/* Event Icon Pin */}
                 <div
-                  className={`absolute -left-[35px] top-1.5 w-7 h-7 rounded-full border-2 border-black shadow-md flex items-center justify-center text-white ${getEventColor(
+                  className={`absolute -left-[35px] top-1.5 w-6 h-6 rounded-md border border-[#232325] flex items-center justify-center text-white ${getEventColor(
                     ev.type,
                     ev.status
-                  )} group-hover:scale-110 transition-transform`}
+                  )}`}
                 >
                   {getEventIcon(ev.type)}
                 </div>
 
                 {/* Event Milestone Card */}
-                <div className="p-4 rounded-sm bg-[#161616] border border-[#242424] hover:border-[#374151] transition-all text-xs space-y-2">
+                <div className="p-3.5 rounded-lg bg-[#141415] border border-[#232325] hover:border-[#2e2e32] transition-colors text-xs space-y-1.5">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-sm text-white font-display">
+                      <span className="font-medium text-white">
                         {getEventTitle(ev.type, ev.reason)}
                       </span>
                       <span
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider border ${getDutyStatusBadge(
+                        className={`px-2 py-0.5 rounded text-[10px] font-mono border ${getDutyStatusBadge(
                           ev.status
                         )}`}
                       >
@@ -151,7 +150,7 @@ export const TripTimeline: React.FC<TripTimelineProps> = ({
                       </span>
                     </div>
 
-                    <div className="text-right text-[11px] text-slate-400 font-mono">
+                    <div className="text-right text-[11px] text-[#85858b] font-mono tabular-nums">
                       <span>{start.datePart}</span> &bull; <span>{start.timePart} → {end.timePart}</span>
                     </div>
                   </div>

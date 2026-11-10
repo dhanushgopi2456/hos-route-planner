@@ -43,21 +43,6 @@ export const DashboardPage: React.FC = () => {
   // Selected Day Log
   const [selectedDayLog, setSelectedDayLog] = useState<number>(1);
 
-  // Celestial Ambient Video Background state
-  const [ambientVideoActive, setAmbientVideoActive] = useState<boolean>(true);
-  const videoBgRef = useRef<HTMLVideoElement>(null);
-
-  const toggleAmbientVideo = () => {
-    if (videoBgRef.current) {
-      if (ambientVideoActive) {
-        videoBgRef.current.pause();
-      } else {
-        videoBgRef.current.play().catch(() => {});
-      }
-      setAmbientVideoActive(!ambientVideoActive);
-    }
-  };
-
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Clear trip if user logs out
@@ -304,72 +289,37 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-100 pb-20 relative selection:bg-[#0016CB] selection:text-white overflow-x-hidden">
-      {/* 1. Cinematic Celestial Atmosphere Video Background (High-Vibrancy, Ultra-Clear) */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
-        <video
-          ref={videoBgRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          className={`w-full h-full object-cover object-center transition-opacity duration-700 filter brightness-125 contrast-110 saturate-130 ${
-            ambientVideoActive ? 'opacity-90 md:opacity-95' : 'opacity-20'
-          }`}
-        >
-          <source
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_030633_1712fc71-4979-4e14-98f9-9f95702ab3da.mp4"
-            type="video/mp4"
-          />
-        </video>
-
-        {/* Lightweight subtle gradient: keeps celestial video fully vivid while protecting text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-600/15 via-transparent to-black/25 pointer-events-none" />
-      </div>
-
+    <div className="min-h-screen bg-[#0f0f10] text-[#ededed] pb-20 relative selection:bg-[#2563EB] selection:text-white overflow-x-clip">
       {/* Top Command Bar & Workspace Shell */}
-      <div className="bg-[#0A0A0A]/95 dark:bg-[#0A0A0A]/95 bg-white/95 text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 py-3.5 px-4 sm:px-6 lg:px-8 sticky top-20 z-30 backdrop-blur-2xl shadow-md transition-colors">
+      <div className="bg-[#141415]/95 backdrop-blur-md text-[#ededed] border-b border-[#232325] py-2.5 px-4 sm:px-6 lg:px-8 sticky top-14 z-30 transition-colors">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-black/40 border border-slate-300 dark:border-white/15 hover:border-[#0016CB] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white transition-all cursor-pointer group font-mono backdrop-blur-md"
+              className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#19191b] border border-[#2e2e32] hover:border-[#2563EB] text-xs font-medium text-[#a1a1a6] hover:text-white transition-colors cursor-pointer group"
             >
-              <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1 text-[#0016CB]" />
-              <span>Back to Home</span>
+              <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5 text-[#2563EB]" />
+              <span>Back to home</span>
             </Link>
 
-            <div className="h-4 w-[1px] bg-slate-300 dark:bg-slate-800 hidden sm:block" />
+            <div className="h-4 w-[1px] bg-[#232325] hidden sm:block" />
 
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                {plannedTrip ? 'HAUL ROUTED & COMPLIANT' : 'DISPATCH READY'}
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+              <span className="font-mono text-xs font-medium text-[#a1a1a6]">
+                {plannedTrip ? 'Haul routed and compliant' : 'Dispatch ready'}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Ambient Background Toggle Pill */}
-            <button
-              type="button"
-              onClick={toggleAmbientVideo}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-[#161616]/80 hover:bg-slate-200 dark:hover:bg-[#242424] text-[11px] font-mono text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-[#2E2E2E] hover:border-[#2f63ff] transition-all cursor-pointer"
-              title={ambientVideoActive ? 'Pause Celestial Ambience' : 'Play Celestial Ambience'}
-            >
-              <span className={`w-1.5 h-1.5 rounded-full ${ambientVideoActive ? 'bg-[#2f63ff] animate-pulse shadow-[0_0_8px_#2f63ff]' : 'bg-slate-400 dark:bg-slate-500'}`} />
-              <span className="hidden sm:inline">Celestial Background</span>
-              <span className="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400">{ambientVideoActive ? 'ON' : 'OFF'}</span>
-            </button>
-
-            <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 hidden md:block">
-              Standard: <span className="text-blue-600 dark:text-blue-400 font-semibold">FMCSA 49 CFR Part 395</span>
+            <div className="text-[11px] font-mono text-[#85858b] hidden md:block">
+              Standard: <span className="text-[#a1a1a6]">FMCSA 49 CFR Part 395</span>
             </div>
             {plannedTrip && (
-              <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">
-                {plannedTrip.daily_logs.length} Days Generated
+              <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-md bg-[#19191b] text-[#a1a1a6] border border-[#2e2e32]">
+                {plannedTrip.daily_logs.length} days generated
               </span>
             )}
           </div>
@@ -377,7 +327,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 lg:pt-8 pb-20 relative z-10">
         {/* Error Alert */}
         <AnimatePresence>
           {errorMessage && (
@@ -385,12 +335,12 @@ export const DashboardPage: React.FC = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="mb-6 p-4 bg-rose-950/60 border border-rose-800/80 rounded-2xl text-rose-200 text-sm flex items-start gap-3 shadow-md font-mono"
+              className="mb-6 p-4 bg-[#19191b] border border-rose-800/80 rounded-lg text-rose-200 text-xs flex items-start gap-3 shadow-sm font-mono"
             >
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               <div>
-                <div className="font-bold text-white">Trip Planning Error</div>
-                <p className="mt-0.5">{errorMessage}</p>
+                <div className="font-semibold text-white">Trip Planning Error</div>
+                <p className="mt-0.5 text-[#a1a1a6]">{errorMessage}</p>
               </div>
             </motion.div>
           )}
@@ -408,38 +358,38 @@ export const DashboardPage: React.FC = () => {
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Active Driver Credentials Card */}
-            <div className="mb-6 p-4 sm:p-5 uc-card-stark flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-center gap-3.5">
+            <div className="mb-6 p-4 rounded-xl bg-[#19191b] border border-[#232325] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
                 {user?.avatar_url ? (
                   <img
                     src={user.avatar_url}
                     alt={user.name}
-                    className="w-12 h-12 rounded-sm object-cover border border-[#0016CB]/50 shrink-0 shadow-xs"
+                    className="w-10 h-10 rounded-md object-cover border border-[#2e2e32] shrink-0"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-sm bg-[#0016CB] text-white flex items-center justify-center font-black text-base shrink-0 shadow-md">
+                  <div className="w-10 h-10 rounded-md bg-[#2563EB] text-white flex items-center justify-center font-semibold text-sm shrink-0">
                     {user?.name?.charAt(0) || 'D'}
                   </div>
                 )}
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-base text-slate-900 dark:text-white font-display uppercase">
+                    <span className="font-semibold text-sm text-[#ededed]">
                       {user?.name}
                     </span>
-                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-[#161616] text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1 font-mono">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#232325] text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                       <span>Authorized {user?.role || 'Driver'}</span>
                     </span>
                   </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400 flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 font-mono">
-                    <span className="font-medium text-slate-700 dark:text-slate-300">{user?.carrier_name || 'Independent Operator'}</span>
+                  <div className="text-xs text-[#a1a1a6] flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-1 font-mono tabular-nums">
+                    <span className="text-[#ededed] font-sans">{user?.carrier_name || 'Independent Operator'}</span>
                     <span>&bull;</span>
                     <span>CDL: {user?.cdl_number || 'N/A'}</span>
                     <span>&bull;</span>
                     <span>Unit: #{user?.truck_number || '101'}</span>
                     <span>&bull;</span>
-                    <span className="text-[#0016CB] dark:text-[#99A9EE] font-bold">
+                    <span className="text-blue-400 font-medium">
                       Cycle: {Number(user?.current_cycle_used ?? 0).toFixed(1)}h / 70.0h
                     </span>
                   </div>
@@ -454,10 +404,10 @@ export const DashboardPage: React.FC = () => {
                     navigate('/');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="btn-uc-pill px-4 py-2 text-xs font-mono font-bold cursor-pointer transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-md bg-[#232325] hover:bg-[#2e2e32] border border-[#2e2e32] text-xs text-[#a1a1a6] hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>Switch Driver / Sign Out</span>
+                  <span>Switch driver</span>
                 </button>
               </div>
             </div>
@@ -484,51 +434,42 @@ export const DashboardPage: React.FC = () => {
                 {/* HOS Status Metrics Card */}
                 <HosStatusCard tripData={plannedTrip} />
 
-                {/* Navigation Tabs for Planned Trip with Layout Indicator */}
-                <div className="uc-card-stark p-1.5 flex flex-wrap items-center justify-between gap-2 font-mono">
+                {/* Navigation Tabs for Planned Trip */}
+                <div className="p-1 rounded-lg bg-[#141415] border border-[#232325] flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center space-x-1 flex-wrap">
                     {[
-                      { id: 'overview', label: 'Route & Map Telemetry' },
-                      { id: 'logs', label: `ELD Daily Logs (${plannedTrip.daily_logs.length} Days)` },
-                      { id: 'timeline', label: `Duty Timeline (${plannedTrip.events.length} Events)` },
-                      { id: 'compliance', label: 'Compliance Audit (8 Checks)' }
+                      { id: 'overview', label: 'Route & map' },
+                      { id: 'logs', label: `ELD daily logs (${plannedTrip.daily_logs.length} days)` },
+                      { id: 'timeline', label: `Duty timeline (${plannedTrip.events.length} events)` },
+                      { id: 'compliance', label: 'Compliance audit (8 checks)' }
                     ].map(tab => {
                       const isCurrent = activeTab === tab.id;
                       return (
-                        <motion.button
+                        <button
                           key={tab.id}
-                          whileHover={{ scale: 1.02, y: -1 }}
-                          whileTap={{ scale: 0.98 }}
+                          type="button"
                           onClick={() => setActiveTab(tab.id as any)}
-                          className={`relative px-4 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer font-mono ${
+                          className={`relative px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
                             isCurrent
-                              ? 'text-white shadow-md'
-                              : 'text-slate-400 hover:text-white hover:bg-[#161616]'
+                              ? 'bg-[#232325] text-white border border-[#2e2e32]'
+                              : 'text-[#a1a1a6] hover:text-white hover:bg-[#19191b]'
                           }`}
                         >
-                          <span className="relative z-10">{tab.label}</span>
-                          {isCurrent && (
-                            <motion.div
-                              layoutId="activeSubTab"
-                              className="absolute inset-0 btn-uc-solid rounded-full"
-                              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                            />
-                          )}
-                        </motion.button>
+                          <span>{tab.label}</span>
+                        </button>
                       );
                     })}
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <motion.button
-                      whileHover={{ scale: 1.03, y: -1 }}
-                      whileTap={{ scale: 0.97 }}
+                    <button
+                      type="button"
                       onClick={handleDownloadAllLogsPdf}
-                      className="btn-uc-solid px-4 py-2 text-xs font-bold inline-flex items-center space-x-1.5 cursor-pointer font-mono shadow-md"
+                      className="btn-electric-primary px-3 py-1.5 text-xs font-medium inline-flex items-center space-x-1.5 cursor-pointer"
                     >
                       <Download className="w-3.5 h-3.5" />
-                      <span>Download All Logs (PDF)</span>
-                    </motion.button>
+                      <span>Download all logs (PDF)</span>
+                    </button>
                   </div>
                 </div>
 
@@ -638,57 +579,52 @@ export const DashboardPage: React.FC = () => {
                     >
                       {/* Day selector row with Prev/Next buttons */}
                       <div className="flex items-center justify-between gap-4 flex-wrap pb-1 font-mono">
-                        <div className="flex items-center space-x-2 overflow-x-auto">
+                        <div className="flex items-center space-x-1.5 overflow-x-auto">
                           {/* Prev Day Pill */}
-                          <motion.button
+                          <button
                             type="button"
-                            whileHover={{ scale: 1.04 }}
-                            whileTap={{ scale: 0.96 }}
                             disabled={selectedDayLog <= 1}
                             onClick={handlePrevDay}
-                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${
+                            className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${
                               selectedDayLog > 1
-                                ? 'bg-[#161616] border border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
-                                : 'bg-transparent border border-[#242424]/40 text-slate-600 cursor-not-allowed'
+                                ? 'bg-[#19191b] border border-[#232325] text-[#a1a1a6] hover:text-white hover:border-[#2e2e32] cursor-pointer'
+                                : 'bg-transparent border border-[#232325]/40 text-[#85858b]/40 cursor-not-allowed'
                             }`}
                           >
                             <ChevronLeft className="w-3.5 h-3.5" />
                             <span>Prev</span>
-                          </motion.button>
+                          </button>
 
                           {/* Individual Day Buttons */}
                           {plannedTrip.daily_logs.map(log => (
-                            <motion.button
+                            <button
                               key={`day-btn-${log.day_number}`}
-                              whileHover={{ scale: 1.04, y: -1 }}
-                              whileTap={{ scale: 0.96 }}
+                              type="button"
                               onClick={() => setSelectedDayLog(log.day_number)}
-                              className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap cursor-pointer ${
                                 selectedDayLog === log.day_number
-                                  ? 'btn-uc-solid shadow-md'
-                                  : 'bg-[#161616] border border-[#242424] text-slate-300 hover:border-[#374151]'
+                                  ? 'bg-[#2563EB] text-white border border-blue-400/30'
+                                  : 'bg-[#19191b] border border-[#232325] text-[#a1a1a6] hover:text-white hover:border-[#2e2e32]'
                               }`}
                             >
                               Day {log.day_number} ({log.date})
-                            </motion.button>
+                            </button>
                           ))}
 
                           {/* Next Day Pill */}
-                          <motion.button
+                          <button
                             type="button"
-                            whileHover={{ scale: 1.04 }}
-                            whileTap={{ scale: 0.96 }}
                             disabled={selectedDayLog >= plannedTrip.daily_logs.length}
                             onClick={handleNextDay}
-                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${
+                            className={`px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${
                               selectedDayLog < plannedTrip.daily_logs.length
-                                ? 'bg-[#161616] border border-[#242424] text-white hover:border-[#0016CB] cursor-pointer'
-                                : 'bg-transparent border border-[#242424]/40 text-slate-600 cursor-not-allowed'
+                                ? 'bg-[#19191b] border border-[#232325] text-[#a1a1a6] hover:text-white hover:border-[#2e2e32] cursor-pointer'
+                                : 'bg-transparent border border-[#232325]/40 text-[#85858b]/40 cursor-not-allowed'
                             }`}
                           >
                             <span>Next</span>
                             <ChevronRight className="w-3.5 h-3.5" />
-                          </motion.button>
+                          </button>
                         </div>
                       </div>
 

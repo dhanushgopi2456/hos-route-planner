@@ -278,10 +278,7 @@
       line-height: 1.05;
       text-transform: uppercase;
       letter-spacing: 0.02em;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
+      color: #ffffff;
     }
 
     .card-body {
@@ -289,10 +286,7 @@
       font-weight: 400;
       font-size: calc(12.4 * var(--u));
       line-height: 1.45;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
+      color: rgba(255, 255, 255, 0.72);
     }
 
     /* Outline pill "Our services" centred 36u from bottom */
@@ -687,9 +681,11 @@
         }
       }
 
-      // Safe video seek handler
+      // Safe video seek handler with deadlock watchdog
+      let lastSeekTimestamp = 0;
       video.addEventListener('seeking', () => {
         isSeeking = true;
+        lastSeekTimestamp = performance.now();
       });
 
       video.addEventListener('seeked', () => {
@@ -697,19 +693,37 @@
         if (pendingSeek !== null) {
           const next = pendingSeek;
           pendingSeek = null;
-          if (Math.abs(video.currentTime - next) > 1 / 60) {
+          if (Math.abs(video.currentTime - next) > 0.03) {
             video.currentTime = next;
           }
         }
       });
 
+      // Warm up hardware video decoder
+      video.muted = true;
+      video.playsInline = true;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          video.pause();
+          video.currentTime = 0.001;
+        }).catch(() => {});
+      }
+
       function applyVideoSeek(target) {
+        const clampedTarget = Math.max(0, Math.min(VIDEO_DURATION - 0.04, target));
+        const now = performance.now();
+        if (isSeeking && now - lastSeekTimestamp > 90) {
+          isSeeking = false;
+        }
         if (!isSeeking) {
-          if (Math.abs(video.currentTime - target) > 1 / 60) {
-            video.currentTime = target;
+          if (Math.abs(video.currentTime - clampedTarget) > 0.03) {
+            isSeeking = true;
+            lastSeekTimestamp = now;
+            video.currentTime = clampedTarget;
           }
         } else {
-          pendingSeek = target;
+          pendingSeek = clampedTarget;
         }
       }
 
