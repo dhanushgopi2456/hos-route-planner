@@ -4,6 +4,7 @@ import { HeroSection } from '../components/Landing/HeroSection';
 import { MarqueeTicker } from '../components/Landing/MarqueeTicker';
 import { ImpactMetrics } from '../components/Landing/ImpactMetrics';
 import { CraneTruckInteractiveShowcase } from '../components/Landing/CraneTruckInteractiveShowcase';
+import { KvScrollHero } from '../components/Landing/KvScrollHero';
 import { CapabilitiesGrid } from '../components/Landing/CapabilitiesGrid';
 import { MilestoneHighwayRoad } from '../components/Landing/MilestoneHighwayRoad';
 import { ValuePillars } from '../components/Landing/ValuePillars';
@@ -37,10 +38,13 @@ export const LandingPage: React.FC = () => {
       {/* 3. Section 2: High-Contrast Impact Metrics ("WE PLAN ROUTES. WE SHIELD COMPLIANCE.") */}
       <ImpactMetrics />
 
-      {/* 4. Section 3: Interactive Reach Stacker Crane & Semi-Truck Sequence */}
+      {/* 4. Section 3: KV Freight Scroll Hero (Reach Stacker & Semi-Truck Sequence) */}
       <div id="crane-sequence">
-        <CraneTruckInteractiveShowcase onLaunchPlanner={() => handleLaunchPlanner(false)} />
+        <KvScrollHero onLaunchPlanner={(demo, tab) => handleLaunchPlanner(demo, tab)} />
       </div>
+
+      {/* 4b. Interactive Telemetry Stage Inspector */}
+      <CraneTruckInteractiveShowcase onLaunchPlanner={() => handleLaunchPlanner(false)} />
 
       {/* 5. Section 4: Capabilities Grid with Horizontal Road, Gliding Semi-Truck & Official Icons */}
       <CapabilitiesGrid onLaunchPlanner={(tab) => handleLaunchPlanner(true, tab)} />

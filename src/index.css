@@ -5,9 +5,12 @@
   --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-anton: 'Anton', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-archivo: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* United Carriers Alpha Spec Colors */
+  /* United Carriers & KV Alpha Spec Colors */
   --color-primary: #0016CB;
+  --color-cobalt: #2f63ff;
   --color-secondary: #FFFFFF;
   --color-tertiary: #374151;
   --color-neutral: #000000;

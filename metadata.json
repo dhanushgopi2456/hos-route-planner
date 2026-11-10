@@ -1,6 +1,6 @@
 {
-  "name": "HOS Route Planner & ELD Log Generator",
-  "description": "FMCSA-compliant HOS route planner and ELD driver daily log generator with road routing, dynamic rest and fuel stop scheduling, and 24-hour RODS grid.",
+  "name": "KV & United Carriers — HOS Route Planner & ELD Fleet Suite",
+  "description": "FMCSA-compliant commercial freight forwarding and HOS route planner with dynamic 11/14/30/70 duty scheduling, 1,000-mile fuel stops, 24-hour RODS grid logs, and interactive video-scrubbed fleet logistics hero.",
   "requestFramePermissions": ["geolocation"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

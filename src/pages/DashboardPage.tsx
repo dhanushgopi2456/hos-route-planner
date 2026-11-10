@@ -52,11 +52,19 @@ export const DashboardPage: React.FC = () => {
     }
   }, [isAuthenticated]);
 
-  // Support ?tab= in URL
+  // Support ?tab= in URL with alias mapping (e.g. eld -> logs, summary/map -> overview)
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['overview', 'logs', 'timeline', 'compliance'].includes(tabParam)) {
-      setActiveTab(tabParam as any);
+    if (tabParam) {
+      if (tabParam === 'logs' || tabParam === 'eld') {
+        setActiveTab('logs');
+      } else if (tabParam === 'timeline') {
+        setActiveTab('timeline');
+      } else if (tabParam === 'compliance') {
+        setActiveTab('compliance');
+      } else if (tabParam === 'overview' || tabParam === 'map' || tabParam === 'summary') {
+        setActiveTab('overview');
+      }
     }
   }, [searchParams]);
 

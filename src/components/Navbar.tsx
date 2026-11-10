@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Truck, ShieldCheck, Info, X, Menu, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Truck, ShieldCheck, Info, X, Menu, ArrowRight, CheckCircle2, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ThemeToggle } from './UI/ThemeToggle';
 import { UserProfileMenu } from './Auth/UserProfileMenu';
@@ -147,6 +147,18 @@ export const Navbar: React.FC = () => {
 
           {/* Right Action Controls */}
           <div className="flex items-center space-x-3">
+            {/* Standalone KV Freight Hero Link */}
+            <a
+              href="/kv-hero.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden xl:inline-flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-[#161616] hover:bg-[#2f63ff]/20 text-[#2f63ff] border border-[#2f63ff]/40 transition-all cursor-pointer font-mono"
+              title="Open pure vanilla JS KV Freight Scroll Hero (0 build step)"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-[#2f63ff]" />
+              <span>KV Hero</span>
+            </a>
+
             {/* 70/8 Quick Rules Modal Button */}
             <motion.button
               whileHover={{ scale: 1.04, y: -1 }}
@@ -253,6 +265,15 @@ export const Navbar: React.FC = () => {
               >
                 FAQ
               </button>
+              <a
+                href="/kv-hero.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-[#2f63ff] hover:bg-[#2f63ff]/15 font-mono"
+              >
+                KV Hero (Pure Vanilla JS) ↗
+              </a>
             </motion.div>
           )}
         </AnimatePresence>
