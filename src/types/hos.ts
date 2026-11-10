@@ -73,6 +73,10 @@ export interface Violation {
   start_time?: string;
   end_time?: string;
   affected_event_id?: string;
+  title?: string;
+  rule_code?: string;
+  description?: string;
+  remedy?: string;
 }
 
 export interface ComplianceCheck {

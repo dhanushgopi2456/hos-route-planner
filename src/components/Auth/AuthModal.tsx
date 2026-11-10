@@ -14,8 +14,7 @@ import {
   AlertCircle,
   Loader2,
   FileBadge,
-  Building,
-  Sliders
+  Building
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../context/AuthContext';

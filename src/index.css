@@ -1,13 +1,24 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --color-obsidian-950: #06080E;
+  --color-obsidian-900: #0B0F19;
+  --color-obsidian-850: #0F172A;
+  --color-electric-blue: #0052FF;
+  --color-electric-hover: #1D63FF;
+  --color-cobalt-600: #2563EB;
+  --color-cobalt-500: #3B82F6;
+  --color-cyan-glow: #06B6D4;
+}
+
 @keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 @keyframes pulseGlow {
@@ -30,13 +41,19 @@
   }
 }
 
-@keyframes rotateGradient {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-  100% {
-    filter: hue-rotate(360deg);
-  }
+@keyframes radarScan {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes roadDash {
+  0% { stroke-dashoffset: 100; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes borderGlowPulse {
+  0%, 100% { border-color: rgba(37, 99, 235, 0.3); box-shadow: 0 0 15px rgba(0, 82, 255, 0.15); }
+  50% { border-color: rgba(59, 130, 246, 0.6); box-shadow: 0 0 25px rgba(0, 82, 255, 0.35); }
 }
 
 .animate-shimmer {
@@ -51,14 +68,49 @@
   animation: float3D 6s ease-in-out infinite;
 }
 
-.animate-rotate-gradient {
-  animation: rotateGradient 12s linear infinite;
+.animate-border-glow {
+  animation: borderGlowPulse 4s ease-in-out infinite;
 }
 
-/* Smooth font rendering */
-* {
+.animate-road-dash {
+  animation: roadDash 4s linear infinite;
+}
+
+/* Base Font & Styling */
+html, body {
+  background-color: #06080E;
+  color: #F8FAFC;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono, .tabular-nums {
+  font-family: var(--font-mono);
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #06080E;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }
 
 /* 3D Perspective Utilities */
@@ -86,62 +138,115 @@
   transform: translateZ(30px);
 }
 
-/* Attractive 3D Glass Surface */
+/* United Carriers Signature Glassmorphic Surface */
+.uc-glass-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    0 20px 40px -15px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.uc-glass-card:hover {
+  border-color: rgba(0, 82, 255, 0.4);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 30px -5px rgba(0, 82, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Light / subtle glass card */
 .glass-panel-3d {
-  background: rgba(255, 255, 255, 0.90);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 
-    0 10px 30px -10px rgba(15, 23, 42, 0.08),
-    0 20px 45px -15px rgba(59, 130, 246, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.dark .glass-panel-3d {
-  background: rgba(15, 23, 42, 0.88);
+  background: rgba(15, 23, 42, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(51, 65, 85, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow: 
-    0 20px 40px -15px rgba(0, 0, 0, 0.6),
+    0 15px 35px -10px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #f1f5f9;
 }
 
-.glass-panel-dark-3d {
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 
-    0 20px 40px -15px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-}
-
-/* Dynamic Interactive Button Glows */
-.btn-glow-primary {
+/* Electric Blue Action Button with Radial Hover Shimmer */
+.btn-electric-primary {
   position: relative;
+  background: linear-gradient(135deg, #0052FF 0%, #2563EB 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  border-radius: 9999px;
   overflow: hidden;
+  box-shadow: 0 8px 24px -4px rgba(0, 82, 255, 0.45);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-glow-primary::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.25) 0%, transparent 60%);
-  opacity: 0;
-  transform: scale(0.5);
-  transition: opacity 0.3s, transform 0.3s;
-  pointer-events: none;
+.btn-electric-primary:hover {
+  background: linear-gradient(135deg, #1D63FF 0%, #3B82F6 100%);
+  box-shadow: 0 12px 32px -4px rgba(0, 82, 255, 0.65);
+  transform: translateY(-1px);
 }
 
-.btn-glow-primary:hover::after {
-  opacity: 1;
-  transform: scale(1);
+.btn-electric-secondary {
+  position: relative;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  color: #F8FAFC;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-electric-secondary:hover {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(0, 82, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 82, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Background Grid Mesh */
+.bg-grid-mesh {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+.bg-radial-blue {
+  background: radial-gradient(circle at 50% 0%, rgba(0, 82, 255, 0.15) 0%, rgba(6, 8, 14, 0) 70%);
+}
+
+/* Leaflet Dark Customization */
+.leaflet-container {
+  background: #0B0F19 !important;
+  font-family: var(--font-sans) !important;
+}
+
+.dark-map-tiles {
+  filter: brightness(0.65) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.75);
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(11, 15, 25, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(11, 15, 25, 0.95) !important;
+}
+
+.leaflet-control-zoom a {
+  background: rgba(15, 23, 42, 0.9) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #0052FF !important;
+  color: #FFFFFF !important;
 }

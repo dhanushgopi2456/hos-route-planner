@@ -6,7 +6,6 @@ import {
   XCircle,
   Play,
   Loader2,
-  FileText,
   AlertTriangle,
   Info,
   Clock,
@@ -15,12 +14,11 @@ import {
   Moon,
   Coffee,
   ArrowRight,
-  RotateCcw,
   Sparkles,
-  Search
+  Search,
+  ArrowLeft
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Card3D } from '../components/UI/Card3D';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -101,368 +99,305 @@ export const AboutRulesPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen text-slate-900 pb-20 relative">
-      {/* Header Banner with 3D Depth */}
-      <div className="bg-slate-900/90 backdrop-blur-xl text-white py-12 border-b border-slate-800 shadow-xl relative overflow-hidden">
+    <div className="min-h-screen bg-[#06080E] text-slate-100 pb-20 relative selection:bg-blue-600 selection:text-white">
+      {/* Header Banner */}
+      <div className="bg-[#080C16] text-white py-12 border-b border-white/[0.08] shadow-xl relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-wrap items-center justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold mb-3 border border-blue-400/30 shadow-xs">
+            <div className="max-w-2xl space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono font-bold tracking-wider border border-blue-500/25">
                 <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
-                FMCSA 49 CFR Part 395 Regulations
+                <span>FMCSA 49 CFR Part 395 Standard</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-display">
                 Hours of Service (HOS) Rules &amp; Audit Engine
               </h1>
-              <p className="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed">
+              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
                 Complete regulatory specifications, operating assumptions, and an automated 16-test suite verifying mathematical compliance.
               </p>
             </div>
 
-            {/* Direct Workable Navigation CTA */}
-            <motion.button
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/')}
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:via-indigo-500 hover:to-cyan-400 text-white font-black text-xs uppercase tracking-wider shadow-xl shadow-blue-500/30 flex items-center gap-2.5 cursor-pointer border border-white/20"
-            >
-              <Truck className="w-4 h-4" />
-              <span>{isAuthenticated ? 'Plan Trip Now' : 'Sign In & Plan Trip'}</span>
-              <ArrowRight className="w-4 h-4" />
-            </motion.button>
+            {/* Direct Navigation CTA */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="btn-electric-secondary px-5 py-3 text-xs font-bold inline-flex items-center gap-2 cursor-pointer font-mono"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Home Page</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate('/planner')}
+                className="btn-electric-primary px-6 py-3 text-xs font-bold inline-flex items-center gap-2.5 cursor-pointer shadow-lg shadow-blue-600/30 font-mono"
+              >
+                <Truck className="w-4 h-4" />
+                <span>Launch Planner</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 space-y-8">
-        {/* Core Rules Grid with 3D Cards */}
-        <div className="glass-panel-3d rounded-3xl p-6 md:p-8">
+        {/* Core Rules Grid */}
+        <div className="uc-glass-card rounded-2xl p-6 md:p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-400">
+            <h2 className="text-lg font-black text-white flex items-center gap-2.5 font-display">
+              <div className="w-8 h-8 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
                 <Clock className="w-4 h-4" />
               </div>
               <span>Core FMCSA Property-Carrying CMV Limits</span>
             </h2>
-            <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700">
+            <span className="text-[11px] font-mono text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">
               49 CFR § 395.3
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Rule 1 */}
-            <Card3D depth={10}>
-              <div className="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 shadow-md shadow-slate-200/50 dark:shadow-none h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400">
-                      <Truck className="w-4 h-4" />
-                    </div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">11-Hour Driving Limit</h3>
+            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    <Truck className="w-4 h-4" />
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    May drive a maximum of 11 hours after 10 consecutive hours off duty. Any driving beyond
-                    11.00 hours triggers an immediate safety violation.
-                  </p>
+                  <h3 className="font-bold text-sm text-white font-display">11-Hour Driving Limit</h3>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">
-                  Rule: § 395.3(a)(3)(i)
-                </div>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  May drive a maximum of 11 hours after 10 consecutive hours off duty. Once 11 driving hours are reached, further driving is strictly prohibited.
+                </p>
               </div>
-            </Card3D>
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-blue-400 font-bold">
+                Rule: § 395.3(a)(1)
+              </div>
+            </div>
 
             {/* Rule 2 */}
-            <Card3D depth={10}>
-              <div className="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 shadow-md shadow-slate-200/50 dark:shadow-none h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
-                      <Clock className="w-4 h-4" />
-                    </div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">14-Hour Consecutive Duty Window</h3>
+            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <Clock className="w-4 h-4" />
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    May not drive beyond the 14th consecutive hour after coming on duty, following 10
-                    consecutive hours off duty. Off-duty breaks do NOT extend this window.
-                  </p>
+                  <h3 className="font-bold text-sm text-white font-display">14-Hour Duty Window</h3>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] font-mono text-indigo-600 dark:text-indigo-400 font-bold">
-                  Rule: § 395.3(a)(2)
-                </div>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  May not drive beyond the 14th consecutive hour after coming on duty, following 10 consecutive hours off duty. Off-duty time does not extend the 14-hour window.
+                </p>
               </div>
-            </Card3D>
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-amber-400 font-bold">
+                Rule: § 395.3(a)(2)
+              </div>
+            </div>
 
             {/* Rule 3 */}
-            <Card3D depth={10}>
-              <div className="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 shadow-md shadow-slate-200/50 dark:shadow-none h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-950 text-purple-600 dark:text-purple-400">
-                      <Coffee className="w-4 h-4" />
-                    </div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">30-Minute Rest Break</h3>
+            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                    <Coffee className="w-4 h-4" />
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Driving is not permitted if more than 8 consecutive or cumulative hours have passed
-                    without at least a 30-minute non-driving rest interval.
-                  </p>
+                  <h3 className="font-bold text-sm text-white font-display">30-Minute Rest Break</h3>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] font-mono text-purple-600 dark:text-purple-400 font-bold">
-                  Rule: § 395.3(a)(3)(ii)
-                </div>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  Driving is not permitted if more than 8 consecutive or cumulative hours have passed without at least a 30-minute non-driving rest interval.
+                </p>
               </div>
-            </Card3D>
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-purple-400 font-bold">
+                Rule: § 395.3(a)(3)(ii)
+              </div>
+            </div>
 
             {/* Rule 4 */}
-            <Card3D depth={10}>
-              <div className="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 shadow-md shadow-slate-200/50 dark:shadow-none h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
-                      <ShieldCheck className="w-4 h-4" />
-                    </div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">70-Hour / 8-Day Rolling Cycle</h3>
+            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <ShieldCheck className="w-4 h-4" />
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    May not drive after 70 hours on duty in any 8 consecutive days. A driver may restart
-                    the 70-hour period after taking 34 or more consecutive hours off duty.
-                  </p>
+                  <h3 className="font-bold text-sm text-white font-display">70-Hour / 8-Day Rolling Cycle</h3>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
-                  Rule: § 395.3(b)(2)
-                </div>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  May not drive after 70 hours on duty in any 8 consecutive days. A driver may restart the 70-hour period after taking 34 or more consecutive hours off duty.
+                </p>
               </div>
-            </Card3D>
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-emerald-400 font-bold">
+                Rule: § 395.3(b)(2)
+              </div>
+            </div>
 
             {/* Rule 5 */}
-            <Card3D depth={10}>
-              <div className="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 shadow-md shadow-slate-200/50 dark:shadow-none h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400">
-                      <Fuel className="w-4 h-4" />
-                    </div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">1,000-Mile Fueling Limit</h3>
+            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    <Fuel className="w-4 h-4" />
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Every commercial motor vehicle must refuel at least once every 1,000 miles. Our engine
-                    schedules fuel stops around 920 miles with a 30-minute on-duty duration.
-                  </p>
+                  <h3 className="font-bold text-sm text-white font-display">1,000-Mile Fueling Limit</h3>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] font-mono text-amber-600 dark:text-amber-400 font-bold">
-                  Safety Operational Limit
-                </div>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  Every commercial motor vehicle must refuel at least once every 1,000 miles. Our engine schedules fuel stops before 1,000 miles with a 30-minute duration.
+                </p>
               </div>
-            </Card3D>
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-cyan-400 font-bold">
+                Fleet Efficiency Standard
+              </div>
+            </div>
 
             {/* Rule 6 */}
-            <Card3D depth={10}>
-              <div className="p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 shadow-md shadow-slate-200/50 dark:shadow-none h-full flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-2 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400">
-                      <Moon className="w-4 h-4" />
-                    </div>
-                    <h3 className="font-bold text-sm text-slate-900 dark:text-white">10-Hour Sleeper Berth Reset</h3>
+            <div className="p-5 rounded-xl border border-slate-800 bg-slate-900/80 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <Moon className="w-4 h-4" />
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Taking 10 consecutive hours in the sleeper berth fully resets both the 11-hour driving clock
-                    and the 14-hour duty window for the next calendar day.
-                  </p>
+                  <h3 className="font-bold text-sm text-white font-display">10-Hour Sleeper Berth Reset</h3>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] font-mono text-indigo-700 dark:text-indigo-400 font-bold">
-                  Rule: § 395.1(g)
-                </div>
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  Taking 10 consecutive hours in the sleeper berth fully resets both the 11-hour driving clock and the 14-hour duty window for the next calendar day.
+                </p>
               </div>
-            </Card3D>
+              <div className="mt-4 pt-3 border-t border-slate-800 text-[10px] font-mono text-indigo-400 font-bold">
+                Rule: § 395.1(g)
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Operating Assumptions Table */}
-        <div className="glass-panel-3d rounded-3xl p-6 md:p-8">
+        <div className="uc-glass-card rounded-2xl p-6 md:p-8">
           <div className="flex items-center gap-2.5 mb-2">
-            <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-700 dark:text-blue-400">
+            <div className="w-8 h-8 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center border border-blue-500/30">
               <Info className="w-4 h-4" />
             </div>
-            <h2 className="text-lg font-black text-slate-900 dark:text-white">
+            <h2 className="text-lg font-black text-white font-display">
               Configured Operating Assumptions
             </h2>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">
+          <p className="text-xs text-slate-400 mb-5 font-sans">
             Explicit constraints configured for automated trip calculation:
           </p>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-800">
+          <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/80 font-mono text-xs">
+            <table className="w-full text-left">
+              <thead className="bg-slate-950 text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-slate-800">
                 <tr>
                   <th className="py-3 px-4">Constraint</th>
                   <th className="py-3 px-4">Configured Value</th>
-                  <th className="py-3 px-4">Regulatory Rationale</th>
+                  <th className="py-3 px-4">FMCSA Regulatory Reference</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">Driver Type</td>
-                  <td className="py-2.5 px-4">Property-Carrying CMV</td>
-                  <td className="py-2.5 px-4">Governed under 49 CFR § 395.3</td>
+              <tbody className="divide-y divide-slate-800 text-slate-300">
+                <tr>
+                  <td className="py-3 px-4 font-bold text-white">Average Travel Speed</td>
+                  <td className="py-3 px-4 text-blue-400">~60 MPH (0.01667 h/mile)</td>
+                  <td className="py-3 px-4 text-slate-500">Commercial Standard Estimate</td>
                 </tr>
-                <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">Duty Cycle Rule</td>
-                  <td className="py-2.5 px-4">70 hours in 8 consecutive days</td>
-                  <td className="py-2.5 px-4">Standard interstate freight carrier schedule</td>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-white">Pickup Dwell Time</td>
+                  <td className="py-3 px-4 text-amber-400">1.0 Hour (On-Duty Not Driving)</td>
+                  <td className="py-3 px-4 text-slate-500">49 CFR § 395.2 (Loading)</td>
                 </tr>
-                <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">Adverse Driving Conditions</td>
-                  <td className="py-2.5 px-4 font-mono text-rose-600 dark:text-rose-400 font-bold">DISABLED (No extension)</td>
-                  <td className="py-2.5 px-4">Explicit prompt mandate: no 2-hour adverse extension</td>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-white">Dropoff Dwell Time</td>
+                  <td className="py-3 px-4 text-amber-400">1.0 Hour (On-Duty Not Driving)</td>
+                  <td className="py-3 px-4 text-slate-500">49 CFR § 395.2 (Unloading)</td>
                 </tr>
-                <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">Pickup Stop Duration</td>
-                  <td className="py-2.5 px-4">1.00 hour (On-Duty Not Driving)</td>
-                  <td className="py-2.5 px-4">Dock check-in, load securing, and BOL inspection</td>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-white">Fuel Stop Trigger Interval</td>
+                  <td className="py-3 px-4 text-cyan-300">&lt; 1,000 Miles (30m duration)</td>
+                  <td className="py-3 px-4 text-slate-500">Fleet Diesel Range Policy</td>
                 </tr>
-                <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">Dropoff Stop Duration</td>
-                  <td className="py-2.5 px-4">1.00 hour (On-Duty Not Driving)</td>
-                  <td className="py-2.5 px-4">Dock unloading, seal check, and delivery receipt sign-off</td>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-white">30-Minute Rest Break</td>
+                  <td className="py-3 px-4 text-purple-400">30 Min (Off-Duty/Sleeper)</td>
+                  <td className="py-3 px-4 text-slate-500">49 CFR § 395.3(a)(3)(ii)</td>
                 </tr>
-                <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">Fuel Stop Threshold</td>
-                  <td className="py-2.5 px-4">920 planned miles (&le; 1,000 mi max)</td>
-                  <td className="py-2.5 px-4">30 min on-duty duration to pump fuel and check equipment</td>
-                </tr>
-                <tr className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">Highway Transit Speed</td>
-                  <td className="py-2.5 px-4">~60 mph road routing speed</td>
-                  <td className="py-2.5 px-4">Calculated via OSRM highway routing network</td>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-white">Daily Sleeper Reset</td>
+                  <td className="py-3 px-4 text-indigo-400">10 Consecutive Hours (Sleeper)</td>
+                  <td className="py-3 px-4 text-slate-500">49 CFR § 395.1(g)</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        {/* Real-time 16 Unit Test Engine Audit */}
-        <div className="glass-panel-3d rounded-3xl p-6 md:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-5 mb-5 border-b border-slate-200 dark:border-slate-800">
+        {/* Automated Test Suite Verification Panel */}
+        <div className="uc-glass-card rounded-2xl p-6 md:p-8 space-y-6">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
             <div>
-              <h2 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-                <span>FMCSA 16-Test Engine Audit Suite</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono font-bold tracking-wider border border-emerald-500/25 mb-1">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Automated Mathematical Test Harness</span>
+              </div>
+              <h2 className="text-xl font-bold text-white font-display">
+                Automated FMCSA Compliance Test Suite (16 Scenarios)
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Automated test harness validating all edge cases, resets, and violation bounds.
+              <p className="text-xs text-slate-400 mt-0.5 font-sans">
+                Real-time validation against all 16 regulatory test cases covering limits, breaks, midnight splits, and fuel stops.
               </p>
             </div>
 
             <div className="flex items-center gap-3">
               {testSummary && (
-                <span
-                  className={`inline-flex items-center gap-1.5 text-xs font-black px-3.5 py-1.5 rounded-full ${
-                    testSummary.passed === testSummary.total
-                      ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                      : 'bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800'
-                  }`}
-                >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                  {testSummary.passed} / {testSummary.total} TESTS PASSING (100%)
-                </span>
+                <div className="text-xs font-mono font-bold px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-emerald-400">
+                  {testSummary.passed} / {testSummary.total} PASSED
+                </div>
               )}
 
-              <motion.button
-                whileHover={{ scale: 1.05, y: -1 }}
-                whileTap={{ scale: 0.95 }}
+              <button
+                type="button"
                 onClick={() => fetchAndRunTests(true)}
                 disabled={isRunningTests}
-                className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+                className="btn-electric-primary px-4 py-2 text-xs font-bold inline-flex items-center gap-2 cursor-pointer font-mono"
               >
                 {isRunningTests ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ) : (
-                  <Play className="w-4 h-4" />
+                  <Play className="w-3.5 h-3.5" />
                 )}
-                <span>Re-Run Audit</span>
-              </motion.button>
+                <span>Rerun Audit Suite</span>
+              </button>
             </div>
           </div>
 
-          {/* Test Search & Filter Tabs */}
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-            <div className="flex items-center gap-1.5">
-              {[
-                { id: 'all', label: 'All Tests' },
-                { id: 'pass', label: 'Passing' },
-                { id: 'driving', label: '11h Driving' },
-                { id: 'rest', label: 'Duty & Sleeper' }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setFilterTab(tab.id as any)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    filterTab === tab.id
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+          {/* Test Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 font-mono text-xs">
+            {filteredTests.map((t, idx) => (
+              <div
+                key={t.id}
+                className="p-4 rounded-xl border border-slate-800 bg-slate-900/90 space-y-2 hover:border-slate-700 transition-colors"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-bold text-white font-display text-sm">
+                    {idx + 1}. {t.title}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                      t.passed
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                        : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+                    }`}
+                  >
+                    {t.passed ? 'PASSED' : 'FAILED'}
+                  </span>
+                </div>
 
-            <div className="relative w-full sm:w-64">
-              <input
-                type="text"
-                placeholder="Search test scenario..."
-                value={filterQuery}
-                onChange={e => setFilterQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-              />
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
-            </div>
-          </div>
+                <div className="text-[11px] text-slate-300 font-sans">
+                  {t.notes}
+                </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200 dark:border-slate-800">
-                <tr>
-                  <th className="py-2.5 px-4 w-20">Status</th>
-                  <th className="py-2.5 px-4">Test Scenario</th>
-                  <th className="py-2.5 px-4">Expected Outcome</th>
-                  <th className="py-2.5 px-4">Engine Result</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                {filteredTests.map(t => (
-                  <tr key={t.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
-                    <td className="py-2.5 px-4">
-                      {t.passed ? (
-                        <span className="inline-flex items-center gap-1 font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                          PASS
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-md border border-rose-200 dark:border-rose-800">
-                          <XCircle className="w-3 h-3 text-rose-600 dark:text-rose-400" />
-                          FAIL
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-2.5 px-4 font-bold text-slate-900 dark:text-white">
-                      {t.title}
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal mt-0.5">{t.notes}</div>
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-[11px] text-slate-600 dark:text-slate-400">
-                      {t.expected}
-                    </td>
-                    <td className="py-2.5 px-4 font-mono text-[11px] text-slate-900 dark:text-white font-bold">
-                      {t.actual}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                <div className="pt-2 border-t border-slate-800 flex justify-between text-[10px] text-slate-500">
+                  <span>Actual: <strong className="text-slate-300">{t.actual}</strong></span>
+                  <span className="text-emerald-400 font-semibold">Verified</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

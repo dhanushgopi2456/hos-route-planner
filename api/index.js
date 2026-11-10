@@ -43,9 +43,19 @@ var KNOWN_HUBS = [
   { name: "Osaka, Japan", city: "Osaka", state: "Kansai", country: "Japan", lat: 34.6937, lng: 135.5023, address: "Osaka Logistics Bay, Japan" },
   { name: "Singapore", city: "Singapore", state: "Singapore", country: "Singapore", lat: 1.3521, lng: 103.8198, address: "Singapore Jurong Logistics Hub" },
   { name: "Dubai, UAE", city: "Dubai", state: "Dubai", country: "United Arab Emirates", lat: 25.2048, lng: 55.2708, address: "Jebel Ali Port & Logistics Park, Dubai, UAE" },
-  { name: "Mumbai, India", city: "Mumbai", state: "Maharashtra", country: "India", lat: 19.076, lng: 72.8777, address: "JNPT Port Logistics Center, Mumbai, India" },
-  { name: "Delhi, India", city: "Delhi", state: "Delhi", country: "India", lat: 28.7041, lng: 77.1025, address: "Delhi Multi-Modal Logistics Park, India" },
+  { name: "Tadepalligudem, AP, India", city: "Tadepalligudem", state: "Andhra Pradesh", country: "India", lat: 16.8052, lng: 81.5283, address: "Tadepalligudem Logistics Center, Andhra Pradesh, India" },
+  { name: "Eluru, AP, India", city: "Eluru", state: "Andhra Pradesh", country: "India", lat: 16.7107, lng: 81.0952, address: "Eluru Freight Yard, Andhra Pradesh, India" },
+  { name: "Rajahmundry, AP, India", city: "Rajahmundry", state: "Andhra Pradesh", country: "India", lat: 17.0005, lng: 81.804, address: "Rajahmundry Cargo Hub, Andhra Pradesh, India" },
+  { name: "Vijayawada, AP, India", city: "Vijayawada", state: "Andhra Pradesh", country: "India", lat: 16.5062, lng: 80.648, address: "Vijayawada Multi-Modal Logistics Hub, Andhra Pradesh, India" },
+  { name: "Visakhapatnam, AP, India", city: "Visakhapatnam", state: "Andhra Pradesh", country: "India", lat: 17.6868, lng: 83.2185, address: "Visakhapatnam Port Container Terminal, Andhra Pradesh, India" },
+  { name: "Hyderabad, TS, India", city: "Hyderabad", state: "Telangana", country: "India", lat: 17.385, lng: 78.4867, address: "Hyderabad Logistics Corridor, Telangana, India" },
+  { name: "Chennai, TN, India", city: "Chennai", state: "Tamil Nadu", country: "India", lat: 13.0827, lng: 80.2707, address: "Chennai Port Container Freight Terminal, Tamil Nadu, India" },
   { name: "Bengaluru, India", city: "Bengaluru", state: "Karnataka", country: "India", lat: 12.9716, lng: 77.5946, address: "Bengaluru Logistics Corridor, India" },
+  { name: "Mumbai, India", city: "Mumbai", state: "Maharashtra", country: "India", lat: 19.076, lng: 72.8777, address: "JNPT Port Logistics Center, Mumbai, India" },
+  { name: "Pune, MH, India", city: "Pune", state: "Maharashtra", country: "India", lat: 18.5204, lng: 73.8567, address: "Pune Industrial Freight Hub, Maharashtra, India" },
+  { name: "Delhi, India", city: "Delhi", state: "Delhi", country: "India", lat: 28.7041, lng: 77.1025, address: "Delhi Multi-Modal Logistics Park, India" },
+  { name: "Kolkata, WB, India", city: "Kolkata", state: "West Bengal", country: "India", lat: 22.5726, lng: 88.3639, address: "Kolkata Port Logistics, West Bengal, India" },
+  { name: "Ahmedabad, GJ, India", city: "Ahmedabad", state: "Gujarat", country: "India", lat: 23.0225, lng: 72.5714, address: "Ahmedabad Logistics Park, Gujarat, India" },
   { name: "Seoul, South Korea", city: "Seoul", state: "Seoul", country: "South Korea", lat: 37.5665, lng: 126.978, address: "Seoul Central Freight Center, South Korea" },
   // Australia & New Zealand
   { name: "Sydney, Australia", city: "Sydney", state: "NSW", country: "Australia", lat: -33.8688, lng: 151.2093, address: "Port Botany Freight Terminal, Sydney, Australia" },
@@ -131,10 +141,10 @@ async function reverseGeocode(lat, lng) {
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3500);
+    const timeout = setTimeout(() => controller.abort(), 2800);
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "HOSRoutePlannerELD/1.0"
+        "User-Agent": "HOSRoutePlannerELD/1.0 (contact: dispatch@hosrouteplanner.io)"
       },
       signal: controller.signal
     });
@@ -142,20 +152,50 @@ async function reverseGeocode(lat, lng) {
     if (res.ok) {
       const data = await res.json();
       const addr = data.address || {};
-      const city = addr.city || addr.town || addr.village || addr.municipality || addr.suburb || addr.county || "Current Location";
+      const city = addr.city || addr.town || addr.village || addr.municipality || addr.suburb || addr.county || "";
       const state = addr.state ? getStateAbbr(addr.state) : addr.region || addr.province || addr.state_district || "";
       const country = addr.country || (addr.country_code ? addr.country_code.toUpperCase() : "");
       const nameParts = [city, state, country].filter(Boolean);
-      const name = nameParts.length > 0 ? nameParts.join(", ") : data.display_name?.split(",").slice(0, 3).join(", ") || `GPS (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-      return {
-        name,
-        city,
-        state,
-        country: country || "Global",
-        lat,
-        lng,
-        address: data.display_name || name
-      };
+      if (nameParts.length > 0) {
+        return {
+          name: nameParts.join(", "),
+          city: city || "Local Terminal",
+          state,
+          country: country || "Global",
+          lat,
+          lng,
+          address: data.display_name || nameParts.join(", ")
+        };
+      }
+    }
+  } catch (e) {
+  }
+  try {
+    const photonUrl = `https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`;
+    const pController = new AbortController();
+    const pTimeout = setTimeout(() => pController.abort(), 2500);
+    const pRes = await fetch(photonUrl, { signal: pController.signal });
+    clearTimeout(pTimeout);
+    if (pRes.ok) {
+      const pData = await pRes.json();
+      if (pData?.features && pData.features.length > 0) {
+        const props = pData.features[0]?.properties || {};
+        const city = props.city || props.town || props.locality || props.district || props.county || "";
+        const state = props.state ? getStateAbbr(props.state) : "";
+        const country = props.country || "";
+        const nameParts = [city, state, country].filter(Boolean);
+        if (nameParts.length > 0) {
+          return {
+            name: nameParts.join(", "),
+            city: city || "Local Terminal",
+            state,
+            country: country || "Global",
+            lat,
+            lng,
+            address: `${city ? city + ", " : ""}${state ? state + ", " : ""}${country}`
+          };
+        }
+      }
     }
   } catch (e) {
   }
@@ -168,21 +208,64 @@ async function reverseGeocode(lat, lng) {
       closest = hub;
     }
   }
-  if (minDistance < 1) {
+  if (minDistance < 0.35) {
     return {
       ...closest,
       lat,
       lng
     };
   }
+  if (minDistance < 2.2) {
+    return {
+      name: `Near ${closest.city}, ${closest.state ? closest.state + ", " : ""}${closest.country}`,
+      city: closest.city,
+      state: closest.state || "",
+      country: closest.country || "Global",
+      lat,
+      lng,
+      address: `Logistics Area near ${closest.name}`
+    };
+  }
+  let regionName = "Commercial Dispatch Area";
+  let countryName = "Global";
+  let stateName = "";
+  if (lat >= 6.5 && lat <= 37.5 && lng >= 68 && lng <= 97.5) {
+    countryName = "India";
+    if (lat >= 14 && lat <= 19.5 && lng >= 78 && lng <= 84.5) {
+      stateName = "Andhra Pradesh";
+      regionName = "Godavari / Coastal Corridor";
+    } else if (lat >= 16 && lat <= 20 && lng >= 77 && lng <= 81.5) {
+      stateName = "Telangana";
+      regionName = "Hyderabad / Deccan Corridor";
+    } else if (lat >= 11.5 && lat <= 18.5 && lng >= 74 && lng <= 78.5) {
+      stateName = "Karnataka";
+      regionName = "Bengaluru Corridor";
+    } else if (lat >= 8 && lat <= 13.5 && lng >= 76 && lng <= 80.5) {
+      stateName = "Tamil Nadu";
+      regionName = "Chennai Corridor";
+    } else if (lat >= 15.5 && lat <= 22 && lng >= 72.5 && lng <= 80.5) {
+      stateName = "Maharashtra";
+      regionName = "Mumbai / Pune Corridor";
+    } else {
+      regionName = "India Regional Freight Route";
+    }
+  } else if (lat >= 24 && lat <= 50 && lng >= -125 && lng <= -66) {
+    countryName = "USA";
+    stateName = closest.state || "Midwest";
+    regionName = `US Highway Corridor near ${closest.city || "Terminal"}`;
+  } else if (lat >= 35 && lat <= 60 && lng >= -10 && lng <= 30) {
+    countryName = "Europe";
+    regionName = `European Logistics Corridor near ${closest.city || "Depot"}`;
+  }
+  const generatedName = stateName ? `${regionName}, ${stateName}, ${countryName}` : `${regionName}, ${countryName}`;
   return {
-    name: `GPS Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
-    city: closest.city || "Current City",
-    state: closest.state || "",
-    country: closest.country || "Global",
+    name: generatedName,
+    city: closest.city || regionName,
+    state: stateName || closest.state || "",
+    country: countryName,
     lat,
     lng,
-    address: `GPS Pin: ${lat.toFixed(5)}, ${lng.toFixed(5)}`
+    address: `${generatedName} (${lat.toFixed(4)}, ${lng.toFixed(4)})`
   };
 }
 function getStateAbbr(stateName) {
@@ -248,7 +331,7 @@ async function calculateRouteLeg(from, to) {
   const url = `https://router.project-osrm.org/route/v1/driving/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson&steps=false`;
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8e3);
+    const timeout = setTimeout(() => controller.abort(), 3500);
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeout);
     if (res.ok) {
@@ -883,7 +966,7 @@ var HosTripPlanner = class {
       while (remainingLegHours > 0.01) {
         const windowElapsed = getWindowElapsed();
         if (currentCycleUsed >= HOS_CONSTANTS.CYCLE_LIMIT_HOURS) {
-          const restLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const restLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             "SLEEPER_BERTH",
             "SLEEPER_BERTH",
@@ -910,7 +993,7 @@ var HosTripPlanner = class {
           continue;
         }
         if (drivingInWindow >= HOS_CONSTANTS.MAX_DAILY_DRIVING_HOURS || windowElapsed >= HOS_CONSTANTS.MAX_DAILY_WINDOW_HOURS) {
-          const restLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const restLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             "SLEEPER_BERTH",
             "SLEEPER_BERTH",
@@ -936,7 +1019,7 @@ var HosTripPlanner = class {
           continue;
         }
         if (cumulativeDrivingSinceBreak >= HOS_CONSTANTS.MAX_CUMULATIVE_DRIVING_BEFORE_BREAK) {
-          const breakLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const breakLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             "REST_BREAK",
             "OFF_DUTY",
@@ -960,7 +1043,7 @@ var HosTripPlanner = class {
           continue;
         }
         if (distanceSinceLastFuel >= HOS_CONSTANTS.FUELING_TRIGGER_MILES) {
-          const fuelLoc = await resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
+          const fuelLoc = resolveRouteLocation(leg.geometry, legDistanceProgress / leg.distance_miles, leg.from);
           recordEvent(
             "FUEL",
             "ON_DUTY_NOT_DRIVING",
@@ -1016,7 +1099,7 @@ var HosTripPlanner = class {
         totalMilesDriven += driveMiles;
         distanceSinceLastFuel += driveMiles;
         const chunkFraction = Math.min(1, legDistanceProgress / leg.distance_miles);
-        const chunkLoc = await resolveRouteLocation(leg.geometry, chunkFraction, leg.to);
+        const chunkLoc = resolveRouteLocation(leg.geometry, chunkFraction, leg.to);
         recordEvent(
           "DRIVING",
           "DRIVING",
@@ -1163,18 +1246,42 @@ var HosTripPlanner = class {
     };
   }
 };
-async function resolveRouteLocation(geometry, fraction, fallback) {
+function resolveRouteLocation(geometry, fraction, fallback) {
   const coord = interpolateCoordinate(geometry, fraction);
   if (!coord || coord[0] === 0 && coord[1] === 0) {
     return fallback;
   }
-  const geo = await reverseGeocode(coord[0], coord[1]);
+  const lat = Math.round(coord[0] * 1e4) / 1e4;
+  const lng = Math.round(coord[1] * 1e4) / 1e4;
+  let closest = KNOWN_HUBS[0];
+  let minDistance = Infinity;
+  for (const hub of KNOWN_HUBS) {
+    const d = Math.hypot(hub.lat - lat, hub.lng - lng);
+    if (d < minDistance) {
+      minDistance = d;
+      closest = hub;
+    }
+  }
+  if (minDistance < 0.95 && closest) {
+    return {
+      name: `Near ${closest.city}, ${closest.state ? closest.state + ", " : ""}${closest.country || "USA"}`,
+      city: closest.city,
+      state: closest.state || "",
+      country: closest.country || "USA",
+      lat,
+      lng
+    };
+  }
+  const targetCity = fallback.city || fallback.name;
+  const pct = Math.round(fraction * 100);
+  const corridorName = pct > 0 && pct < 100 ? `Highway Corridor (~${pct}% to ${targetCity})` : targetCity;
   return {
-    name: geo.name,
-    city: geo.city,
-    state: geo.state,
-    lat: Math.round(coord[0] * 1e4) / 1e4,
-    lng: Math.round(coord[1] * 1e4) / 1e4
+    name: corridorName,
+    city: fallback.city || "Highway Corridor",
+    state: fallback.state || "",
+    country: fallback.country || "USA",
+    lat,
+    lng
   };
 }
 
@@ -2078,6 +2185,23 @@ apiRouter.post("/trips/plan", async (req, res) => {
     if (currentCycleUsed >= 70) {
       return res.status(400).json({
         error: "The supplied Current Cycle Used (>= 70h) leaves no legal on-duty capacity to complete the requested trip without a 34-hour restart."
+      });
+    }
+    const distCurrentToPickup = haversineDistanceMiles(
+      body.current_location.lat,
+      body.current_location.lng,
+      body.pickup_location.lat,
+      body.pickup_location.lng
+    );
+    const distPickupToDropoff = haversineDistanceMiles(
+      body.pickup_location.lat,
+      body.pickup_location.lng,
+      body.dropoff_location.lat,
+      body.dropoff_location.lng
+    );
+    if (distCurrentToPickup > 3500 || distPickupToDropoff > 3500) {
+      return res.status(400).json({
+        error: "Ocean crossing detected. Commercial motor vehicles require connected highway road networks. Please select stops within the same continent (e.g. India Regional Freight Corridor or US Interstate corridor)."
       });
     }
     const routeData = await calculateCompleteRoute(

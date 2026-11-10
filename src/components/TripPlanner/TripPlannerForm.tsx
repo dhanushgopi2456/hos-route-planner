@@ -11,12 +11,10 @@ import {
   Sliders,
   CheckCircle2,
   FileText,
-  Navigation,
   ArrowRight,
   RotateCcw,
   Compass,
   UserCheck,
-  ShieldCheck,
   Crosshair,
   ArrowLeftRight,
   X,
@@ -604,47 +602,47 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
     <Card3D depth={6} className="w-full">
       <form
         onSubmit={handleSubmit}
-        className="glass-panel-3d dark:bg-slate-900/90 dark:border-slate-800 rounded-3xl p-6 md:p-8 relative overflow-hidden preserve-3d"
+        className="uc-glass-card rounded-2xl p-6 md:p-8 relative overflow-hidden preserve-3d"
       >
         {/* Logged in Driver Sync Banner */}
         {isAuthenticated && user && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-5 p-3 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/40 dark:to-indigo-950/40 border border-blue-200 dark:border-blue-900/60 flex flex-wrap items-center justify-between gap-2.5 text-xs text-blue-950 dark:text-blue-200"
+            className="mb-5 p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 flex flex-wrap items-center justify-between gap-2.5 text-xs text-blue-200"
           >
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0">
                 <UserCheck className="w-3.5 h-3.5" />
               </div>
               <div>
-                <span className="font-bold">Active Driver: </span>
+                <span className="font-bold text-white">Active Driver: </span>
                 <span>{user.name} ({user.carrier_name})</span>
                 {user.cdl_number && (
-                  <span className="font-mono text-[11px] text-blue-700 dark:text-blue-300 ml-1.5">
+                  <span className="font-mono text-[11px] text-blue-300 ml-1.5">
                     [{user.cdl_number}]
                   </span>
                 )}
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold border border-emerald-300/40">
-                ELD Auto-Populated
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold border border-emerald-500/30 font-mono">
+                ELD AUTO-POPULATED
               </span>
             </div>
           </motion.div>
         )}
 
         {/* Top Banner with Quick Presets */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-5 border-b border-slate-200/80 dark:border-slate-800">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-5 border-b border-slate-800">
           <div>
-            <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <h2 className="text-lg font-black text-white tracking-tight flex items-center gap-2.5 font-display">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30">
                 <Truck className="w-4 h-4" />
               </div>
               <span>Trip Route &amp; Cycle Configuration</span>
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 mt-1">
               Select origin, pickup, dropoff locations, or pick a rapid-test corridor below:
             </p>
           </div>
@@ -655,7 +653,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.05, rotate: -45 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleResetForm}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer border border-slate-700"
               title="Reset to default route"
             >
               <RotateCcw className="w-4 h-4" />
@@ -665,9 +663,9 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
 
         {/* Quick Corridor Presets Bar */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-2 text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-            <Compass className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            <span>Tested Route Corridors (Click to load):</span>
+          <div className="flex items-center gap-2 mb-2.5 text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">
+            <Compass className="w-3.5 h-3.5 text-blue-400" />
+            <span>Commercial Corridor Presets:</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
             {PRESET_ROUTES.map(preset => {
@@ -676,13 +674,13 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                 <motion.button
                   key={preset.id}
                   type="button"
-                  whileHover={{ scale: 1.03, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => handleApplyPreset(preset)}
-                  className={`p-3 rounded-2xl text-left border transition-all cursor-pointer relative overflow-hidden ${
+                  className={`p-3 rounded-xl text-left border transition-all cursor-pointer relative overflow-hidden ${
                     isSelected
-                      ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-blue-500 shadow-md shadow-blue-500/30'
-                      : 'bg-white/90 dark:bg-slate-800/80 hover:bg-blue-50/70 dark:hover:bg-slate-800 border-slate-200/90 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs'
+                      ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-blue-400 shadow-md shadow-blue-500/30'
+                      : 'bg-slate-900/80 hover:bg-slate-800 border-slate-800 hover:border-slate-700 text-slate-200'
                   }`}
                 >
                   <div className="font-bold text-xs flex items-center justify-between">
@@ -691,7 +689,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                   </div>
                   <div
                     className={`text-[10px] mt-1 font-mono ${
-                      isSelected ? 'text-blue-100' : 'text-slate-500 dark:text-slate-400'
+                      isSelected ? 'text-blue-100' : 'text-slate-400'
                     }`}
                   >
                     {preset.tag}
@@ -703,7 +701,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
         </div>
 
         {/* Quick Route Actions Toolbar: GPS, Swap, Reset */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 mb-3 p-2.5 rounded-2xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/60">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 mb-4 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
           <div className="flex flex-wrap items-center gap-2">
             {/* Direct GPS Button */}
             <motion.button
@@ -712,7 +710,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileTap={{ scale: 0.98 }}
               onClick={() => handleAcquireCurrentLocation('origin')}
               disabled={isLocatingField === 'origin'}
-              className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-60 text-white text-xs font-bold shadow-sm flex items-center gap-1.5 cursor-pointer transition-colors"
+              className="btn-electric-primary px-3.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
               title="Detect your device GPS location and set as origin"
             >
               {isLocatingField === 'origin' ? (
@@ -729,10 +727,10 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSwapRoute}
-              className="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+              className="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors"
               title="Reverse route direction (Swap Origin and Dropoff)"
             >
-              <ArrowLeftRight className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+              <ArrowLeftRight className="w-3.5 h-3.5 text-blue-400" />
               <span>Swap Origin ⇄ Dropoff</span>
             </motion.button>
           </div>
@@ -858,20 +856,20 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
         )}
 
         {/* 70/8 Cycle Usage Input with Dynamic Visual Bar & Quick Chips */}
-        <div className="bg-gradient-to-r from-slate-50 via-blue-50/40 to-indigo-50/40 dark:from-slate-800/80 dark:via-slate-800/60 dark:to-slate-800/40 border border-slate-200/90 dark:border-slate-700 rounded-2xl p-4 mb-5 shadow-inner">
+        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 mb-5 shadow-inner">
           <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-              <Sliders className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5 font-mono">
+              <Sliders className="w-4 h-4 text-blue-400" />
               <span>Current 70-Hour / 8-Day Cycle Used:</span>
             </label>
             <motion.div
               key={currentCycleUsed}
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              className="flex items-center gap-1 font-mono text-sm font-black text-blue-900 dark:text-blue-300 bg-white dark:bg-slate-800 px-3 py-1 rounded-xl border border-slate-300/80 dark:border-slate-700 shadow-xs"
+              className="flex items-center gap-1 font-mono text-sm font-black text-cyan-300 bg-slate-800 px-3 py-1 rounded-xl border border-slate-700 shadow-xs"
             >
               <span>{(currentCycleUsed ?? 0).toFixed(1)}</span>
-              <span className="text-slate-400 dark:text-slate-500 font-normal text-xs">/ 70.0 hrs</span>
+              <span className="text-slate-400 font-normal text-xs">/ 70.0 hrs</span>
             </motion.div>
           </div>
 
@@ -883,12 +881,12 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               step="0.5"
               value={currentCycleUsed ?? 0}
               onChange={e => setCurrentCycleUsed(parseFloat(e.target.value) || 0)}
-              className="w-full h-2.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#0052FF]"
             />
-            <div className="flex justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+            <div className="flex justify-between text-[11px] text-slate-400 font-mono">
               <span>0.0 hrs (Fresh cycle)</span>
-              <span className="text-blue-700 dark:text-blue-400 font-bold flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-blue-500 inline-block animate-ping"></span>
+              <span className="text-cyan-400 font-bold flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-blue-500 inline-block animate-ping" />
                 <span>{(70 - (currentCycleUsed ?? 0)).toFixed(1)} hrs available</span>
               </span>
               <span>69.0 hrs (Near limit)</span>
@@ -896,8 +894,8 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
           </div>
 
           {/* Quick Select Cycle Chips */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/70 dark:border-slate-700/60">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">
+          <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-800">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1 font-mono">
               Quick Presets:
             </span>
             {[
@@ -915,8 +913,8 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                 }}
                 className={`px-2.5 py-1 rounded-lg text-xs font-mono transition-colors cursor-pointer border ${
                   Math.abs((currentCycleUsed ?? 0) - chip.val) < 0.2
-                    ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                    : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600'
+                    ? 'bg-blue-600 text-white border-blue-500 shadow-md shadow-blue-500/30'
+                    : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700 hover:text-white'
                 }`}
               >
                 {chip.label}
@@ -926,20 +924,19 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
         </div>
 
         {/* Carrier & Shipping Details Accordion */}
-        <div className="mb-6 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs bg-white/70 dark:bg-slate-800/60">
+        <div className="mb-6 border border-slate-800 rounded-2xl overflow-hidden shadow-xs bg-slate-900/60">
           <motion.button
             type="button"
-            whileHover={{ backgroundColor: '#f8fafc' }}
             onClick={() => setShowShippingDetails(!showShippingDetails)}
-            className="w-full flex items-center justify-between px-5 py-3.5 bg-slate-50/80 dark:bg-slate-800/90 text-left text-xs font-bold text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
+            className="w-full flex items-center justify-between px-5 py-3.5 bg-slate-900/90 text-left text-xs font-bold text-slate-200 transition-colors cursor-pointer hover:bg-slate-850"
           >
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+            <div className="flex items-center gap-2 font-mono">
+              <FileText className="w-4 h-4 text-blue-400" />
               <span>Carrier, Driver &amp; Shipping Manifest Details (Optional)</span>
             </div>
             <ChevronDown
               className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                showShippingDetails ? 'rotate-180 text-blue-600 dark:text-blue-400' : ''
+                showShippingDetails ? 'rotate-180 text-blue-400' : ''
               }`}
             />
           </motion.button>
@@ -953,68 +950,68 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                 transition={{ duration: 0.25 }}
                 className="overflow-hidden"
               >
-                <div className="p-5 bg-white dark:bg-slate-900 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs border-t border-slate-200 dark:border-slate-800">
+                <div className="p-5 bg-[#080D1A] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs border-t border-slate-800 font-mono">
                   <div>
-                    <label className="font-semibold text-slate-600 dark:text-slate-300 block mb-1">Carrier Name:</label>
+                    <label className="font-semibold text-slate-300 block mb-1">Carrier Name:</label>
                     <input
                       type="text"
                       value={carrierName}
                       onChange={e => setCarrierName(e.target.value)}
-                      className="w-full p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-600 dark:text-slate-300 block mb-1">Carrier Office Address:</label>
+                    <label className="font-semibold text-slate-300 block mb-1">Carrier Office Address:</label>
                     <input
                       type="text"
                       value={carrierOffice}
                       onChange={e => setCarrierOffice(e.target.value)}
-                      className="w-full p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-600 dark:text-slate-300 block mb-1">Driver Name / Signature:</label>
+                    <label className="font-semibold text-slate-300 block mb-1">Driver Name / Signature:</label>
                     <input
                       type="text"
                       value={driverName}
                       onChange={e => setDriverName(e.target.value)}
-                      className="w-full p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-600 dark:text-slate-300 block mb-1">Tractor / Truck #:</label>
+                    <label className="font-semibold text-slate-300 block mb-1">Tractor / Truck #:</label>
                     <input
                       type="text"
                       value={truckNumber}
                       onChange={e => setTruckNumber(e.target.value)}
-                      className="w-full p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-600 dark:text-slate-300 block mb-1">Trailer #:</label>
+                    <label className="font-semibold text-slate-300 block mb-1">Trailer #:</label>
                     <input
                       type="text"
                       value={trailerNumber}
                       onChange={e => setTrailerNumber(e.target.value)}
-                      className="w-full p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                     />
                   </div>
                   <div>
-                    <label className="font-semibold text-slate-600 dark:text-slate-300 block mb-1">Shipping Doc / DVL #:</label>
+                    <label className="font-semibold text-slate-300 block mb-1">Shipping Doc / DVL #:</label>
                     <input
                       type="text"
                       value={shippingDocNumber}
                       onChange={e => setShippingDocNumber(e.target.value)}
-                      className="w-full p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                     />
                   </div>
                   <div className="md:col-span-2 lg:col-span-3">
-                    <label className="font-semibold text-slate-600 dark:text-slate-300 block mb-1">Commodity:</label>
+                    <label className="font-semibold text-slate-300 block mb-1">Commodity:</label>
                     <input
                       type="text"
                       value={commodity}
                       onChange={e => setCommodity(e.target.value)}
-                      className="w-full p-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+                      className="w-full p-2.5 border border-slate-700 bg-slate-900 text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                     />
                   </div>
                 </div>
@@ -1028,9 +1025,9 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
           <motion.button
             type="submit"
             disabled={isLoading}
-            whileHover={{ scale: 1.02, y: -2, boxShadow: '0 15px 35px -5px rgba(59, 130, 246, 0.45)' }}
-            whileTap={{ scale: 0.98 }}
-            className="group relative w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 hover:from-blue-500 hover:via-indigo-500 hover:to-cyan-500 active:from-blue-700 disabled:opacity-60 text-white font-black text-sm tracking-wider shadow-xl shadow-blue-600/30 flex items-center justify-center space-x-2.5 transition-all cursor-pointer overflow-hidden border border-white/20"
+            whileHover={{ scale: 1.01, y: -2 }}
+            whileTap={{ scale: 0.99 }}
+            className="btn-electric-primary w-full py-4 px-6 text-sm sm:text-base font-black tracking-wider flex items-center justify-center space-x-2.5 cursor-pointer shadow-xl shadow-blue-600/40 font-display"
           >
             {/* Animated Light Shimmer Beam */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
@@ -1056,9 +1053,9 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
-                className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl text-xs text-blue-900 flex items-center gap-3 shadow-sm"
+                className="p-4 bg-blue-950/40 border border-blue-500/40 rounded-2xl text-xs text-blue-300 flex items-center gap-3 shadow-sm font-mono"
               >
-                <Loader2 className="w-4 h-4 animate-spin text-blue-600 shrink-0" />
+                <Loader2 className="w-4 h-4 animate-spin text-blue-400 shrink-0" />
                 <span className="font-bold">{planningStep || 'Analyzing highway network & calculating HOS rules...'}</span>
               </motion.div>
             )}
@@ -1199,9 +1196,9 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
             }
           }}
           placeholder={placeholder}
-          className="w-full p-3 pl-9 pr-16 text-xs font-bold text-slate-900 dark:text-white bg-white/95 dark:bg-slate-800/95 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-xs group-hover:border-slate-400 dark:group-hover:border-slate-600 transition-colors"
+          className="w-full p-3.5 pl-9 pr-16 text-xs font-bold text-white bg-slate-900/90 border border-slate-700/80 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner group-hover:border-slate-600 transition-colors font-sans placeholder-slate-500"
         />
-        <div className="absolute left-3 top-3.5 text-slate-400 pointer-events-none transition-colors group-hover:text-blue-500">
+        <div className="absolute left-3 top-4 text-slate-400 pointer-events-none transition-colors group-hover:text-blue-400">
           <MapPin className="w-4 h-4" />
         </div>
 
@@ -1242,7 +1239,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            className="absolute left-0 right-0 top-full mt-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl z-50 max-h-56 overflow-y-auto"
+            className="absolute left-0 right-0 top-full mt-2 bg-[#0B0F19]/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl z-50 max-h-56 overflow-y-auto"
           >
             {suggestions.map((sug, i) => (
               <motion.button
@@ -1250,7 +1247,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
                 type="button"
                 whileHover={{ scale: 1.01 }}
                 onClick={() => handleSelect(sug)}
-                className="w-full px-3.5 py-2.5 text-left border-b border-slate-100 dark:border-slate-800 last:border-none flex items-start gap-2.5 text-xs text-slate-800 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className="w-full px-3.5 py-2.5 text-left border-b border-slate-800 last:border-none flex items-start gap-2.5 text-xs text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors cursor-pointer"
               >
                 <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">

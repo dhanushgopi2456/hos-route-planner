@@ -17,39 +17,38 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({
   const compliant = violations.length === 0;
 
   return (
-    <div className={`bg-white/95 backdrop-blur-sm rounded-2xl border border-slate-200/80 shadow-md p-6 ${className}`}>
+    <div className={`uc-glass-card rounded-2xl p-6 sm:p-8 ${className}`}>
       {/* Header with status badge */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-5 border-b border-slate-100">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b border-slate-800">
         <div>
-          <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
-            {compliant ? (
-              <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            ) : (
-              <ShieldAlert className="w-5 h-5 text-rose-600" />
-            )}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-mono uppercase font-bold tracking-widest mb-1.5">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>FMCSA CFR Part 395 Standard Audit</span>
+          </div>
+          <h3 className="font-bold text-xl text-white font-display flex items-center gap-2">
             <span>FMCSA HOS Compliance Verification Audit</span>
           </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Automated verification against FMCSA CFR Part 395 regulations and assessment rules.
+          <p className="text-xs text-slate-400 mt-0.5 font-sans">
+            Automated verification against FMCSA CFR Part 395 regulations, 11h/14h limits, and 24h RODS rules.
           </p>
         </div>
 
         <motion.div
           whileHover={{ scale: 1.05 }}
-          className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-xs ${
+          className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider shadow-md ${
             compliant
-              ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-              : 'bg-rose-100 text-rose-800 border border-rose-300'
+              ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 shadow-emerald-500/10'
+              : 'bg-rose-500/15 text-rose-400 border border-rose-500/40 shadow-rose-500/10'
           }`}
         >
           {compliant ? (
             <>
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>HOS COMPLIANT</span>
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>100% HOS COMPLIANT</span>
             </>
           ) : (
             <>
-              <XCircle className="w-4 h-4 text-rose-600" />
+              <XCircle className="w-4 h-4 text-rose-400" />
               <span>{violations.length} VIOLATION{violations.length > 1 ? 'S' : ''} DETECTED</span>
             </>
           )}
@@ -59,24 +58,24 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({
       {/* Violations List (if any) */}
       {violations.length > 0 && (
         <div className="mb-6 space-y-2">
-          <h4 className="text-xs font-bold text-rose-700 uppercase tracking-wide flex items-center gap-1.5">
-            <AlertTriangle className="w-4 h-4 text-rose-600" />
+          <h4 className="text-xs font-bold text-rose-400 uppercase tracking-wide flex items-center gap-1.5 font-mono">
+            <AlertTriangle className="w-4 h-4 text-rose-400" />
             <span>Active HOS Violations ({violations.length})</span>
           </h4>
           <div className="space-y-2">
             {violations.map((violation, i) => (
               <div
                 key={`violation-${i}`}
-                className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-900"
+                className="p-3.5 bg-rose-950/40 border border-rose-800/80 rounded-xl text-xs text-rose-200"
               >
-                <div className="font-bold text-rose-950 flex items-center gap-1.5">
-                  <XCircle className="w-3.5 h-3.5 text-rose-600" />
-                  <span>{violation.title || violation.rule_code}</span>
+                <div className="font-bold text-white flex items-center gap-1.5 font-display">
+                  <XCircle className="w-3.5 h-3.5 text-rose-400" />
+                  <span>{violation.title || violation.rule_code || violation.type}</span>
                 </div>
-                <p className="mt-1 text-rose-800">{violation.description}</p>
+                <p className="mt-1 text-rose-300 font-sans">{violation.description || violation.message}</p>
                 {violation.remedy && (
-                  <p className="mt-1 text-rose-700 font-medium text-[11px]">
-                    Recommendation: {violation.remedy}
+                  <p className="mt-1 text-rose-400 font-medium text-[11px] font-mono">
+                    Remedy: {violation.remedy}
                   </p>
                 )}
               </div>
@@ -94,31 +93,31 @@ export const CompliancePanel: React.FC<CompliancePanelProps> = ({
             transition={{ duration: 0.2 }}
             className={`p-4 rounded-xl border transition-all ${
               check.passed
-                ? 'bg-slate-50/80 border-slate-200/80 hover:border-emerald-300 hover:bg-emerald-50/20'
-                : 'bg-rose-50/80 border-rose-200'
+                ? 'bg-slate-900/80 border-slate-800 hover:border-emerald-500/40 hover:bg-slate-900'
+                : 'bg-rose-950/40 border-rose-800/80'
             }`}
           >
             <div className="flex items-start justify-between gap-2 mb-1.5">
-              <div className="font-bold text-xs text-slate-900 flex items-center gap-2">
+              <div className="font-bold text-xs text-white flex items-center gap-2 font-display">
                 {check.passed ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                 ) : (
-                  <XCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
                 )}
                 <span>{check.title}</span>
               </div>
               <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${
                   check.passed
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                    : 'bg-rose-100 text-rose-800 border border-rose-200'
+                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                    : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
                 }`}
               >
                 {check.passed ? 'PASSED' : 'FAILED'}
               </span>
             </div>
 
-            <p className="text-xs text-slate-600 ml-6 leading-relaxed">
+            <p className="text-xs text-slate-400 ml-6 leading-relaxed font-sans">
               {check.detail}
             </p>
           </motion.div>

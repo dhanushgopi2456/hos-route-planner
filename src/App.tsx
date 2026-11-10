@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
+import { LandingPage } from './pages/LandingPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { AboutRulesPage } from './pages/AboutRulesPage';
 import { CustomCursor } from './components/UI/CustomCursor';
@@ -15,18 +16,21 @@ export default function App() {
       <ToastProvider>
         <AuthProvider>
           <BrowserRouter>
-            {/* Attractive custom cursor */}
+            {/* Custom cursor with smooth magnetic tracking */}
             <CustomCursor />
 
-            <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans relative transition-colors duration-300">
-              {/* Attractive dynamic animated background */}
+            <div className="min-h-screen bg-[#06080E] text-slate-100 flex flex-col font-sans relative selection:bg-blue-600 selection:text-white">
+              {/* Dynamic atmospheric background */}
               <AnimatedBackground />
 
+              {/* Sticky Glassmorphic Navbar */}
               <Navbar />
 
+              {/* Main Routing Container */}
               <main className="flex-1 relative z-10">
                 <Routes>
-                  <Route path="/" element={<DashboardPage />} />
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/planner" element={<DashboardPage />} />
                   <Route path="/about" element={<AboutRulesPage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
@@ -38,4 +42,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-

@@ -7,10 +7,8 @@ import {
   Building,
   ChevronDown,
   Clock,
-  Sparkles,
   Sun,
-  Moon,
-  CheckCircle
+  Moon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../context/AuthContext';
