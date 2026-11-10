@@ -99,17 +99,17 @@ export const AboutRulesPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#06080E] text-slate-100 pb-20 relative selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#000000] text-slate-100 pb-20 relative selection:bg-[#0016CB] selection:text-white">
       {/* Header Banner */}
-      <div className="bg-[#080C16] text-white py-12 border-b border-white/[0.08] shadow-xl relative overflow-hidden">
+      <div className="bg-[#0A0A0A] text-white py-12 border-b border-[#242424] shadow-xl relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <div className="max-w-2xl space-y-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono font-bold tracking-wider border border-blue-500/25">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0016CB]/15 text-[#99A9EE] text-xs font-mono font-bold tracking-wider border border-[#0016CB]/40">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#0016CB]" />
                 <span>FMCSA 49 CFR Part 395 Standard</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-display">
+              <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white font-display uppercase">
                 Hours of Service (HOS) Rules &amp; Audit Engine
               </h1>
               <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
@@ -122,7 +122,7 @@ export const AboutRulesPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/')}
-                className="btn-electric-secondary px-5 py-3 text-xs font-bold inline-flex items-center gap-2 cursor-pointer font-mono"
+                className="btn-uc-pill px-5 py-3 text-xs font-bold inline-flex items-center gap-2 cursor-pointer font-mono"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Home Page</span>
@@ -131,7 +131,7 @@ export const AboutRulesPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/planner')}
-                className="btn-electric-primary px-6 py-3 text-xs font-bold inline-flex items-center gap-2.5 cursor-pointer shadow-lg shadow-blue-600/30 font-mono"
+                className="btn-uc-solid px-6 py-3 text-xs font-bold inline-flex items-center gap-2.5 cursor-pointer shadow-[0_0_20px_rgba(0,22,203,0.4)] font-mono"
               >
                 <Truck className="w-4 h-4" />
                 <span>Launch Planner</span>

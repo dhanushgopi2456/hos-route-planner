@@ -39,7 +39,7 @@ export const ValuePillars: React.FC = () => {
   ];
 
   return (
-    <section className="relative py-24 bg-[#06080E] border-t border-slate-800/80">
+    <section className="relative py-24 bg-[#000000] border-t border-[#242424]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}

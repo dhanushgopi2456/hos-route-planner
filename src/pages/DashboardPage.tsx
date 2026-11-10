@@ -205,17 +205,17 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#06080E] text-slate-100 pb-20 relative selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#000000] text-slate-100 pb-20 relative selection:bg-[#0016CB] selection:text-white">
       {/* Top Command Bar & Workspace Shell */}
-      <div className="bg-[#080C16] border-b border-white/[0.08] py-4 px-4 sm:px-6 lg:px-8 sticky top-20 z-40 backdrop-blur-xl">
+      <div className="bg-[#0A0A0A] border-b border-[#242424] py-4 px-4 sm:px-6 lg:px-8 sticky top-20 z-40 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700/80 hover:border-blue-500 text-xs font-semibold text-slate-300 hover:text-white transition-all cursor-pointer group"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#161616] border border-[#2E2E2E] hover:border-[#0016CB] text-xs font-semibold text-slate-300 hover:text-white transition-all cursor-pointer group font-mono"
             >
-              <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1 text-blue-400" />
+              <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1 text-[#0016CB]" />
               <span>Back to Home</span>
             </Link>
 

@@ -43,7 +43,7 @@ export const ImpactMetrics: React.FC = () => {
   ];
 
   return (
-    <section className="relative py-20 bg-[#06080E] border-y border-slate-800/80">
+    <section className="relative py-20 bg-[#000000] border-y border-[#242424]">
       {/* Background Subtle Accent */}
       <div className="absolute inset-0 bg-gradient-to-b from-blue-950/10 via-transparent to-blue-950/10 pointer-events-none" />
 

@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <>
-      <header className="bg-[#06080E]/90 backdrop-blur-2xl text-white border-b border-white/[0.08] sticky top-0 z-50 transition-all shadow-xl shadow-black/40">
+      <header className="bg-[#000000]/95 backdrop-blur-2xl text-white border-b border-[#242424] sticky top-0 z-50 transition-all shadow-xl shadow-black/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Brand Logo with 3D Tilt Hover */}
@@ -130,7 +130,7 @@ export const Navbar: React.FC = () => {
               whileHover={{ scale: 1.04, y: -1 }}
               whileTap={{ scale: 0.96 }}
               onClick={() => setShowAssumptionsModal(true)}
-              className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:border-blue-500/50 transition-all cursor-pointer font-mono"
+              className="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-[#161616] hover:bg-[#242424] text-slate-200 border border-[#2E2E2E] hover:border-[#0016CB] transition-all cursor-pointer font-mono"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>70h / 8d</span>
@@ -140,7 +140,7 @@ export const Navbar: React.FC = () => {
             {/* Launch Planner Primary Pill CTA */}
             <Link
               to="/planner"
-              className="btn-electric-primary px-4 py-2 sm:px-5 sm:py-2.5 text-xs font-bold inline-flex items-center gap-2 group cursor-pointer shadow-lg shadow-blue-600/30"
+              className="btn-uc-solid px-5 py-2.5 text-xs font-bold inline-flex items-center gap-2 group cursor-pointer shadow-[0_0_20px_rgba(0,22,203,0.5)]"
             >
               <span>Launch Planner</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />

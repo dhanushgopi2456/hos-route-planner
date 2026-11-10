@@ -77,17 +77,17 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
       routeLegs.forEach((leg, idx) => {
         // Outer glowing halo
         L.polyline(leg.geometry, {
-          color: idx === 0 ? '#0052FF' : '#06B6D4',
+          color: idx === 0 ? '#0016CB' : '#3346D7',
           weight: 8,
-          opacity: 0.35,
+          opacity: 0.45,
           lineJoin: 'round'
         }).addTo(layerGroup);
 
         // Core bright line
         const polyline = L.polyline(leg.geometry, {
-          color: idx === 0 ? '#3B82F6' : '#22D3EE',
+          color: idx === 0 ? '#0016CB' : '#6677E3',
           weight: 4,
-          opacity: 0.95,
+          opacity: 0.98,
           lineJoin: 'round'
         });
 
@@ -101,16 +101,16 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
     } else if (allCoordinates && allCoordinates.length > 0) {
       // Glow halo
       L.polyline(allCoordinates, {
-        color: '#0052FF',
+        color: '#0016CB',
         weight: 8,
-        opacity: 0.35
+        opacity: 0.45
       }).addTo(layerGroup);
 
       // Core line
       const polyline = L.polyline(allCoordinates, {
-        color: '#3B82F6',
+        color: '#3346D7',
         weight: 4,
-        opacity: 0.95
+        opacity: 0.98
       });
       polyline.addTo(layerGroup);
     }
@@ -189,7 +189,7 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
   const calculatedStopsCount = stops.length;
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-[#06080E] ${className}`}>
+    <div className={`relative rounded-2xl overflow-hidden shadow-2xl border border-[#242424] bg-[#000000] ${className}`}>
       <div ref={mapContainerRef} className="w-full h-full z-0" />
 
       {/* Floating HUD Telemetry Overlay (Top Left) */}

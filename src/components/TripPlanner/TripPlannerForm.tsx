@@ -1027,7 +1027,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
             disabled={isLoading}
             whileHover={{ scale: 1.01, y: -2 }}
             whileTap={{ scale: 0.99 }}
-            className="btn-electric-primary w-full py-4 px-6 text-sm sm:text-base font-black tracking-wider flex items-center justify-center space-x-2.5 cursor-pointer shadow-xl shadow-blue-600/40 font-display"
+            className="btn-uc-solid w-full py-4 px-6 text-sm sm:text-base font-bold tracking-wider flex items-center justify-center space-x-2.5 cursor-pointer shadow-[0_0_30px_rgba(0,22,203,0.45)] font-mono"
           >
             {/* Animated Light Shimmer Beam */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />

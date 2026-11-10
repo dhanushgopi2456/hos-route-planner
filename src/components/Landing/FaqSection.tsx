@@ -49,7 +49,7 @@ export const FaqSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="relative py-24 bg-[#080C16] border-t border-slate-800">
+    <section id="faq" className="relative py-24 bg-[#0A0A0A] border-t border-[#242424]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Heading */}

@@ -227,7 +227,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
   ];
 
   return (
-    <section id="features" className="relative py-24 bg-[#06080E]">
+    <section id="features" className="relative py-24 bg-[#000000]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
@@ -251,7 +251,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
           <button
             type="button"
             onClick={handleLaunch}
-            className="btn-electric-primary px-6 py-3 text-xs sm:text-sm inline-flex items-center gap-2 self-start md:self-auto cursor-pointer"
+            className="btn-uc-solid px-6 py-3 text-xs sm:text-sm inline-flex items-center gap-2 self-start md:self-auto cursor-pointer shadow-[0_0_20px_rgba(0,22,203,0.4)] font-mono"
           >
             <span>Launch Planner Workspace</span>
             <ArrowRight className="w-4 h-4" />

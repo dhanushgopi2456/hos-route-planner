@@ -21,7 +21,7 @@ export const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#06080E] text-slate-100 flex flex-col selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#000000] text-slate-100 flex flex-col selection:bg-[#0016CB] selection:text-white">
       {/* 1. Full-Viewport Hero Section */}
       <HeroSection onLaunchPlanner={handleLaunchPlanner} />
 

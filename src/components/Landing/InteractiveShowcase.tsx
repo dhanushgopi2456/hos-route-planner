@@ -219,7 +219,7 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({ onLaun
   ];
 
   return (
-    <section id="eld-showcase" className="relative py-24 bg-[#080C16] border-t border-slate-800">
+    <section id="eld-showcase" className="relative py-24 bg-[#0A0A0A] border-t border-[#242424]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Heading */}
@@ -280,7 +280,7 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({ onLaun
               <button
                 type="button"
                 onClick={handleLaunch}
-                className="w-full btn-electric-primary py-3 text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-blue-600/25"
+                className="w-full btn-uc-solid py-3.5 text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_20px_rgba(0,22,203,0.4)] font-mono"
               >
                 <span>Launch Interactive Workspace</span>
                 <ArrowRight className="w-4 h-4" />

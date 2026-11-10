@@ -23,23 +23,23 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
   };
 
   return (
-    <footer className="relative bg-[#04060A] text-slate-400 pt-20 pb-12 border-t border-slate-800">
+    <footer className="relative bg-[#000000] text-slate-400 pt-20 pb-12 border-t border-[#242424]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
         
         {/* Bold CTA Banner */}
-        <div className="relative rounded-3xl p-8 sm:p-12 overflow-hidden border border-blue-500/30 bg-gradient-to-r from-blue-950/40 via-slate-900/90 to-blue-950/40 backdrop-blur-xl shadow-2xl">
+        <div className="relative rounded-2xl p-8 sm:p-12 overflow-hidden border border-[#242424] bg-[#0A0A0A] shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
           {/* Subtle Radial Mesh */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#0016CB]/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
             <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30 text-xs font-mono font-bold">
-                <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0016CB]/15 text-[#99A9EE] border border-[#0016CB]/40 text-xs font-mono font-bold">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#0016CB]" />
                 <span>Zero Violation Math &bull; 100% Free &amp; Open Commercial Dispatch</span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
                 Ready to plan your next{' '}
-                <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-white bg-clip-text text-transparent">
+                <span className="text-[#0016CB]">
                   compliant haul?
                 </span>
               </h2>
@@ -52,9 +52,9 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
               <button
                 type="button"
                 onClick={handleLaunch}
-                className="btn-electric-primary w-full sm:w-auto px-8 py-4 text-base flex items-center justify-center gap-3 cursor-pointer shadow-xl shadow-blue-600/40"
+                className="btn-uc-solid w-full sm:w-auto px-8 py-4 text-sm font-bold font-mono flex items-center justify-center gap-3 cursor-pointer shadow-[0_0_30px_rgba(0,22,203,0.5)]"
               >
-                <Truck className="w-5 h-5" />
+                <Truck className="w-4 h-4" />
                 <span>Open HOS Route Planner</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
