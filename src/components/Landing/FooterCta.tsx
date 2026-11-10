@@ -47,16 +47,28 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
           {/* Banner Content */}
           <div className="relative z-10 p-8 sm:p-14 lg:p-16 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
             <div className="space-y-4 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-none bg-white/10 border border-white/20 text-white text-xs font-mono font-bold tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-[#0016CB] animate-ping" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-mono font-bold tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
                 <span>COMMERCIAL INTERSTATE DISPATCH</span>
                 <span className="text-white/40">|</span>
-                <span className="text-[#0016CB] font-bold">ZERO AUDIT RISK</span>
+                <span className="text-[#60A5FA] font-bold tracking-widest drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]">ZERO AUDIT RISK</span>
               </div>
 
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase text-white tracking-tight font-display leading-[0.98]">
-                READY TO SECURE <br />
-                <span className="text-[#0016CB]">YOUR NEXT HAUL?</span>
+                {'READY TO SECURE YOUR NEXT HAUL?'.split(' ').map((word, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 15 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.08 }}
+                    className={`inline-block mr-2.5 ${
+                      word === 'NEXT' || word === 'HAUL?' ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-[#60A5FA]' : 'text-white'
+                    }`}
+                  >
+                    {word}
+                  </motion.span>
+                ))}
               </h2>
 
               <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
@@ -67,24 +79,25 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
             <div className="shrink-0 flex flex-col sm:flex-row items-center gap-4">
               <motion.button
                 type="button"
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => handleLaunch(false)}
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#0016CB] hover:bg-[#0014B5] text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-all duration-300 shadow-[0_0_40px_rgba(0,22,203,0.6)] cursor-pointer group"
+                className="relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-full bg-[#0016CB] hover:bg-[#0022ff] text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-all duration-300 shadow-[0_0_35px_rgba(0,22,203,0.7)] hover:shadow-[0_0_50px_rgba(0,22,203,0.9)] cursor-pointer group font-mono"
               >
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
                 <Truck className="w-4 h-4 transition-transform group-hover:scale-110" />
                 <span>LAUNCH INTERACTIVE PLANNER</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
               </motion.button>
 
               <motion.button
                 type="button"
-                whileHover={{ scale: 1.04, y: -2 }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => handleLaunch(true)}
-                className="w-full sm:w-auto px-6 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 border border-white/20 transition-all cursor-pointer backdrop-blur-md"
+                className="relative overflow-hidden w-full sm:w-auto px-6 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-2 border border-white/20 hover:border-cyan-400/50 transition-all cursor-pointer backdrop-blur-md font-mono group"
               >
-                <Play className="w-3.5 h-3.5 fill-white" />
+                <Play className="w-3.5 h-3.5 fill-white group-hover:scale-110 transition-transform" />
                 <span>LOAD DEMO TRIP</span>
               </motion.button>
             </div>
@@ -122,47 +135,24 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
             <div className="text-xs font-mono uppercase font-bold text-white tracking-wider">
               WORKSPACE VIEWS
             </div>
-            <ul className="space-y-2 text-xs font-mono">
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavTab('overview')}
-                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <span className="text-[#0016CB]">&bull;</span>
-                  <span>Interactive Route &amp; GIS Map</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavTab('logs')}
-                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <span className="text-[#0016CB]">&bull;</span>
-                  <span>ELD Daily Log Generator (RODS)</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavTab('timeline')}
-                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <span className="text-[#0016CB]">&bull;</span>
-                  <span>Duty Schedule Timeline</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavTab('compliance')}
-                  className="hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1.5"
-                >
-                  <span className="text-[#0016CB]">&bull;</span>
-                  <span>Compliance Audit (8 Checks)</span>
-                </button>
-              </li>
+            <ul className="space-y-2.5 text-xs font-mono">
+              {[
+                { tab: 'overview', label: 'Interactive Route & GIS Map' },
+                { tab: 'logs', label: 'ELD Daily Log Generator (RODS)' },
+                { tab: 'timeline', label: 'Duty Schedule Timeline' },
+                { tab: 'compliance', label: 'Compliance Audit (8 Checks)' }
+              ].map(link => (
+                <li key={link.tab}>
+                  <button
+                    type="button"
+                    onClick={() => handleNavTab(link.tab)}
+                    className="hover:text-white transition-all cursor-pointer text-left flex items-center gap-2 group"
+                  >
+                    <ArrowRight className="w-3 h-3 text-blue-500 transition-transform group-hover:translate-x-1" />
+                    <span className="group-hover:text-blue-300 transition-colors">{link.label}</span>
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 

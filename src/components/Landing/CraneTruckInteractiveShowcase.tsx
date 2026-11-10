@@ -412,11 +412,39 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
                 transition={{ duration: 0.5 }}
                 className="relative w-full h-[240px] sm:h-[300px] flex items-end overflow-hidden"
               >
-                {/* Truck moving smoothly across the screen */}
+                {/* Wind / Velocity streaks flowing leftward */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                  {[...Array(6)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ x: '100%', opacity: 0 }}
+                      animate={{ x: '-100%', opacity: [0, 0.7, 0] }}
+                      transition={{
+                        duration: 0.9 + i * 0.15,
+                        repeat: Infinity,
+                        delay: i * 0.2,
+                        ease: 'linear'
+                      }}
+                      className="absolute h-[1.5px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
+                      style={{
+                        top: `${25 + i * 12}%`,
+                        width: `${120 + i * 40}px`
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Truck moving smoothly across the screen with slight suspension vibration */}
                 <motion.div
-                  initial={{ x: '-40%' }}
-                  animate={{ x: ['-20%', '15%'] }}
-                  transition={{ duration: 4.2, ease: 'linear', repeat: Infinity }}
+                  initial={{ x: '-25%' }}
+                  animate={{
+                    x: ['-15%', '10%', '-15%'],
+                    y: [0, -1, 0, 1, 0]
+                  }}
+                  transition={{
+                    x: { duration: 8, ease: 'easeInOut', repeat: Infinity },
+                    y: { duration: 0.35, ease: 'easeInOut', repeat: Infinity }
+                  }}
                   className="relative flex items-end"
                 >
                   <img
@@ -425,43 +453,15 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
                     className="w-[420px] sm:w-[620px] md:w-[720px] h-auto object-contain filter drop-shadow-[0_25px_40px_rgba(0,22,203,0.35)]"
                   />
 
-                  {/* Rotating Wheels */}
-                  <div className="absolute bottom-[6px] left-[78px] sm:left-[116px] md:left-[136px] w-8 h-8 sm:w-11 sm:h-11">
-                    <img
-                      src="/assets/uc/wheel_front.avif"
-                      alt="Front steer tire"
-                      className="w-full h-full object-contain animate-spin-wheel"
-                    />
-                  </div>
-                  <div className="absolute bottom-[6px] left-[200px] sm:left-[296px] md:left-[346px] w-8 h-8 sm:w-11 sm:h-11 flex gap-1">
-                    <img
-                      src="/assets/uc/wheel_rear.avif"
-                      alt="Drive axle tire"
-                      className="w-full h-full object-contain animate-spin-wheel"
-                    />
-                    <img
-                      src="/assets/uc/wheel_rear.avif"
-                      alt="Drive axle tire"
-                      className="w-full h-full object-contain animate-spin-wheel"
-                    />
-                  </div>
-                  <div className="absolute bottom-[6px] right-[40px] sm:right-[60px] md:right-[70px] w-8 h-8 sm:w-11 sm:h-11 flex gap-1">
-                    <img
-                      src="/assets/uc/wheel_rear.avif"
-                      alt="Trailer tandem tire"
-                      className="w-full h-full object-contain animate-spin-wheel"
-                    />
-                    <img
-                      src="/assets/uc/wheel_rear.avif"
-                      alt="Trailer tandem tire"
-                      className="w-full h-full object-contain animate-spin-wheel"
-                    />
-                  </div>
-
                   {/* Cruise Glow Beacon */}
-                  <div className="absolute -top-6 left-1/3 px-3 py-1 rounded-full bg-[#0016CB]/80 text-white text-[10px] font-mono font-bold tracking-wider shadow-[0_0_20px_rgba(0,22,203,0.8)]">
-                    CRUISE: 60 MPH ACTIVE
-                  </div>
+                  <motion.div
+                    animate={{ scale: [1, 1.05, 1], opacity: [0.9, 1, 0.9] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute -top-7 left-1/3 px-3 py-1 rounded-full bg-[#0016CB] border border-blue-400/40 text-white text-[10px] font-mono font-bold tracking-wider shadow-[0_0_20px_rgba(0,22,203,0.8)] flex items-center gap-1.5"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>CRUISE: 60 MPH ACTIVE</span>
+                  </motion.div>
                 </motion.div>
               </motion.div>
             )}
@@ -500,7 +500,8 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
                   setCurrentStageIdx(idx);
                   setIsPlaying(false);
                 }}
-                className={`p-3 sm:p-4 rounded-sm border text-left cursor-pointer transition-all ${
+                onMouseEnter={() => setIsPlaying(false)}
+                className={`relative overflow-hidden p-3 sm:p-4 rounded-sm border text-left cursor-pointer transition-all ${
                   isActive
                     ? 'bg-[#161616] border-[#0016CB] shadow-[0_0_20px_rgba(0,22,203,0.3)]'
                     : 'bg-[#0A0A0A] border-[#242424] hover:border-[#374151]'
@@ -518,6 +519,17 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
                 <div className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">
                   {s.speedMph} MPH &bull; {s.dutyStatus.split(' ')[0]}
                 </div>
+
+                {/* Animated Stage Progress Indicator */}
+                {isActive && (
+                  <motion.div
+                    key={`bar-${s.id}-${isPlaying}`}
+                    initial={{ width: isPlaying ? '0%' : '100%' }}
+                    animate={{ width: '100%' }}
+                    transition={isPlaying ? { duration: 4.2, ease: 'linear' } : { duration: 0.2 }}
+                    className="absolute bottom-0 left-0 h-1 bg-[#0016CB] shadow-[0_0_8px_#0016CB]"
+                  />
+                )}
               </button>
             );
           })}

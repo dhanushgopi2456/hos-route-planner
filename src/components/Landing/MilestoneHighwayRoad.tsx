@@ -112,14 +112,15 @@ export const MilestoneHighwayRoad: React.FC<MilestoneHighwayRoadProps> = ({ onLa
             <div className="pt-4 flex flex-wrap gap-4">
               <motion.button
                 type="button"
-                whileHover={{ scale: 1.04, y: -2 }}
+                whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => handleLaunch(true)}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#111111] hover:bg-[#0016CB] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer group"
+                className="relative overflow-hidden inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#111111] hover:bg-[#0016CB] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_10px_25px_rgba(0,0,0,0.25)] hover:shadow-[0_15px_35px_rgba(0,22,203,0.4)] cursor-pointer group font-mono"
               >
+                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
                 <Play className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
                 <span>TEST YOUR ROUTE NOW</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-2" />
               </motion.button>
             </div>
           </div>
@@ -161,6 +162,22 @@ export const MilestoneHighwayRoad: React.FC<MilestoneHighwayRoadProps> = ({ onLa
                   className="w-9 sm:w-11 h-auto -mt-1 object-contain"
                 />
               </motion.div>
+
+              {/* Glowing Electric-Blue GPS Waypoint Puck traveling down the highway track */}
+              <motion.div
+                animate={{
+                  top: `${14 + activeMilestone * 24}%`
+                }}
+                transition={{ type: 'spring', stiffness: 180, damping: 22 }}
+                className="absolute left-1/2 -translate-x-1/2 z-20 pointer-events-none"
+              >
+                <div className="relative flex items-center justify-center">
+                  <span className="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-[#0016CB] opacity-60" />
+                  <div className="relative w-4 h-4 rounded-full bg-[#0016CB] border-2 border-white shadow-[0_0_18px_#0016CB] flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-300" />
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
             {/* Sequential Milestones positioned alongside the road */}
@@ -179,7 +196,7 @@ export const MilestoneHighwayRoad: React.FC<MilestoneHighwayRoadProps> = ({ onLa
                     onClick={() => setActiveMilestone(index)}
                     className={`relative p-6 sm:p-8 rounded-none border transition-all duration-300 cursor-pointer ${
                       isSelected
-                        ? 'bg-[#111111] text-white border-[#0016CB] shadow-xl'
+                        ? 'bg-[#0A0A0A] text-white border-[#0016CB] shadow-[0_0_35px_rgba(0,22,203,0.35)] scale-[1.02]'
                         : 'bg-white text-[#111111] border-[#111111]/15 hover:border-[#0016CB]/50 hover:bg-slate-50'
                     }`}
                   >

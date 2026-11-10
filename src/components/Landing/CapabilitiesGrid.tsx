@@ -1,28 +1,40 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  Route,
+  FileText,
+  Fuel,
+  ShieldCheck,
+  Milestone,
+  FileCheck2,
+  LucideIcon
+} from 'lucide-react';
 
 interface CapabilitiesGridProps {
   onLaunchPlanner?: (tab?: string) => void;
 }
 
+interface ServiceItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: LucideIcon;
+  badge: string;
+  tab: string;
+}
+
 // 3D Card with cursor spotlight component
 const CapabilityCard: React.FC<{
-  item: {
-    id: string;
-    title: string;
-    subtitle: string;
-    description: string;
-    icon: string;
-    badge: string;
-    tab: string;
-  };
+  item: ServiceItem;
   index: number;
   onClick: (tab: string) => void;
 }> = ({ item, index, onClick }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const IconComponent = item.icon;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -44,30 +56,26 @@ const CapabilityCard: React.FC<{
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onClick(item.tab)}
-      className="relative p-8 rounded-none bg-[#0A0A0A] border border-white/10 hover:border-[#0016CB] transition-all duration-300 group flex flex-col justify-between cursor-pointer overflow-hidden shadow-lg"
+      className="relative p-8 rounded-xl bg-[#0A0A0A] border border-white/10 hover:border-[#0016CB] transition-all duration-300 group flex flex-col justify-between cursor-pointer overflow-hidden shadow-xl"
     >
-      {/* Radial Cursor Spotlight */}
+      {/* Radial Cursor Spotlight (Cult-UI style) */}
       {isHovered && (
         <div
           className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-0"
           style={{
-            background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0, 22, 203, 0.22), transparent 70%)`
+            background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(0, 22, 203, 0.28), transparent 70%)`
           }}
         />
       )}
 
       <div className="relative z-10">
-        {/* Header row: Icon & ID */}
+        {/* Header row: Vector Icon & Badge */}
         <div className="flex items-center justify-between mb-8">
-          <div className="w-14 h-14 rounded-none bg-white/5 border border-white/15 flex items-center justify-center p-3 group-hover:border-[#0016CB] group-hover:bg-[#0016CB]/15 transition-all">
-            <img
-              src={item.icon}
-              alt={item.title}
-              className="w-full h-full object-contain filter invert contrast-200 group-hover:brightness-125 transition-all"
-            />
+          <div className="w-14 h-14 rounded-xl bg-[#0016CB]/20 border border-[#0016CB]/40 flex items-center justify-center p-3 group-hover:border-[#38BDF8] group-hover:bg-[#0016CB]/35 transition-all shadow-[0_0_20px_rgba(0,22,203,0.35)] group-hover:shadow-[0_0_30px_rgba(56,189,248,0.5)]">
+            <IconComponent className="w-7 h-7 text-[#38BDF8] group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-none bg-white/5 border border-white/10 text-slate-300">
+            <span className="text-[11px] font-mono font-bold px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300">
               {item.badge}
             </span>
             <span className="text-xs font-mono font-bold text-slate-500">
@@ -77,7 +85,7 @@ const CapabilityCard: React.FC<{
         </div>
 
         {/* Service Title & Subtitle */}
-        <h3 className="text-xl font-bold uppercase tracking-tight text-white font-display mb-1 group-hover:text-[#0016CB] transition-colors">
+        <h3 className="text-xl font-bold uppercase tracking-tight text-white font-display mb-1 group-hover:text-blue-400 transition-colors">
           {item.title}
         </h3>
         <div className="text-xs font-mono text-slate-400 mb-4 uppercase">
@@ -97,7 +105,7 @@ const CapabilityCard: React.FC<{
           animate={{ x: isHovered ? 5 : 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
-          <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-[#0016CB]" />
+          <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-[#38BDF8]" />
         </motion.div>
       </div>
     </motion.div>
@@ -115,13 +123,13 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
     }
   };
 
-  const services = [
+  const services: ServiceItem[] = [
     {
       id: '01',
       title: 'OSRM Route & Rest Engine',
       subtitle: '49 CFR § 395 Compliance',
       description: 'Calculates true highway geometry, enforcing 11-hour driving caps, 14-hour on-duty windows, and automatic 10-hour sleeper resets.',
-      icon: '/assets/uc/icon_transport.png',
+      icon: Route,
       badge: 'CFR § 395.3',
       tab: 'overview'
     },
@@ -130,7 +138,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
       title: 'FMCSA ELD Daily Log Generator',
       subtitle: '24.00h Balanced RODS Grid',
       description: 'Generates standard FMCSA 24-hour graphical log sheets with midnight day transitions, remarks, totals, and carrier details.',
-      icon: '/assets/uc/icon_customs.png',
+      icon: FileText,
       badge: 'CFR § 395.8',
       tab: 'logs'
     },
@@ -139,7 +147,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
       title: 'Diesel Fuel Routing Network',
       subtitle: '< 1,000 Mile Fuel Intervals',
       description: 'Automatically detects cumulative driving distance and injects commercial diesel stops before the 1,000-mile tank threshold.',
-      icon: '/assets/uc/icon_warehouse.png',
+      icon: Fuel,
       badge: 'FUEL SHIELD',
       tab: 'overview'
     },
@@ -148,7 +156,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
       title: '70-Hour / 8-Day Cycle Tracker',
       subtitle: 'Cumulative On-Duty Audit',
       description: 'Continuously tracks driver available cycle hours before dispatching multi-day line-hauls, preventing catastrophic cycle violations.',
-      icon: '/assets/uc/icon_air_freight.png',
+      icon: ShieldCheck,
       badge: 'CYCLE GUARD',
       tab: 'compliance'
     },
@@ -157,7 +165,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
       title: 'Turn-by-Turn Waypoint Manifest',
       subtitle: 'Interactive Leaflet Integration',
       description: 'Chronological timetable of every leg, inspection break, refueling stop, and rest pause with accurate ETAs and durations.',
-      icon: '/assets/uc/icon_project_cargo.png',
+      icon: Milestone,
       badge: 'LEAFLET GIS',
       tab: 'timeline'
     },
@@ -166,7 +174,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
       title: 'Audit-Ready PDF & Print Export',
       subtitle: 'Level I–III Inspection Proof',
       description: 'One-click high-resolution PDF download and printable inspection manifests formatted for DOT roadside enforcement officers.',
-      icon: '/assets/uc/icon_sea_freight.png',
+      icon: FileCheck2,
       badge: 'DOT AUDIT',
       tab: 'logs'
     }

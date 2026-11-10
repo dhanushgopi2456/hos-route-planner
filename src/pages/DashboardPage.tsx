@@ -377,7 +377,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-20 relative z-10">
         {/* Error Alert */}
         <AnimatePresence>
           {errorMessage && (

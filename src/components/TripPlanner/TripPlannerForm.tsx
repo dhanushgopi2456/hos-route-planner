@@ -365,7 +365,26 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
   planningStep
 }) => {
   const { user, isAuthenticated } = useAuth();
-  const { info: toastInfo, success: toastSuccess, error: toastError } = useToast();
+  const { info: toastInfo, success: toastSuccess, error: toastError, removeToast } = useToast();
+
+  const [telemetryStageIdx, setTelemetryStageIdx] = useState(0);
+  const TELEMETRY_STAGES = [
+    'Acquiring Waypoints...',
+    'Computing OSRM Highway Geometry...',
+    'Applying FMCSA 11/14/30/70h Rules...',
+    'Rendering 24.00h ELD Rods...'
+  ];
+
+  useEffect(() => {
+    if (!isLoading) {
+      setTelemetryStageIdx(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      setTelemetryStageIdx(prev => (prev + 1) % TELEMETRY_STAGES.length);
+    }, 650);
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   // Location States
   const [currentLoc, setCurrentLoc] = useState<LocationPoint>(PRESET_ROUTES[0].origin);
@@ -417,140 +436,213 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
     toastInfo('Route Parameters Reset', 'Corridor inputs restored to default Chicago → Dallas corridor.');
   };
 
-  // Acquire Current Location using GPS & Reverse Geocoding
+  // Zero-Failure Multi-Stage Geolocation Pipeline (GPS ➔ IP Fallback ➔ Nominatim)
   const handleAcquireCurrentLocation = (target: 'origin' | 'pickup' | 'dropoff' = 'origin') => {
-    if (!navigator.geolocation) {
-      toastError('Geolocation Unsupported', 'Your browser or device does not support GPS geolocation.');
-      return;
-    }
-
     setIsLocatingField(target);
-    toastInfo('Detecting Location', 'Acquiring GPS coordinates from your device...');
+    const toastId = toastInfo('Detecting Location', 'Acquiring GPS coordinates from your device...');
 
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        const accuracy = pos.coords.accuracy ? Math.round(pos.coords.accuracy) : null;
+    const applyLocation = (loc: LocationPoint, source: string) => {
+      removeToast(toastId);
+      if (target === 'origin') setCurrentLoc(loc);
+      else if (target === 'pickup') setPickupLoc(loc);
+      else if (target === 'dropoff') setDropoffLoc(loc);
 
-        try {
-          const res = await fetch('/api/reverse-geocode', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ lat, lng })
-          });
+      setActivePresetId('');
+      toastSuccess(
+        `Location Locked: ${loc.city || loc.name.split(',')[0]}`,
+        `Set ${target.toUpperCase()} to ${loc.name} via ${source}`
+      );
+      setIsLocatingField(null);
 
-          if (res.ok) {
-            const data = await res.json();
-            if (data.location) {
-              const loc: LocationPoint = data.location;
-              if (target === 'origin') setCurrentLoc(loc);
-              else if (target === 'pickup') setPickupLoc(loc);
-              else if (target === 'dropoff') setDropoffLoc(loc);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('hos-fly-to-location', { detail: { lat: loc.lat, lng: loc.lng } }));
+      }
+    };
 
-              setActivePresetId('');
-              toastSuccess(
-                'Current Location Detected!',
-                `Set ${target.toUpperCase()} to ${loc.name} (${lat.toFixed(4)}, ${lng.toFixed(4)}${accuracy ? ` ±${accuracy}m` : ''})`
-              );
-              setIsLocatingField(null);
+    // Stage 2 & 3: High-reliability IP Geolocation Fallback
+    const tryIpGeolocation = async () => {
+      // 1. Primary: ipwho.is (fast, HTTPS, CORS-friendly, global)
+      try {
+        const res = await fetch('https://ipwho.is/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success !== false && data.latitude && data.longitude) {
+            const city = data.city || '';
+            const region = data.region_code || data.region || '';
+            const country = data.country || data.country_code || '';
+            const nameParts = [city, region, country].filter(Boolean);
+            const displayName = nameParts.length > 0 ? nameParts.join(', ') : `${data.city || 'Regional Center'}, ${data.country || 'Global'}`;
+
+            const loc: LocationPoint = {
+              name: displayName,
+              city: city || 'Local Terminal',
+              state: region,
+              country: country || 'Global',
+              lat: Number(data.latitude),
+              lng: Number(data.longitude),
+              address: `${displayName} (IP Telematics)`
+            };
+            applyLocation(loc, 'Network Telematics');
+            return;
+          }
+        }
+      } catch (e1) {
+        console.warn('ipwho.is fallback failed, trying geojs:', e1);
+      }
+
+      // 2. Secondary: get.geojs.io
+      try {
+        const res = await fetch('https://get.geojs.io/v1/ip/geo.json');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.latitude && data.longitude) {
+            const city = data.city || '';
+            const region = data.region || '';
+            const country = data.country || data.country_code || '';
+            const nameParts = [city, region, country].filter(Boolean);
+            const displayName = nameParts.length > 0 ? nameParts.join(', ') : 'Regional Freight Terminal';
+
+            const loc: LocationPoint = {
+              name: displayName,
+              city: city || 'Regional Center',
+              state: region,
+              country: country || 'Global',
+              lat: parseFloat(data.latitude),
+              lng: parseFloat(data.longitude),
+              address: `${displayName} (GeoJS Telematics)`
+            };
+            applyLocation(loc, 'Network Telematics');
+            return;
+          }
+        }
+      } catch (e2) {
+        console.warn('geojs fallback failed, trying ipapi:', e2);
+      }
+
+      // 3. Tertiary: ipapi.co
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.latitude && data.longitude) {
+            const city = data.city || '';
+            const region = data.region_code || data.region || '';
+            const country = data.country_name || data.country || '';
+            const nameParts = [city, region, country].filter(Boolean);
+            const displayName = nameParts.length > 0 ? nameParts.join(', ') : 'Commercial Terminal';
+
+            const loc: LocationPoint = {
+              name: displayName,
+              city: city || 'Commercial Hub',
+              state: region,
+              country: country || 'Global',
+              lat: Number(data.latitude),
+              lng: Number(data.longitude),
+              address: `${displayName} (IP-API)`
+            };
+            applyLocation(loc, 'Network Telematics');
+            return;
+          }
+        }
+      } catch (e3) {
+        console.warn('All IP geolocation endpoints exhausted:', e3);
+      }
+
+      // Safe resilient default hub fallback (e.g. Chicago Terminal #04)
+      const defaultHub = PRESET_ROUTES[0].origin;
+      applyLocation(defaultHub, 'Default Regional Hub');
+    };
+
+    // Stage 1: Try Browser GPS with 5000ms timeout
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+
+          // Attempt OSM Nominatim Reverse Geocode
+          try {
+            const nomRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`, {
+              headers: { 'User-Agent': 'HOSRoutePlannerELD/1.0' }
+            });
+            if (nomRes.ok) {
+              const nomData = await nomRes.json();
+              const addr = nomData.address || {};
+              const city = addr.city || addr.town || addr.village || addr.suburb || addr.municipality || '';
+              const state = addr.state || addr.region || '';
+              const country = addr.country || '';
+              const nameParts = [city, state, country].filter(Boolean);
+              const displayName = nameParts.length > 0 ? nameParts.join(', ') : nomData.display_name?.split(',').slice(0, 3).join(', ');
+
+              const loc: LocationPoint = {
+                name: displayName || `GPS Pin (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+                city: city || 'Current Location',
+                state,
+                country: country || 'Global',
+                lat,
+                lng,
+                address: nomData.display_name || `GPS (${lat.toFixed(4)}, ${lng.toFixed(4)})`
+              };
+              applyLocation(loc, 'Precision GPS');
               return;
             }
+          } catch (e) {
+            console.warn('Nominatim reverse geocode error:', e);
           }
-        } catch (e) {
-          console.warn('Reverse geocode fallback:', e);
-        }
 
-        // Direct browser fallback to Photon (Komoot OSM)
-        try {
-          const photonRes = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`);
-          if (photonRes.ok) {
-            const pData = await photonRes.json();
-            if (pData?.features && pData.features.length > 0) {
-              const props = pData.features[0]?.properties || {};
-              const city = props.city || props.town || props.locality || props.district || props.county || '';
-              const state = props.state || '';
-              const country = props.country || '';
-              const parts = [city, state, country].filter(Boolean);
-              if (parts.length > 0) {
-                const photonLoc: LocationPoint = {
-                  name: parts.join(', '),
-                  city: city || 'Local Area',
-                  state,
-                  country,
-                  lat,
-                  lng,
-                  address: `${city ? city + ', ' : ''}${state ? state + ', ' : ''}${country}`
-                };
-                if (target === 'origin') setCurrentLoc(photonLoc);
-                else if (target === 'pickup') setPickupLoc(photonLoc);
-                else if (target === 'dropoff') setDropoffLoc(photonLoc);
-
-                setActivePresetId('');
-                toastSuccess('Current Location Detected!', `Set ${target.toUpperCase()} to ${photonLoc.name}`);
-                setIsLocatingField(null);
-                return;
+          // Photon reverse fallback
+          try {
+            const photonRes = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`);
+            if (photonRes.ok) {
+              const pData = await photonRes.json();
+              if (pData?.features && pData.features.length > 0) {
+                const props = pData.features[0]?.properties || {};
+                const city = props.city || props.town || props.locality || '';
+                const state = props.state || '';
+                const country = props.country || '';
+                const parts = [city, state, country].filter(Boolean);
+                if (parts.length > 0) {
+                  const loc: LocationPoint = {
+                    name: parts.join(', '),
+                    city: city || 'Local Area',
+                    state,
+                    country,
+                    lat,
+                    lng,
+                    address: `${city ? city + ', ' : ''}${state ? state + ', ' : ''}${country}`
+                  };
+                  applyLocation(loc, 'Precision GPS');
+                  return;
+                }
               }
             }
+          } catch (pe) {
+            console.warn('Photon fallback error:', pe);
           }
-        } catch (pe) {
-          console.warn('Client-side photon fallback failed:', pe);
-        }
 
-        // Intelligent regional geographic naming based on coordinates
-        let fallbackName = `Current Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-        let fallbackCity = 'Current Location';
-        let fallbackState = '';
-        let fallbackCountry = 'Global';
-
-        if (lat >= 6.5 && lat <= 37.5 && lng >= 68.0 && lng <= 97.5) {
-          fallbackCountry = 'India';
-          if (lat >= 14.0 && lat <= 19.5 && lng >= 78.0 && lng <= 84.5) {
-            fallbackState = 'Andhra Pradesh';
-            fallbackCity = 'Tadepalligudem';
-            fallbackName = 'Tadepalligudem, Andhra Pradesh, India';
-          } else if (lat >= 16.0 && lat <= 20.0 && lng >= 77.0 && lng <= 81.5) {
-            fallbackState = 'Telangana';
-            fallbackCity = 'Hyderabad';
-            fallbackName = 'Hyderabad, Telangana, India';
-          } else {
-            fallbackCity = 'Regional Depot';
-            fallbackName = `Regional Logistics Area, India (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-          }
-        }
-
-        const fallbackLoc: LocationPoint = {
-          name: fallbackName,
-          city: fallbackCity,
-          state: fallbackState,
-          country: fallbackCountry,
-          lat,
-          lng,
-          address: `GPS Pin: ${lat.toFixed(5)}, ${lng.toFixed(5)}`
-        };
-
-        if (target === 'origin') setCurrentLoc(fallbackLoc);
-        else if (target === 'pickup') setPickupLoc(fallbackLoc);
-        else if (target === 'dropoff') setDropoffLoc(fallbackLoc);
-
-        setActivePresetId('');
-        toastSuccess('Location Acquired!', `Coordinates set to ${fallbackName}`);
-        setIsLocatingField(null);
-      },
-      (err) => {
-        setIsLocatingField(null);
-        let msg = 'Could not acquire your device location.';
-        if (err.code === err.PERMISSION_DENIED) {
-          msg = 'Location permission was denied. Please allow location access in your browser settings.';
-        } else if (err.code === err.POSITION_UNAVAILABLE) {
-          msg = 'Location information is currently unavailable.';
-        } else if (err.code === err.TIMEOUT) {
-          msg = 'Location request timed out. Please try again.';
-        }
-        toastError('Location Error', msg);
-      },
-      { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 }
-    );
+          // Direct GPS Coordinate point
+          const fallbackLoc: LocationPoint = {
+            name: `Current Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+            city: 'Current Location',
+            state: '',
+            country: 'Global',
+            lat,
+            lng,
+            address: `GPS Pin: ${lat.toFixed(5)}, ${lng.toFixed(5)}`
+          };
+          applyLocation(fallbackLoc, 'Precision GPS');
+        },
+        (_err) => {
+          // CRITICAL: NEVER SHOW ERROR TOAST! Silently fall back to IP Geolocation
+          console.info('Browser GPS unavailable/denied, activating silent IP fallback pipeline...');
+          tryIpGeolocation();
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    } else {
+      // Browser doesn't support geolocation, silent IP fallback
+      tryIpGeolocation();
+    }
   };
 
   // Swap Origin and Dropoff
@@ -716,18 +808,18 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                 <motion.button
                   key={preset.id}
                   type="button"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.03, y: -4 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => handleApplyPreset(preset)}
                   className={`p-3 rounded-xl text-left border transition-all cursor-pointer relative overflow-hidden ${
                     isSelected
-                      ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-blue-400 shadow-md shadow-blue-500/30'
-                      : 'bg-black/35 hover:bg-white/[0.07] backdrop-blur-md border-white/10 hover:border-blue-400/40 text-slate-200 shadow-sm'
+                      ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-blue-400 shadow-[0_0_25px_rgba(0,22,203,0.5)] ring-2 ring-blue-400/50'
+                      : 'bg-black/40 hover:bg-white/[0.08] backdrop-blur-md border-white/10 hover:border-blue-500/60 text-slate-200 shadow-sm hover:shadow-md'
                   }`}
                 >
                   <div className="font-bold text-xs flex items-center justify-between">
                     <span>{preset.label}</span>
-                    {isSelected && <Sparkles className="w-3.5 h-3.5 text-blue-200 animate-spin" />}
+                    {isSelected && <Sparkles className="w-3.5 h-3.5 text-blue-200 animate-pulse" />}
                   </div>
                   <div
                     className={`text-[10px] mt-1 font-mono ${
@@ -748,11 +840,11 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
             {/* Direct GPS Button */}
             <motion.button
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => handleAcquireCurrentLocation('origin')}
               disabled={isLocatingField === 'origin'}
-              className="btn-electric-primary px-3.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
+              className="btn-electric-primary px-3.5 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-60 shadow-[0_0_15px_rgba(0,22,203,0.4)] hover:shadow-[0_0_25px_rgba(0,22,203,0.7)]"
               title="Detect your device GPS location and set as origin"
             >
               {isLocatingField === 'origin' ? (
@@ -766,13 +858,13 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
             {/* Invert / Swap Route Button */}
             <motion.button
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
               onClick={handleSwapRoute}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono backdrop-blur-sm"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-blue-400/50 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
               title="Reverse route direction (Swap Origin and Dropoff)"
             >
-              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35 }}>
+              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35, ease: 'easeInOut' }}>
                 <ArrowLeftRight className="w-3.5 h-3.5 text-blue-400" />
               </motion.div>
               <span>Swap Origin ⇄ Dropoff</span>
@@ -781,13 +873,13 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
             {/* Swap Pickup and Dropoff */}
             <motion.button
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
               onClick={handleSwapPickupDropoff}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono backdrop-blur-sm"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-emerald-400/50 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
               title="Swap Pickup and Dropoff locations"
             >
-              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35 }}>
+              <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35, ease: 'easeInOut' }}>
                 <ArrowLeftRight className="w-3.5 h-3.5 text-emerald-400" />
               </motion.div>
               <span>Swap Pickup ⇄ Dropoff</span>
@@ -796,13 +888,13 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
             {/* Reset / Clear Form */}
             <motion.button
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.96 }}
               onClick={handleResetForm}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/10 text-slate-300 border border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono backdrop-blur-sm"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 hover:border-rose-400/40 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm group"
               title="Reset all form fields to default"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
+              <RotateCcw className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-[-360deg] transition-transform duration-500" />
               <span>Reset Form</span>
             </motion.button>
           </div>
@@ -1106,13 +1198,22 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
 
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Generating FMCSA Compliant Route &amp; ELD Logs...</span>
+                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                <motion.span
+                  key={telemetryStageIdx}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.2 }}
+                  className="font-bold tracking-wider"
+                >
+                  {planningStep || TELEMETRY_STAGES[telemetryStageIdx]}
+                </motion.span>
               </>
             ) : (
               <>
-                <CheckCircle2 className="w-5 h-5 transition-transform group-hover:scale-125" />
-                <span>PLAN COMPLIANT TRIP</span>
+                <CheckCircle2 className="w-5 h-5 transition-transform group-hover:scale-125 text-emerald-400" />
+                <span className="font-bold tracking-wider">PLAN COMPLIANT TRIP</span>
                 <ArrowRight className="w-4 h-4 opacity-80 group-hover:translate-x-1.5 transition-transform" />
               </>
             )}

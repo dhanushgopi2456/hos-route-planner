@@ -28,10 +28,10 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ showLabel = false, cla
       >
         <motion.div
           key={resolvedTheme}
-          initial={{ rotate: -90, opacity: 0, scale: 0.7 }}
+          initial={{ rotate: -180, opacity: 0, scale: 0.5 }}
           animate={{ rotate: 0, opacity: 1, scale: 1 }}
-          exit={{ rotate: 90, opacity: 0, scale: 0.7 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          exit={{ rotate: 180, opacity: 0, scale: 0.5 }}
+          transition={{ type: 'spring', stiffness: 450, damping: 22 }}
         >
           {resolvedTheme === 'dark' ? (
             <Moon className="w-4 h-4 text-cyan-300 fill-cyan-300/20" />
