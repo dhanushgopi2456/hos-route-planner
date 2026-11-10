@@ -722,7 +722,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
                   className={`p-3 rounded-xl text-left border transition-all cursor-pointer relative overflow-hidden ${
                     isSelected
                       ? 'bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-blue-400 shadow-md shadow-blue-500/30'
-                      : 'bg-slate-900/80 hover:bg-slate-800 border-slate-800 hover:border-slate-700 text-slate-200'
+                      : 'bg-black/35 hover:bg-white/[0.07] backdrop-blur-md border-white/10 hover:border-blue-400/40 text-slate-200 shadow-sm'
                   }`}
                 >
                   <div className="font-bold text-xs flex items-center justify-between">
@@ -743,7 +743,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
         </div>
 
         {/* Quick Route Actions Toolbar: GPS, Swap, Reset */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 mb-4 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 mb-4 p-2.5 rounded-xl bg-black/35 backdrop-blur-md border border-white/10">
           <div className="flex flex-wrap items-center gap-2">
             {/* Direct GPS Button */}
             <motion.button
@@ -769,7 +769,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSwapRoute}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono backdrop-blur-sm"
               title="Reverse route direction (Swap Origin and Dropoff)"
             >
               <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35 }}>
@@ -784,7 +784,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleSwapPickupDropoff}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/10 text-slate-200 border border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono backdrop-blur-sm"
               title="Swap Pickup and Dropoff locations"
             >
               <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35 }}>
@@ -799,7 +799,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleResetForm}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/10 text-slate-300 border border-white/10 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-colors font-mono backdrop-blur-sm"
               title="Reset all form fields to default"
             >
               <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
@@ -1268,7 +1268,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
             }
           }}
           placeholder={placeholder}
-          className="w-full p-3.5 pl-9 pr-16 text-xs font-bold text-white bg-slate-900/90 border border-slate-700/80 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner group-hover:border-slate-600 transition-colors font-sans placeholder-slate-500"
+          className="w-full p-3.5 pl-9 pr-16 text-xs font-bold text-white bg-black/40 backdrop-blur-md border border-white/15 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 shadow-inner group-hover:border-white/30 transition-colors font-sans placeholder-slate-400"
         />
         <div className="absolute left-3 top-4 text-slate-400 pointer-events-none transition-colors group-hover:text-blue-400">
           <MapPin className="w-4 h-4" />

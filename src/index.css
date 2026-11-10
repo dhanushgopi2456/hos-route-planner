@@ -223,15 +223,21 @@ h1, h2, h3, h4, .font-display {
   transform: translateZ(30px);
 }
 
-/* United Carriers Austere Low-Relief Card */
+/* United Carriers Austere Low-Relief Card (Refined Translucent Glass) */
 .uc-card-stark {
-  background: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(36, 36, 36, 0.95);
-  border-radius: 8px;
+  background: rgba(8, 12, 22, 0.52);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
   color: #FFFFFF;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
   transition: all 0.3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+}
+
+.uc-card-stark:hover {
+  border-color: rgba(47, 99, 255, 0.45);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(47, 99, 255, 0.25);
 }
 
 .uc-card-stark:hover {
@@ -293,14 +299,22 @@ h1, h2, h3, h4, .font-display {
   transform: translateY(-1px);
 }
 
-/* United Carriers Signature Surface */
+/* United Carriers Signature Surface (Luminous Translucent Glass) */
 .uc-glass-card {
-  background: rgba(10, 10, 10, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(36, 36, 36, 0.95);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9);
+  background: rgba(8, 12, 22, 0.48);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.uc-glass-card:hover {
+  border-color: rgba(47, 99, 255, 0.5);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.7),
+    0 0 30px -5px rgba(47, 99, 255, 0.3);
 }
 
 .uc-glass-card:hover {

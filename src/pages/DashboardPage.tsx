@@ -303,8 +303,8 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] text-slate-100 pb-20 relative selection:bg-[#0016CB] selection:text-white overflow-x-hidden">
-      {/* 1. Cinematic Celestial Atmosphere Video Background */}
+    <div className="min-h-screen bg-transparent text-slate-100 pb-20 relative selection:bg-[#0016CB] selection:text-white overflow-x-hidden">
+      {/* 1. Cinematic Celestial Atmosphere Video Background (High-Vibrancy, Ultra-Clear) */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
         <video
           ref={videoBgRef}
@@ -312,8 +312,8 @@ export const DashboardPage: React.FC = () => {
           loop
           muted
           playsInline
-          className={`w-full h-full object-cover object-top transition-opacity duration-1000 filter brightness-105 contrast-110 ${
-            ambientVideoActive ? 'opacity-40 md:opacity-55' : 'opacity-10'
+          className={`w-full h-full object-cover object-center transition-opacity duration-700 filter brightness-125 contrast-110 saturate-130 ${
+            ambientVideoActive ? 'opacity-90 md:opacity-95' : 'opacity-20'
           }`}
         >
           <source
@@ -322,27 +322,19 @@ export const DashboardPage: React.FC = () => {
           />
         </video>
 
-        {/* Multi-layer atmospheric gradient overlays ensuring optimal card contrast & readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#000000]/50 via-[#000000]/75 to-[#000000]/95 pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-700/20 via-transparent to-[#000000]/85 pointer-events-none" />
-        {/* Subtle grid pattern overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.035] pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(#FFFFFF 1px, transparent 1px)',
-            backgroundSize: '32px 32px'
-          }}
-        />
+        {/* Lightweight subtle gradient: keeps celestial video fully vivid while protecting text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-600/15 via-transparent to-black/25 pointer-events-none" />
       </div>
 
       {/* Top Command Bar & Workspace Shell */}
-      <div className="bg-[#0A0A0A]/90 border-b border-[#242424]/80 py-4 px-4 sm:px-6 lg:px-8 sticky top-20 z-40 backdrop-blur-xl">
+      <div className="bg-black/35 border-b border-white/10 py-3.5 px-4 sm:px-6 lg:px-8 sticky top-20 z-40 backdrop-blur-xl shadow-lg shadow-black/30">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#161616]/90 border border-[#2E2E2E] hover:border-[#0016CB] text-xs font-semibold text-slate-300 hover:text-white transition-all cursor-pointer group font-mono"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/40 border border-white/15 hover:border-[#0016CB] text-xs font-semibold text-slate-300 hover:text-white transition-all cursor-pointer group font-mono backdrop-blur-md"
             >
               <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1 text-[#0016CB]" />
               <span>Back to Home</span>
