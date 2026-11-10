@@ -535,20 +535,10 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
               </h3>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-[#161616] text-emerald-400 border border-[#242424]">
                 FMCSA Compliant
               </span>
-              {onLaunchPlanner && (
-                <button
-                  type="button"
-                  onClick={onLaunchPlanner}
-                  className="px-4 py-1 rounded-full bg-[#0016CB] hover:bg-[#0014B5] text-white text-xs font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-                >
-                  <span>Launch Planner</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              )}
             </div>
           </div>
 
@@ -570,3 +560,4 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
     </section>
   );
 };
+
