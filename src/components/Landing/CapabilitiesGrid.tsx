@@ -237,7 +237,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
               <Sparkles className="w-3.5 h-3.5" />
               <span>Full-Stack Freight Dispatch Architecture</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
               Everything your haul needs.{' '}
               <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
                 Under one roof.

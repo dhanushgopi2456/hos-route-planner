@@ -48,7 +48,7 @@ export const ValuePillars: React.FC = () => {
             <span>Built For Fleets &amp; Owner-Operators</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
             Built for fleets and drivers that{' '}
             <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
               can't afford violations.

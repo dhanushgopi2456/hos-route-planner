@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HeroSection } from '../components/Landing/HeroSection';
+import { MarqueeTicker } from '../components/Landing/MarqueeTicker';
 import { ImpactMetrics } from '../components/Landing/ImpactMetrics';
 import { CapabilitiesGrid } from '../components/Landing/CapabilitiesGrid';
 import { InteractiveShowcase } from '../components/Landing/InteractiveShowcase';
@@ -24,22 +25,28 @@ export const LandingPage: React.FC = () => {
       {/* 1. Full-Viewport Hero Section */}
       <HeroSection onLaunchPlanner={handleLaunchPlanner} />
 
-      {/* 2. Impact Metrics Bar ("We map the route. We guarantee compliance.") */}
+      {/* 2. United Carriers Signature Marquee Corridor Ticker */}
+      <MarqueeTicker />
+
+      {/* 3. Impact Metrics Bar ("We map the route. We guarantee compliance.") */}
       <ImpactMetrics />
 
-      {/* 3. Core Capabilities Grid ("Everything your haul needs. Under one roof.") */}
+      {/* 4. Core Capabilities Grid ("Everything your haul needs. Under one roof.") */}
       <CapabilitiesGrid onLaunchPlanner={handleLaunchPlanner} />
 
-      {/* 4. Interactive Showcase Section ("Compliance at Every Milestone") */}
+      {/* 5. Interactive Showcase Section ("Compliance at Every Milestone") */}
       <InteractiveShowcase onLaunchPlanner={handleLaunchPlanner} />
 
-      {/* 5. Numbered Value Pillars ("Built for fleets and drivers that can't afford violations") */}
+      {/* 6. Mid-page Marquee Ticker */}
+      <MarqueeTicker className="opacity-90 border-t border-white/5" />
+
+      {/* 7. Numbered Value Pillars ("Built for fleets and drivers that can't afford violations") */}
       <ValuePillars />
 
-      {/* 6. Interactive FAQ Accordion */}
+      {/* 8. Interactive FAQ Accordion */}
       <FaqSection />
 
-      {/* 7. Footer & Bold Bottom Call to Action */}
+      {/* 9. Footer & Bold Bottom Call to Action */}
       <FooterCta onLaunchPlanner={handleLaunchPlanner} />
     </div>
   );

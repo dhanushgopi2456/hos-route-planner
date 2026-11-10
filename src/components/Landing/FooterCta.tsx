@@ -37,7 +37,7 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
                 <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
                 <span>Zero Violation Math &bull; 100% Free &amp; Open Commercial Dispatch</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
                 Ready to plan your next{' '}
                 <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-white bg-clip-text text-transparent">
                   compliant haul?

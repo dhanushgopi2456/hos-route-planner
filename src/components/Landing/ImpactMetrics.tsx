@@ -66,8 +66,8 @@ export const ImpactMetrics: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display"
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.445, 0.05, 0.55, 0.95] }}
+            className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display"
           >
             We map the route.{' '}
             <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">

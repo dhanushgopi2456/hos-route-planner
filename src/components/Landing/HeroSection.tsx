@@ -63,8 +63,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
             <motion.h1
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.08] text-white font-display"
+              transition={{ duration: 0.65, delay: 0.1, ease: [0.445, 0.05, 0.55, 0.95] }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight leading-[1.02] text-white font-display"
             >
               Every mile of the haul.{' '}
               <span className="block mt-1 bg-gradient-to-r from-blue-400 via-cyan-300 to-white bg-clip-text text-transparent">
@@ -165,12 +165,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
                 <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 160">
                   <defs>
                     <linearGradient id="routeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#0052FF" stopOpacity="0.8" />
+                      <stop offset="0%" stopColor="#0016cb" stopOpacity="0.95" />
                       <stop offset="50%" stopColor="#06B6D4" stopOpacity="0.9" />
-                      <stop offset="100%" stopColor="#10B981" stopOpacity="0.9" />
+                      <stop offset="100%" stopColor="#10B981" stopOpacity="0.95" />
                     </linearGradient>
                     <filter id="neonBlur" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feGaussianBlur stdDeviation="3.5" result="blur" />
                       <feMerge>
                         <feMergeNode in="blur" />
                         <feMergeNode in="SourceGraphic" />
@@ -183,7 +183,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
                     d="M 30,120 Q 120,40 200,90 T 370,50"
                     fill="none"
                     stroke="url(#routeGlow)"
-                    strokeWidth="4"
+                    strokeWidth="5"
                     filter="url(#neonBlur)"
                   />
                   {/* Dashed animated pulse path */}
@@ -196,11 +196,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
                     className="animate-road-dash"
                   />
 
+                  {/* Radar Wave Rings */}
+                  <circle cx="30" cy="120" r="10" fill="none" stroke="#0016cb" strokeWidth="1" opacity="0.6" />
+                  <circle cx="120" cy="65" r="9" fill="none" stroke="#ff5500" strokeWidth="1" opacity="0.6" />
+
                   {/* Waypoint Nodes */}
-                  <circle cx="30" cy="120" r="5" fill="#0052FF" stroke="#FFFFFF" strokeWidth="2" />
-                  <circle cx="120" cy="65" r="4.5" fill="#F59E0B" stroke="#FFFFFF" strokeWidth="2" />
-                  <circle cx="200" cy="90" r="4.5" fill="#8B5CF6" stroke="#FFFFFF" strokeWidth="2" />
-                  <circle cx="370" cy="50" r="5" fill="#10B981" stroke="#FFFFFF" strokeWidth="2" />
+                  <circle cx="30" cy="120" r="5.5" fill="#0016cb" stroke="#FFFFFF" strokeWidth="2" />
+                  <circle cx="120" cy="65" r="5" fill="#ff5500" stroke="#FFFFFF" strokeWidth="2" />
+                  <circle cx="200" cy="90" r="5" fill="#8B5CF6" stroke="#FFFFFF" strokeWidth="2" />
+                  <circle cx="370" cy="50" r="5.5" fill="#10B981" stroke="#FFFFFF" strokeWidth="2" />
                 </svg>
 
                 {/* Stop Labels overlay */}

@@ -6,14 +6,45 @@
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
+  /* United Carriers Design Tokens */
+  --_color---brand: #0016cb;
+  --_color---primary: #0016cb;
+  --_color---secondary: #ff5500;
+  --_color---m-black: #111111;
+  --_color---m-white: #ffffff;
+  --_color---border--main: rgba(255, 255, 255, 0.12);
+  --_color---content--soft: rgba(255, 255, 255, 0.72);
+  --_color---content--note: rgba(255, 255, 255, 0.40);
+
   --color-obsidian-950: #06080E;
   --color-obsidian-900: #0B0F19;
   --color-obsidian-850: #0F172A;
-  --color-electric-blue: #0052FF;
-  --color-electric-hover: #1D63FF;
-  --color-cobalt-600: #2563EB;
-  --color-cobalt-500: #3B82F6;
+  --color-electric-blue: #0016cb;
+  --color-electric-hover: #0022ff;
+  --color-cobalt-600: #0016cb;
+  --color-cobalt-500: #2563EB;
   --color-cyan-glow: #06B6D4;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes worldWideDot {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  50% { transform: scale(1.35); opacity: 0.25; }
+  100% { transform: scale(0.95); opacity: 0.9; }
+}
+
+@keyframes spinWheel {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes wave {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(2.4); opacity: 0; }
 }
 
 @keyframes shimmer {
@@ -74,6 +105,28 @@
 
 .animate-road-dash {
   animation: roadDash 4s linear infinite;
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-world-dot {
+  animation: worldWideDot 2s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
+}
+
+.animate-spin-wheel {
+  animation: spinWheel 18s linear infinite;
+}
+
+.animate-wave {
+  animation: wave 2.2s cubic-bezier(0.445, 0.05, 0.55, 0.95) infinite;
 }
 
 /* Base Font & Styling */
@@ -172,36 +225,36 @@ h1, h2, h3, h4, .font-display {
 /* Electric Blue Action Button with Radial Hover Shimmer */
 .btn-electric-primary {
   position: relative;
-  background: linear-gradient(135deg, #0052FF 0%, #2563EB 100%);
+  background: linear-gradient(135deg, #0016cb 0%, #1a38e8 100%);
   color: #FFFFFF;
   font-weight: 700;
   border-radius: 9999px;
   overflow: hidden;
-  box-shadow: 0 8px 24px -4px rgba(0, 82, 255, 0.45);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 24px -4px rgba(0, 22, 203, 0.5);
+  transition: all 0.4s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
 .btn-electric-primary:hover {
-  background: linear-gradient(135deg, #1D63FF 0%, #3B82F6 100%);
-  box-shadow: 0 12px 32px -4px rgba(0, 82, 255, 0.65);
+  background: linear-gradient(135deg, #0022ff 0%, #2563EB 100%);
+  box-shadow: 0 12px 32px -4px rgba(0, 22, 203, 0.75);
   transform: translateY(-1px);
 }
 
 .btn-electric-secondary {
   position: relative;
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(12px);
   color: #F8FAFC;
   font-weight: 600;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 9999px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.4s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
 .btn-electric-secondary:hover {
-  background: rgba(30, 41, 59, 0.85);
-  border-color: rgba(0, 82, 255, 0.5);
-  box-shadow: 0 0 20px rgba(0, 82, 255, 0.25);
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(0, 22, 203, 0.6);
+  box-shadow: 0 0 20px rgba(0, 22, 203, 0.3);
   transform: translateY(-1px);
 }
 

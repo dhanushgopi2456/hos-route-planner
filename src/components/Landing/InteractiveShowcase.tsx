@@ -229,7 +229,7 @@ export const InteractiveShowcase: React.FC<InteractiveShowcaseProps> = ({ onLaun
             <span>Choreographed Compliance Architecture</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-display">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
             Compliance at{' '}
             <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-white bg-clip-text text-transparent">
               Every Milestone.
