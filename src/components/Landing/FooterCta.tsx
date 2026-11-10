@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Truck, ArrowRight, ShieldCheck, Heart } from 'lucide-react';
+import { Truck, ArrowRight, ShieldCheck } from 'lucide-react';
 
 interface FooterCtaProps {
   onLaunchPlanner?: () => void;
@@ -23,28 +23,39 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
   };
 
   return (
-    <footer className="relative bg-[#000000] text-slate-400 pt-20 pb-12 border-t border-[#242424]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-16">
-        
-        {/* Bold CTA Banner */}
-        <div className="relative rounded-2xl p-8 sm:p-12 overflow-hidden border border-[#242424] bg-[#0A0A0A] shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
-          {/* Subtle Radial Mesh */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#0016CB]/10 rounded-full blur-3xl pointer-events-none" />
+    <footer className="relative bg-[#000000] text-slate-400 pt-16 pb-12 border-t border-white/10 overflow-hidden">
+      
+      {/* 1. Dramatic Container Yard Backdrop (from United Carriers Template) */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mb-16">
+        <div className="relative rounded-none overflow-hidden border border-white/15 bg-black shadow-2xl group">
+          {/* Background image from template */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="/assets/uc/footer_thumb.jpg"
+              alt="Intermodal freight terminal"
+              className="w-full h-full object-cover opacity-35 filter contrast-125 group-hover:scale-105 transition-transform duration-1000"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/85 to-black/60" />
+            <div className="absolute inset-0 bg-[#0016CB]/10 mix-blend-color" />
+          </div>
 
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-            <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0016CB]/15 text-[#99A9EE] border border-[#0016CB]/40 text-xs font-mono font-bold">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#0016CB]" />
-                <span>Zero Violation Math &bull; 100% Free &amp; Open Commercial Dispatch</span>
+          {/* Banner Content */}
+          <div className="relative z-10 p-8 sm:p-14 lg:p-16 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="space-y-4 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-none bg-white/10 border border-white/20 text-white text-xs font-mono font-bold tracking-wider">
+                <span className="w-2 h-2 rounded-full bg-[#0016CB] animate-ping" />
+                <span>COMMERCIAL INTERSTATE DISPATCH</span>
+                <span className="text-white/40">|</span>
+                <span className="text-[#0016CB] font-bold">ZERO AUDIT RISK</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white tracking-tight font-display">
-                Ready to plan your next{' '}
-                <span className="text-[#0016CB]">
-                  compliant haul?
-                </span>
+
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase text-white tracking-tight font-display leading-[0.98]">
+                READY TO SECURE <br />
+                <span className="text-[#0016CB]">YOUR NEXT HAUL?</span>
               </h2>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Launch the interactive planner now. Enter your origin, pickup, dropoff, and current cycle hours to generate an audit-ready multi-day route in seconds.
+
+              <p className="text-slate-300 text-sm sm:text-base leading-relaxed font-normal">
+                Launch the interactive planner. Input your origin, pickup, dropoff, and active cycle hours to compute turn-by-turn highway coordinates, mandatory rest intervals, and 24.00h balanced driver daily logs.
               </p>
             </div>
 
@@ -52,104 +63,115 @@ export const FooterCta: React.FC<FooterCtaProps> = ({ onLaunchPlanner }) => {
               <button
                 type="button"
                 onClick={handleLaunch}
-                className="btn-uc-solid w-full sm:w-auto px-8 py-4 text-sm font-bold font-mono flex items-center justify-center gap-3 cursor-pointer shadow-[0_0_30px_rgba(0,22,203,0.5)]"
+                className="w-full sm:w-auto px-10 py-5 rounded-full bg-[#0016CB] hover:bg-[#0014B5] text-white text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-3 transition-all duration-300 shadow-[0_0_40px_rgba(0,22,203,0.6)] cursor-pointer"
               >
                 <Truck className="w-4 h-4" />
-                <span>Open HOS Route Planner</span>
+                <span>LAUNCH INTERACTIVE PLANNER</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Footer Navigation & Brand Row */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pt-8 border-t border-slate-800/80">
-          {/* Col 1: Brand Info */}
+      {/* 2. Brand & Navigation Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pt-4 border-t border-white/10">
+          
+          {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30 border border-white/20">
-                <Truck className="w-5 h-5" />
+              <div className="w-8 h-8 bg-[#0016CB] flex items-center justify-center text-white">
+                <Truck className="w-4 h-4" />
               </div>
-              <span className="font-black text-lg text-white font-display tracking-tight">
+              <span className="font-black text-lg text-white font-display tracking-tight uppercase">
                 HOS ROUTE PLANNER
               </span>
             </div>
+            
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Commercial motor vehicle route optimization, FMCSA 49 CFR Part 395 Hours of Service scheduling, automated fuel stops, and 24-hour electronic driver daily log sheets.
+              FMCSA 49 CFR Part 395 Hours of Service route planning, OSRM road geometry, automated 1,000-mile diesel refueling intervals, and 24-hour electronic driver daily log sheets.
             </p>
+
             <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>April 2022 FMCSA Property-Carrying Standard Active</span>
+              <span>April 2022 FMCSA Property-Carrying Standard Enforced</span>
             </div>
           </div>
 
-          {/* Col 2: Navigation Links */}
+          {/* Navigation Links */}
           <div className="space-y-3">
             <div className="text-xs font-mono uppercase font-bold text-white tracking-wider">
-              Navigation
+              WORKSPACE
             </div>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2 text-xs font-mono">
               <li>
                 <button
                   type="button"
                   onClick={handleLaunch}
-                  className="hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  Trip Planner Workspace
+                  Interactive Trip Planner
                 </button>
-              </li>
-              <li>
-                <a href="#features" className="hover:text-blue-400 transition-colors">
-                  Core Capabilities
-                </a>
-              </li>
-              <li>
-                <a href="#eld-showcase" className="hover:text-blue-400 transition-colors">
-                  ELD Engine &amp; Milestones
-                </a>
-              </li>
-              <li>
-                <a href="#faq" className="hover:text-blue-400 transition-colors">
-                  Compliance FAQ
-                </a>
               </li>
               <li>
                 <button
                   type="button"
-                  onClick={() => navigate('/about')}
-                  className="hover:text-blue-400 transition-colors cursor-pointer text-left"
+                  onClick={handleLaunch}
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  HOS Rules &amp; Audit Suite
+                  Leaflet Highway GIS Map
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={handleLaunch}
+                  className="hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  ELD Daily Log Generator
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={handleLaunch}
+                  className="hover:text-white transition-colors cursor-pointer text-left"
+                >
+                  Duty Schedule Timeline
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Regulatory Compliance */}
+          {/* Compliance Specs */}
           <div className="space-y-3">
             <div className="text-xs font-mono uppercase font-bold text-white tracking-wider">
-              CFR Compliance
+              REGULATORY RULES
             </div>
-            <ul className="space-y-2 text-xs text-slate-400 font-mono">
-              <li>&bull; 49 CFR § 395.3(a)(1) 11h Driving</li>
-              <li>&bull; 49 CFR § 395.3(a)(2) 14h Duty</li>
-              <li>&bull; 49 CFR § 395.3(a)(3) 30m Rest</li>
-              <li>&bull; 49 CFR § 395.3(b)(2) 70h/8d Cycle</li>
-              <li>&bull; 49 CFR § 395.8 RODS Daily Logs</li>
+            <ul className="space-y-2 text-xs font-mono text-slate-400">
+              <li>49 CFR § 395.3(a)(1) — 11-Hour Drive Cap</li>
+              <li>49 CFR § 395.3(a)(2) — 14-Hour Duty Window</li>
+              <li>49 CFR § 395.3(a)(3) — 30-Minute Rest Break</li>
+              <li>49 CFR § 395.3(b)(2) — 70-Hour / 8-Day Cycle</li>
+              <li>49 CFR § 395.8 — 24-Hour Graph Grid RODS</li>
             </ul>
           </div>
+
         </div>
 
-        {/* Bottom Bar: Copyright & Disclaimers */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-mono">
+        {/* Bottom Copyright & Back to Top */}
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-500">
           <div>
-            &copy; {new Date().getFullYear()} HOS Route Planner &amp; ELD Generator. All rights reserved.
+            &copy; {new Date().getFullYear()} HOS Route Planner &bull; Built to United Carriers Design Standard.
           </div>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-6">
+            <span>FMCSA COMPLIANT</span>
             <button
               type="button"
               onClick={scrollToTop}
-              className="hover:text-blue-400 transition-colors cursor-pointer"
+              className="text-[#0016CB] hover:underline uppercase font-bold cursor-pointer"
             >
               Back to Top &uarr;
             </button>

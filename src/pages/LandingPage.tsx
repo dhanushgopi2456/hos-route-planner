@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { HeroSection } from '../components/Landing/HeroSection';
 import { MarqueeTicker } from '../components/Landing/MarqueeTicker';
 import { ImpactMetrics } from '../components/Landing/ImpactMetrics';
+import { CraneTruckInteractiveShowcase } from '../components/Landing/CraneTruckInteractiveShowcase';
 import { CapabilitiesGrid } from '../components/Landing/CapabilitiesGrid';
-import { InteractiveShowcase } from '../components/Landing/InteractiveShowcase';
+import { MilestoneHighwayRoad } from '../components/Landing/MilestoneHighwayRoad';
 import { ValuePillars } from '../components/Landing/ValuePillars';
 import { FaqSection } from '../components/Landing/FaqSection';
 import { FooterCta } from '../components/Landing/FooterCta';
@@ -22,31 +23,33 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#000000] text-slate-100 flex flex-col selection:bg-[#0016CB] selection:text-white">
-      {/* 1. Full-Viewport Hero Section */}
+      {/* 1. Celestial Hero Section with Planet Sphere & Blue Radiant Horizon */}
       <HeroSection onLaunchPlanner={handleLaunchPlanner} />
 
       {/* 2. United Carriers Signature Marquee Corridor Ticker */}
       <MarqueeTicker />
 
-      {/* 3. Impact Metrics Bar ("We map the route. We guarantee compliance.") */}
+      {/* 3. Section 2: High-Contrast Impact Metrics ("WE PLAN ROUTES. WE SHIELD COMPLIANCE.") */}
       <ImpactMetrics />
 
-      {/* 4. Core Capabilities Grid ("Everything your haul needs. Under one roof.") */}
+      {/* 4. Section 3: Interactive Reach Stacker Crane & Semi-Truck Sequence */}
+      <div id="crane-sequence">
+        <CraneTruckInteractiveShowcase onLaunchPlanner={handleLaunchPlanner} />
+      </div>
+
+      {/* 5. Section 4: Capabilities Grid with Horizontal Road, Gliding Semi-Truck & Official Icons */}
       <CapabilitiesGrid onLaunchPlanner={handleLaunchPlanner} />
 
-      {/* 5. Interactive Showcase Section ("Compliance at Every Milestone") */}
-      <InteractiveShowcase onLaunchPlanner={handleLaunchPlanner} />
+      {/* 6. Section 5: Vertical Winding Highway Road ("RELIABILITY AT EVERY MILESTONE") */}
+      <MilestoneHighwayRoad onLaunchPlanner={handleLaunchPlanner} />
 
-      {/* 6. Mid-page Marquee Ticker */}
-      <MarqueeTicker className="opacity-90 border-t border-white/5" />
-
-      {/* 7. Numbered Value Pillars ("Built for fleets and drivers that can't afford violations") */}
+      {/* 7. Section 6: Numbered Value Pillars */}
       <ValuePillars />
 
-      {/* 8. Interactive FAQ Accordion */}
+      {/* 8. Section 7: Regulatory FAQ Accordion */}
       <FaqSection />
 
-      {/* 9. Footer & Bold Bottom Call to Action */}
+      {/* 9. Section 8: Footer Container Terminal Backdrop & Bold CTA */}
       <FooterCta onLaunchPlanner={handleLaunchPlanner} />
     </div>
   );
