@@ -351,8 +351,10 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
           </div>
 
           {/* 24-Hour Graph Grid */}
-          <div className="mb-6">
-            <EldLogGraph log={log} />
+          <div className="mb-6 w-full overflow-x-auto pb-2">
+            <div className="min-w-[760px]">
+              <EldLogGraph log={log} />
+            </div>
           </div>
 
           {/* Remarks & Duty Changes Table */}

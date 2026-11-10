@@ -169,6 +169,12 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.light, html.light body {
+  background-color: #F8FAFC;
+  color: #0F172A;
 }
 
 h1, h2, h3, h4, .font-display {
@@ -189,13 +195,25 @@ h1, h2, h3, h4, .font-display {
   background: #000000;
 }
 
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #242424;
   border-radius: 9999px;
 }
 
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #374151;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
 }
 
 /* 3D Perspective Utilities */
@@ -235,14 +253,23 @@ h1, h2, h3, h4, .font-display {
   transition: all 0.3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
+html.light .uc-card-stark,
+.light .uc-card-stark {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0F172A;
+  box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
 .uc-card-stark:hover {
   border-color: rgba(47, 99, 255, 0.45);
   box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(47, 99, 255, 0.25);
 }
 
-.uc-card-stark:hover {
-  border-color: #374151;
-  box-shadow: 0 0 25px rgba(0, 22, 203, 0.2);
+html.light .uc-card-stark:hover,
+.light .uc-card-stark:hover {
+  border-color: #0016CB;
+  box-shadow: 0 15px 35px -10px rgba(15, 23, 42, 0.12), 0 0 25px rgba(0, 22, 203, 0.15);
 }
 
 /* United Carriers Alpha Spec Button: Minimalist Transparent Outlined Pill */
@@ -265,11 +292,25 @@ h1, h2, h3, h4, .font-display {
   transition: all 0.3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
+html.light .btn-uc-pill,
+.light .btn-uc-pill {
+  color: #0F172A;
+  border: 1px solid rgba(15, 23, 42, 0.22);
+}
+
 .btn-uc-pill:hover {
   background: #161616;
   border-color: #0016CB;
   box-shadow: 0 0 20px rgba(0, 22, 203, 0.4);
   transform: translateY(-1px);
+}
+
+html.light .btn-uc-pill:hover,
+.light .btn-uc-pill:hover {
+  background: #F1F5F9;
+  border-color: #0016CB;
+  color: #0016CB;
+  box-shadow: 0 0 20px rgba(0, 22, 203, 0.2);
 }
 
 .btn-uc-solid {
@@ -310,6 +351,14 @@ h1, h2, h3, h4, .font-display {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+html.light .uc-glass-card,
+.light .uc-glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0F172A;
+  box-shadow: 0 20px 45px -15px rgba(15, 23, 42, 0.08), inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
 .uc-glass-card:hover {
   border-color: rgba(47, 99, 255, 0.5);
   box-shadow: 
@@ -317,11 +366,12 @@ h1, h2, h3, h4, .font-display {
     0 0 30px -5px rgba(47, 99, 255, 0.3);
 }
 
-.uc-glass-card:hover {
-  border-color: #374151;
+html.light .uc-glass-card:hover,
+.light .uc-glass-card:hover {
+  border-color: #0016CB;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.95),
-    0 0 30px -5px rgba(0, 22, 203, 0.25);
+    0 25px 50px -12px rgba(15, 23, 42, 0.12),
+    0 0 30px -5px rgba(0, 22, 203, 0.2);
 }
 
 /* Light / subtle glass card */
@@ -385,6 +435,10 @@ h1, h2, h3, h4, .font-display {
   font-family: var(--font-sans) !important;
 }
 
+html.light .leaflet-container {
+  background: #F8FAFC !important;
+}
+
 .dark-map-tiles {
   filter: brightness(0.65) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.75);
 }
@@ -397,14 +451,31 @@ h1, h2, h3, h4, .font-display {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9) !important;
 }
 
+html.light .leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
+}
+
 .leaflet-popup-tip {
   background: #0A0A0A !important;
+}
+
+html.light .leaflet-popup-tip {
+  background: #FFFFFF !important;
 }
 
 .leaflet-control-zoom a {
   background: #161616 !important;
   color: #FFFFFF !important;
   border-color: #242424 !important;
+}
+
+html.light .leaflet-control-zoom a {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
 }
 
 .leaflet-control-zoom a:hover {

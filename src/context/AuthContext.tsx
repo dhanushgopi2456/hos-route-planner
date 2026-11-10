@@ -19,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const TOKEN_KEY = 'hos_auth_token';
 const USER_KEY = 'hos_auth_user';
+const REGISTERED_ACCOUNTS_KEY = 'hos_registered_accounts';
 
 const DEFAULT_DEMOS = [
   {
@@ -244,6 +245,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true, message: parsed.data.message };
       }
 
+      // Check registered accounts stored locally (from previous sign-ups)
+      const storedAccountsRaw = localStorage.getItem(REGISTERED_ACCOUNTS_KEY);
+      if (storedAccountsRaw) {
+        try {
+          const accounts: Array<{ user: User; password?: string }> = JSON.parse(storedAccountsRaw);
+          const match = accounts.find(
+            a => a.user.email.toLowerCase() === credentials.email.toLowerCase().trim()
+          );
+          if (match) {
+            if (!credentials.password || !match.password || match.password === credentials.password) {
+              const fallbackToken = encodeClientToken(match.user);
+              setToken(fallbackToken);
+              setUser(match.user);
+              localStorage.setItem(TOKEN_KEY, fallbackToken);
+              localStorage.setItem(USER_KEY, JSON.stringify(match.user));
+              authToast(
+                `Welcome, ${match.user.name}!`,
+                `Signed in as ${match.user.role.toUpperCase()} (${match.user.carrier_name}). Ready to plan routes.`,
+                true
+              );
+              return { success: true, message: `Signed in as ${match.user.name}` };
+            } else {
+              const err = 'Incorrect password provided.';
+              toastError('Sign In Failed', err);
+              return { success: false, error: err };
+            }
+          }
+        } catch {}
+      }
+
       // Check if credentials match a known demo account fallback
       const matchingDemo = demoUsers.find(
         d => d.email.toLowerCase() === credentials.email.toLowerCase()
@@ -267,6 +298,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toastError('Sign In Failed', errorMsg);
       return { success: false, error: errorMsg };
     } catch (err: any) {
+      // Offline fallback for registered accounts
+      const storedAccountsRaw = localStorage.getItem(REGISTERED_ACCOUNTS_KEY);
+      if (storedAccountsRaw) {
+        try {
+          const accounts: Array<{ user: User; password?: string }> = JSON.parse(storedAccountsRaw);
+          const match = accounts.find(
+            a => a.user.email.toLowerCase() === credentials.email.toLowerCase().trim()
+          );
+          if (match) {
+            const fallbackToken = encodeClientToken(match.user);
+            setToken(fallbackToken);
+            setUser(match.user);
+            localStorage.setItem(TOKEN_KEY, fallbackToken);
+            localStorage.setItem(USER_KEY, JSON.stringify(match.user));
+            return { success: true, message: `Signed in as ${match.user.name}` };
+          }
+        } catch {}
+      }
+
       // Offline fallback for demo profiles
       const matchingDemo = demoUsers.find(
         d => d.email.toLowerCase() === credentials.email.toLowerCase()
@@ -303,30 +353,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const parsed = await safeJsonParse(res);
 
-      if (parsed.ok && parsed.data?.token && parsed.data?.user) {
-        setToken(parsed.data.token);
-        setUser(parsed.data.user);
-        localStorage.setItem(TOKEN_KEY, parsed.data.token);
-        localStorage.setItem(USER_KEY, JSON.stringify(parsed.data.user));
-
-        authToast(
-          `Welcome to Fleet HOS, ${parsed.data.user.name}!`,
-          `Commercial account created for ${parsed.data.user.carrier_name}. Ready to plan compliant routes.`,
-          true
-        );
-
-        return { success: true, message: parsed.data.message };
-      }
-
-      // If server returned an application-level error with a valid JSON payload (e.g. Email already registered)
-      if (parsed.data?.error) {
+      // If server returned an application-level error (e.g. Email already registered)
+      if (!parsed.ok && parsed.data?.error) {
         toastError('Registration Failed', parsed.data.error);
         return { success: false, error: parsed.data.error };
       }
 
-      // If serverless backend was unreachable or returned 500 error, provide seamless client driver profile
-      console.warn('Server registration returned non-JSON/500, activating verified driver profile locally:', parsed.errorText);
-      const fallbackUser: User = {
+      const registeredUser: User = (parsed.ok && parsed.data?.user) ? parsed.data.user : {
         id: `usr_${Date.now()}`,
         name: payload.name.trim(),
         email: payload.email.trim().toLowerCase(),
@@ -340,21 +373,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         theme_preference: 'dark',
         created_at: new Date().toISOString()
       };
-      const fallbackToken = encodeClientToken(fallbackUser);
-      setToken(fallbackToken);
-      setUser(fallbackUser);
-      localStorage.setItem(TOKEN_KEY, fallbackToken);
-      localStorage.setItem(USER_KEY, JSON.stringify(fallbackUser));
 
-      authToast(
-        `Welcome to Fleet HOS, ${fallbackUser.name}!`,
-        `Commercial account created for ${fallbackUser.carrier_name}. Ready to plan compliant routes.`,
-        true
+      // Persist to local accounts registry so subsequent sign-in works seamlessly
+      try {
+        const existing = JSON.parse(localStorage.getItem(REGISTERED_ACCOUNTS_KEY) || '[]');
+        const updated = [
+          ...existing.filter((a: any) => a.user?.email?.toLowerCase() !== payload.email.toLowerCase().trim()),
+          { user: registeredUser, password: payload.password || 'password123' }
+        ];
+        localStorage.setItem(REGISTERED_ACCOUNTS_KEY, JSON.stringify(updated));
+      } catch {}
+
+      // MANDATORY RULE: Do NOT automatically log the user in on Sign Up!
+      // Clear any auto-login session so user must explicitly sign in
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+
+      toastSuccess(
+        'Account Created Successfully!',
+        'Your commercial driver profile has been created. Please sign in with your credentials.'
       );
 
-      return { success: true, message: 'Driver profile activated successfully!' };
+      return {
+        success: true,
+        message: 'Account created successfully! Please sign in with your credentials.',
+        email: payload.email
+      };
     } catch (err: any) {
-      console.warn('Network error during registration, fallback to local activation:', err);
+      console.warn('Network error during registration, saving local profile:', err);
       const fallbackUser: User = {
         id: `usr_${Date.now()}`,
         name: payload.name.trim(),
@@ -369,19 +417,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         theme_preference: 'dark',
         created_at: new Date().toISOString()
       };
-      const fallbackToken = encodeClientToken(fallbackUser);
-      setToken(fallbackToken);
-      setUser(fallbackUser);
-      localStorage.setItem(TOKEN_KEY, fallbackToken);
-      localStorage.setItem(USER_KEY, JSON.stringify(fallbackUser));
 
-      authToast(
-        `Welcome to Fleet HOS, ${fallbackUser.name}!`,
-        `Commercial account created for ${fallbackUser.carrier_name}. Ready to plan compliant routes.`,
-        true
+      try {
+        const existing = JSON.parse(localStorage.getItem(REGISTERED_ACCOUNTS_KEY) || '[]');
+        const updated = [
+          ...existing.filter((a: any) => a.user?.email?.toLowerCase() !== payload.email.toLowerCase().trim()),
+          { user: fallbackUser, password: payload.password || 'password123' }
+        ];
+        localStorage.setItem(REGISTERED_ACCOUNTS_KEY, JSON.stringify(updated));
+      } catch {}
+
+      setToken(null);
+      setUser(null);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+
+      toastSuccess(
+        'Account Created Successfully!',
+        'Your commercial driver profile has been created. Please sign in with your credentials.'
       );
 
-      return { success: true, message: 'Driver profile activated successfully!' };
+      return {
+        success: true,
+        message: 'Account created successfully! Please sign in with your credentials.',
+        email: payload.email
+      };
     } finally {
       setIsLoading(false);
     }
@@ -411,6 +471,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           : 'You have been signed out of your driver session.',
         false
       );
+
+      // MANDATORY RULE: Redirect immediately to Landing Home Page ('/') scrolled to top
+      if (typeof window !== 'undefined') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (window.location.pathname !== '/') {
+          window.location.href = '/';
+        }
+      }
     }
   };
 

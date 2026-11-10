@@ -1,12 +1,152 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TripPlanResponse } from '../../types/hos';
-import { ShieldCheck, Fuel, Moon, Coffee } from 'lucide-react';
+import { ShieldCheck, Fuel, Moon, Coffee, Clock, Activity, Compass, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface HosStatusCardProps {
   tripData: TripPlanResponse;
   className?: string;
 }
+
+// Smooth count-up hook for kinetic metrics
+function useCountUp(target: number, duration: number = 900) {
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    let start: number | null = null;
+    let frameId: number;
+
+    const step = (now: number) => {
+      if (!start) start = now;
+      const progress = Math.min((now - start) / duration, 1);
+      // easeOutExpo
+      const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setVal(target * eased);
+      if (progress < 1) {
+        frameId = requestAnimationFrame(step);
+      }
+    };
+
+    frameId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frameId);
+  }, [target, duration]);
+
+  return val;
+}
+
+// Circular SVG Radial Progress Clock Component
+interface RadialGaugeProps {
+  percent: number;
+  valueStr: string;
+  limitStr: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  badgeColor: string;
+  ringColor: string;
+  icon: React.ReactNode;
+}
+
+const RadialClockGauge: React.FC<RadialGaugeProps> = ({
+  percent,
+  valueStr,
+  limitStr,
+  title,
+  subtitle,
+  badge,
+  badgeColor,
+  ringColor,
+  icon
+}) => {
+  const size = 76;
+  const strokeWidth = 6.5;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const clampedPercent = Math.max(0, Math.min(100, percent));
+  const strokeDashoffset = circumference - (clampedPercent / 100) * circumference;
+
+  return (
+    <motion.div
+      whileHover={{ y: -3, scale: 1.015 }}
+      transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+      className="p-4 rounded-xl bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200/90 shadow-sm hover:border-[#0016CB]/60 dark:hover:border-[#3346D7]/60 transition-all flex flex-col justify-between"
+    >
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div>
+          <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+            {icon}
+            <span>{title}</span>
+          </div>
+          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 block">
+            {subtitle}
+          </span>
+        </div>
+
+        <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full ${badgeColor}`}>
+          {badge}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-4 my-2">
+        {/* Circular SVG Gauge */}
+        <div className="relative shrink-0" style={{ width: size, height: size }}>
+          <svg className="w-full h-full -rotate-90 transform" viewBox={`0 0 ${size} ${size}`}>
+            {/* Background Track Ring */}
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke="currentColor"
+              strokeWidth={strokeWidth}
+              fill="transparent"
+              className="text-slate-200 dark:text-slate-800"
+            />
+            {/* Animated Progress Ring */}
+            <motion.circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke={ringColor}
+              strokeWidth={strokeWidth}
+              strokeDasharray={circumference}
+              initial={{ strokeDashoffset: circumference }}
+              animate={{ strokeDashoffset }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              strokeLinecap="round"
+              fill="transparent"
+            />
+          </svg>
+          {/* Centered Percentage */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span className="text-xs font-black font-mono text-slate-900 dark:text-white leading-none">
+              {Math.round(clampedPercent)}%
+            </span>
+          </div>
+        </div>
+
+        {/* Value and Limit Readout */}
+        <div className="flex-1 min-w-0">
+          <div className="text-lg font-black font-mono text-slate-900 dark:text-white leading-tight">
+            {valueStr}
+          </div>
+          <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+            Limit: <span className="font-bold text-slate-700 dark:text-slate-300">{limitStr}</span>
+          </div>
+          {/* Linear Mini Bar */}
+          <div className="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${clampedPercent}%` }}
+              transition={{ duration: 1.0, ease: 'easeOut' }}
+              className="h-full rounded-full"
+              style={{ backgroundColor: ringColor }}
+            />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 export const HosStatusCard: React.FC<HosStatusCardProps> = ({
   tripData,
@@ -27,6 +167,20 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
   const totalDurationHours = trip?.total_duration_hours ?? 0;
   const dailyLogsCount = daily_logs?.length ?? 0;
 
+  // Kinetic Count-up values
+  const animatedDistance = useCountUp(distanceMiles, 850);
+  const animatedDriveHours = useCountUp(drivingHours, 850);
+  const animatedDuration = useCountUp(totalDurationHours, 850);
+  const animatedLogs = useCountUp(dailyLogsCount, 600);
+
+  // 11H Drive Limit calculation
+  const currentLegDrive = Math.min(11, drivingHours);
+  const drive11Percent = Math.min(100, (currentLegDrive / 11) * 100);
+
+  // 14H Duty Window calculation
+  const currentDutyWindow = Math.min(14, Math.max(1, drivingHours + 2));
+  const duty14Percent = Math.min(100, (currentDutyWindow / 14) * 100);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -34,210 +188,168 @@ export const HosStatusCard: React.FC<HosStatusCardProps> = ({
       transition={{ duration: 0.35 }}
       className={`uc-card-stark p-6 sm:p-7 relative overflow-hidden ${className}`}
     >
-      {/* Top Header Metrics Row with Spring Physics */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 mb-6 border-b border-[#242424]">
+      {/* Top Header Metrics Row with Count-Up Tickers */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pb-6 mb-6 border-b border-slate-200 dark:border-[#242424]">
+        {/* Metric 1: Distance */}
         <motion.div
           whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group transition-all"
+          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200 rounded-xl relative overflow-hidden group shadow-sm transition-all"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#0016CB] opacity-0 group-hover:opacity-100 transition-opacity" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block font-mono">
+          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-[#0016CB] opacity-80 group-hover:opacity-100 transition-opacity" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block font-mono">
             Total Distance
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-white font-mono mt-1">
-            {distanceMiles.toFixed(0)}{' '}
-            <span className="text-xs font-normal text-slate-400">mi</span>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono mt-1 tabular-nums">
+            {animatedDistance.toFixed(0)}{' '}
+            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">mi</span>
           </div>
-          <span className="text-[11px] text-[#6677E3] font-mono mt-1 block">
+          <span className="text-[11px] text-[#0016CB] dark:text-[#6677E3] font-mono mt-1 block font-semibold">
             OSRM road network
           </span>
         </motion.div>
 
+        {/* Metric 2: Driving Time */}
         <motion.div
           whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616] border border-[#0016CB]/40 rounded-sm relative overflow-hidden group transition-all"
+          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#0016CB]/40 rounded-xl relative overflow-hidden group shadow-sm transition-all"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#0016CB] opacity-100" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#99A9EE] block font-mono">
+          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-[#0016CB] opacity-100" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#0016CB] dark:text-[#99A9EE] block font-mono">
             Driving Time
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-white font-mono mt-1">
-            {drivingHours.toFixed(1)}{' '}
-            <span className="text-xs font-normal text-slate-400">hrs</span>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono mt-1 tabular-nums">
+            {animatedDriveHours.toFixed(1)}{' '}
+            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">hrs</span>
           </div>
-          <span className="text-[11px] text-slate-400 font-mono mt-1 block">
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-1 block">
             @ avg ~60 mph
           </span>
         </motion.div>
 
+        {/* Metric 3: Elapsed Trip Duration */}
         <motion.div
           whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group transition-all"
+          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200 rounded-xl relative overflow-hidden group shadow-sm transition-all"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#3346D7] opacity-0 group-hover:opacity-100 transition-opacity" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block font-mono">
+          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-[#3346D7] opacity-80 group-hover:opacity-100 transition-opacity" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block font-mono">
             Elapsed Trip Duration
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-white font-mono mt-1">
-            {totalDurationHours.toFixed(1)}{' '}
-            <span className="text-xs font-normal text-slate-400">hrs</span>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white font-mono mt-1 tabular-nums">
+            {animatedDuration.toFixed(1)}{' '}
+            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">hrs</span>
           </div>
-          <span className="text-[11px] text-[#6677E3] font-mono mt-1 block">
+          <span className="text-[11px] text-[#0016CB] dark:text-[#6677E3] font-mono mt-1 block font-semibold">
             Inc. stops &amp; sleep
           </span>
         </motion.div>
 
+        {/* Metric 4: ELD Daily Logs */}
         <motion.div
           whileHover={{ y: -3, scale: 1.02 }}
-          className="p-4 bg-[#161616] border border-[#242424] rounded-sm relative overflow-hidden group transition-all"
+          className="p-4 bg-[#161616]/90 dark:bg-[#161616]/90 bg-white border border-[#242424] dark:border-[#242424] border-slate-200 rounded-xl relative overflow-hidden group shadow-sm transition-all"
         >
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-emerald-500 opacity-70" />
-          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 block font-mono">
+          <div className="absolute top-0 left-0 right-0 h-[2.5px] bg-emerald-500 opacity-90" />
+          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block font-mono">
             ELD Daily Logs
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono mt-1">
-            {dailyLogsCount}{' '}
-            <span className="text-xs font-normal text-slate-400">
+          <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1 tabular-nums">
+            {Math.round(animatedLogs)}{' '}
+            <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
               {dailyLogsCount === 1 ? 'day' : 'days'}
             </span>
           </div>
-          <span className="text-[11px] text-emerald-400/90 font-mono mt-1 block">
-            24.00h balanced
+          <span className="text-[11px] text-emerald-600/90 dark:text-emerald-400/90 font-mono mt-1 block font-semibold">
+            24.00h balanced RODS
           </span>
         </motion.div>
       </div>
 
-      {/* 4 HOS Regulatory Clock Gauges with Animated Progress Bars & Dynamic Color Shifts */}
+      {/* 4 HOS Regulatory Clock Gauges with SVG Circular Progress Rings */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-5">
-        {/* Gauge 1: 11-Hour Driving Limit */}
-        <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
-        >
-          <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
-            <span className="font-bold text-slate-200 uppercase">11H Drive Limit</span>
-            <span className="font-bold text-[#6677E3]">
-              {Math.min(11, drivingHours).toFixed(1)} / 11.0h
-            </span>
-          </div>
-          <div className="w-full bg-[#242424] h-2 rounded-full overflow-hidden mb-1.5">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min(100, (Math.min(11, drivingHours) / 11) * 100)}%` }}
-              transition={{ duration: 1.0, ease: 'easeOut' }}
-              className="h-full bg-gradient-to-r from-[#0016CB] to-[#3346D7] rounded-full"
-            />
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
-            <span>FMCSA CFR § 395.3(a)(1)</span>
-            <span className="text-emerald-400 font-semibold">Resets with 10h sleep</span>
-          </div>
-        </motion.div>
+        {/* Clock 1: 11-Hour Driving Limit */}
+        <RadialClockGauge
+          percent={drive11Percent}
+          valueStr={`${currentLegDrive.toFixed(1)} hrs`}
+          limitStr="11.0 hrs"
+          title="11H Drive Limit"
+          subtitle="FMCSA CFR § 395.3(a)(1)"
+          badge="10h Sleep Reset"
+          badgeColor="bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
+          ringColor="#0016CB"
+          icon={<Compass className="w-3.5 h-3.5 text-[#0016CB]" />}
+        />
 
-        {/* Gauge 2: 14-Hour Duty Window */}
-        <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
-        >
-          <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
-            <span className="font-bold text-slate-200 uppercase">14H Duty Window</span>
-            <span className="font-bold text-amber-400">
-              {Math.min(14, Math.max(1, drivingHours + 2)).toFixed(1)} / 14.0h
-            </span>
-          </div>
-          <div className="w-full bg-[#242424] h-2 rounded-full overflow-hidden mb-1.5">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min(100, (Math.min(14, Math.max(1, drivingHours + 2)) / 14) * 100)}%` }}
-              transition={{ duration: 1.0, ease: 'easeOut', delay: 0.1 }}
-              className="h-full bg-gradient-to-r from-amber-500 to-orange-400 rounded-full"
-            />
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
-            <span>Consecutive Window</span>
-            <span className="text-amber-400 font-semibold">Daily Cap</span>
-          </div>
-        </motion.div>
+        {/* Clock 2: 14-Hour Duty Window */}
+        <RadialClockGauge
+          percent={duty14Percent}
+          valueStr={`${currentDutyWindow.toFixed(1)} hrs`}
+          limitStr="14.0 hrs"
+          title="14H Duty Window"
+          subtitle="Consecutive Clock"
+          badge="Daily Limit"
+          badgeColor="bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+          ringColor="#F59E0B"
+          icon={<Clock className="w-3.5 h-3.5 text-amber-500" />}
+        />
 
-        {/* Gauge 3: 70-Hour / 8-Day Rolling Cycle */}
-        <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
-        >
-          <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
-            <span className="font-bold text-slate-200 uppercase">70H / 8D Rolling Cycle</span>
-            <span className="font-bold text-cyan-300">
-              {cycleUsedValue.toFixed(1)} / 70.0h
-            </span>
-          </div>
-          <div className="w-full bg-[#242424] h-2 rounded-full overflow-hidden mb-1.5">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${cyclePercent}%` }}
-              transition={{ duration: 1.0, ease: 'easeOut', delay: 0.2 }}
-              className={`h-full rounded-full ${
-                cyclePercent > 85 ? 'bg-gradient-to-r from-rose-500 to-red-600' : 'bg-gradient-to-r from-[#0016CB] to-cyan-400'
-              }`}
-            />
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
-            <span>{cycleRemainingValue.toFixed(1)}h remaining</span>
-            <span className="text-cyan-400 font-bold">{cyclePercent}% cycle used</span>
-          </div>
-        </motion.div>
+        {/* Clock 3: 70H / 8D Rolling Cycle */}
+        <RadialClockGauge
+          percent={cyclePercent}
+          valueStr={`${cycleUsedValue.toFixed(1)} hrs`}
+          limitStr="70.0 hrs"
+          title="70H / 8D Cycle"
+          subtitle={`${cycleRemainingValue.toFixed(1)}h remaining`}
+          badge={cyclePercent > 85 ? 'Near Cap' : 'Compliant'}
+          badgeColor={
+            cyclePercent > 85
+              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+              : 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20'
+          }
+          ringColor={cyclePercent > 85 ? '#EF4444' : '#06B6D4'}
+          icon={<Activity className="w-3.5 h-3.5 text-cyan-500" />}
+        />
 
-        {/* Gauge 4: 1,000-Mile Fuel Stop Interval */}
-        <motion.div
-          whileHover={{ y: -2 }}
-          className="bg-[#161616] border border-[#242424] rounded-sm p-3.5 transition-all"
-        >
-          <div className="flex justify-between items-center text-xs mb-1.5 font-mono">
-            <span className="font-bold text-slate-200 uppercase">1,000-Mi Fuel Interval</span>
-            <span className="font-bold text-[#6677E3]">
-              {fuelStopsCount} {fuelStopsCount === 1 ? 'Stop' : 'Stops'}
-            </span>
-          </div>
-          <div className="w-full bg-[#242424] h-2 rounded-full overflow-hidden mb-1.5">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min(100, (distanceMiles / 1000) * 100)}%` }}
-              transition={{ duration: 1.0, ease: 'easeOut', delay: 0.3 }}
-              className="h-full bg-gradient-to-r from-[#0016CB] to-emerald-400 rounded-full"
-            />
-          </div>
-          <div className="flex justify-between text-[10px] text-slate-400 font-mono">
-            <span>Threshold: &lt; 1,000 mi</span>
-            <span className="text-emerald-400 font-semibold">Tank Managed</span>
-          </div>
-        </motion.div>
+        {/* Clock 4: 1,000-Mile Fuel Interval */}
+        <RadialClockGauge
+          percent={Math.min(100, (distanceMiles / 1000) * 100)}
+          valueStr={`${fuelStopsCount} ${fuelStopsCount === 1 ? 'Stop' : 'Stops'}`}
+          limitStr="< 1,000 mi"
+          title="Fueling Interval"
+          subtitle="Mandatory Diesel Stops"
+          badge="Tank Managed"
+          badgeColor="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
+          ringColor="#10B981"
+          icon={<Fuel className="w-3.5 h-3.5 text-emerald-500" />}
+        />
       </div>
 
       {/* Stop Summary Pills Strip */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#242424]">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-[#242424]">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[11px] font-mono text-slate-400 mr-1 uppercase font-bold">
+          <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mr-1 uppercase font-bold">
             Stops Scheduled:
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616] text-amber-300 border border-[#242424]">
-            <Fuel className="w-3.5 h-3.5 text-amber-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616]/80 dark:bg-[#161616]/80 bg-slate-100 text-amber-600 dark:text-amber-300 border border-amber-500/20">
+            <Fuel className="w-3.5 h-3.5 text-amber-500" />
             <span>{fuelStopsCount} Fuel Stop{fuelStopsCount !== 1 ? 's' : ''}</span>
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616] text-purple-300 border border-[#242424]">
-            <Moon className="w-3.5 h-3.5 text-purple-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616]/80 dark:bg-[#161616]/80 bg-slate-100 text-purple-600 dark:text-purple-300 border border-purple-500/20">
+            <Moon className="w-3.5 h-3.5 text-purple-500" />
             <span>{sleeperStopsCount} 10h Sleeper Reset{sleeperStopsCount !== 1 ? 's' : ''}</span>
           </span>
 
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616] text-blue-300 border border-[#242424]">
-            <Coffee className="w-3.5 h-3.5 text-blue-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-[#161616]/80 dark:bg-[#161616]/80 bg-slate-100 text-blue-600 dark:text-blue-300 border border-blue-500/20">
+            <Coffee className="w-3.5 h-3.5 text-blue-500" />
             <span>{breakStopsCount} 30-Min Rest Break{breakStopsCount !== 1 ? 's' : ''}</span>
           </span>
         </div>
 
-        <div className="text-xs font-mono text-slate-400 flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span className="text-emerald-400 font-bold">100% FMCSA Compliant</span>
+        <div className="text-xs font-mono flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <span className="text-emerald-600 dark:text-emerald-400 font-bold">100% FMCSA Compliant</span>
         </div>
       </div>
     </motion.div>

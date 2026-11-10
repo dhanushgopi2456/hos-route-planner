@@ -1311,7 +1311,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            className="absolute left-0 right-0 top-full mt-2 bg-[#0B0F19]/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl z-50 max-h-56 overflow-y-auto"
+            className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-[#0B0F19]/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700/80 rounded-2xl shadow-2xl z-50 max-h-56 overflow-y-auto"
           >
             {suggestions.map((sug, i) => (
               <motion.button
@@ -1319,7 +1319,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
                 type="button"
                 whileHover={{ scale: 1.01 }}
                 onClick={() => handleSelect(sug)}
-                className="w-full px-3.5 py-2.5 text-left border-b border-slate-800 last:border-none flex items-start gap-2.5 text-xs text-slate-200 hover:bg-slate-800/80 hover:text-white transition-colors cursor-pointer"
+                className="w-full px-3.5 py-2.5 text-left border-b border-slate-100 dark:border-slate-800 last:border-none flex items-start gap-2.5 text-xs text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
               >
                 <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                 <div className="flex-1 min-w-0">

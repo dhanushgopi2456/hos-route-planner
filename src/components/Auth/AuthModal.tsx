@@ -114,10 +114,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     });
 
     if (res.success) {
-      setSuccessMessage(res.message || 'Account created successfully!');
-      setTimeout(() => {
-        onClose();
-      }, 600);
+      setSuccessMessage('Account created successfully! Please sign in with your credentials.');
+      setLoginEmail(regEmail.trim());
+      if (regPassword) setLoginPassword(regPassword);
+      setActiveTab('login');
     } else {
       setErrorMessage(res.error || 'Registration failed');
     }

@@ -116,8 +116,10 @@ export const AuthGateCard: React.FC<AuthGateCardProps> = ({ onSuccess }) => {
         current_cycle_used: Number(regCycleUsed) || 0
       });
       if (res.success) {
-        setSuccessMessage(res.message || 'Driver profile registered!');
-        if (onSuccess) onSuccess();
+        setSuccessMessage('Account created successfully! Please sign in with your credentials.');
+        setLoginEmail(regEmail.trim());
+        if (regPassword) setLoginPassword(regPassword);
+        setActiveTab('login');
       } else {
         setErrorMessage(res.error || 'Registration failed. An account with this email may already exist.');
       }
