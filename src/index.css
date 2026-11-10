@@ -225,8 +225,10 @@ h1, h2, h3, h4, .font-display {
 
 /* United Carriers Austere Low-Relief Card */
 .uc-card-stark {
-  background: #0A0A0A;
-  border: 1px solid #242424;
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(36, 36, 36, 0.95);
   border-radius: 8px;
   color: #FFFFFF;
   transition: all 0.3s cubic-bezier(0.445, 0.05, 0.55, 0.95);
@@ -293,8 +295,10 @@ h1, h2, h3, h4, .font-display {
 
 /* United Carriers Signature Surface */
 .uc-glass-card {
-  background: #0A0A0A;
-  border: 1px solid #242424;
+  background: rgba(10, 10, 10, 0.82);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(36, 36, 36, 0.95);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }

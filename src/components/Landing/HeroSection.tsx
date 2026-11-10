@@ -106,6 +106,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
 
       {/* 2. Celestial Blue Horizon & Planet Sphere (from United Carriers Template) */}
       <div className="absolute top-0 right-0 w-[650px] sm:w-[850px] lg:w-[1050px] h-[650px] sm:h-[850px] lg:h-[1050px] pointer-events-none select-none z-0">
+        {/* Dynamic Celestial Video Loop */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute -top-12 -right-12 w-full h-full object-cover rounded-full opacity-65 filter blur-[2px] mix-blend-screen pointer-events-none"
+        >
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_030633_1712fc71-4979-4e14-98f9-9f95702ab3da.mp4"
+            type="video/mp4"
+          />
+        </video>
+
         <motion.img
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.85, scale: 1 }}

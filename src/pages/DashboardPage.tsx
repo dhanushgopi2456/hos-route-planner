@@ -42,6 +42,21 @@ export const DashboardPage: React.FC = () => {
   // Selected Day Log
   const [selectedDayLog, setSelectedDayLog] = useState<number>(1);
 
+  // Celestial Ambient Video Background state
+  const [ambientVideoActive, setAmbientVideoActive] = useState<boolean>(true);
+  const videoBgRef = useRef<HTMLVideoElement>(null);
+
+  const toggleAmbientVideo = () => {
+    if (videoBgRef.current) {
+      if (ambientVideoActive) {
+        videoBgRef.current.pause();
+      } else {
+        videoBgRef.current.play().catch(() => {});
+      }
+      setAmbientVideoActive(!ambientVideoActive);
+    }
+  };
+
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Clear trip if user logs out
@@ -288,15 +303,46 @@ export const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] text-slate-100 pb-20 relative selection:bg-[#0016CB] selection:text-white">
+    <div className="min-h-screen bg-[#000000] text-slate-100 pb-20 relative selection:bg-[#0016CB] selection:text-white overflow-x-hidden">
+      {/* 1. Cinematic Celestial Atmosphere Video Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 select-none">
+        <video
+          ref={videoBgRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className={`w-full h-full object-cover object-top transition-opacity duration-1000 filter brightness-105 contrast-110 ${
+            ambientVideoActive ? 'opacity-40 md:opacity-55' : 'opacity-10'
+          }`}
+        >
+          <source
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_030633_1712fc71-4979-4e14-98f9-9f95702ab3da.mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* Multi-layer atmospheric gradient overlays ensuring optimal card contrast & readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#000000]/50 via-[#000000]/75 to-[#000000]/95 pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-700/20 via-transparent to-[#000000]/85 pointer-events-none" />
+        {/* Subtle grid pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.035] pointer-events-none"
+          style={{
+            backgroundImage: 'radial-gradient(#FFFFFF 1px, transparent 1px)',
+            backgroundSize: '32px 32px'
+          }}
+        />
+      </div>
+
       {/* Top Command Bar & Workspace Shell */}
-      <div className="bg-[#0A0A0A] border-b border-[#242424] py-4 px-4 sm:px-6 lg:px-8 sticky top-20 z-40 backdrop-blur-xl">
+      <div className="bg-[#0A0A0A]/90 border-b border-[#242424]/80 py-4 px-4 sm:px-6 lg:px-8 sticky top-20 z-40 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           
           <div className="flex items-center gap-4">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#161616] border border-[#2E2E2E] hover:border-[#0016CB] text-xs font-semibold text-slate-300 hover:text-white transition-all cursor-pointer group font-mono"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#161616]/90 border border-[#2E2E2E] hover:border-[#0016CB] text-xs font-semibold text-slate-300 hover:text-white transition-all cursor-pointer group font-mono"
             >
               <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1 text-[#0016CB]" />
               <span>Back to Home</span>
@@ -313,6 +359,18 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Ambient Background Toggle Pill */}
+            <button
+              type="button"
+              onClick={toggleAmbientVideo}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#161616]/80 hover:bg-[#242424] text-[11px] font-mono text-slate-300 border border-[#2E2E2E] hover:border-[#2f63ff] transition-all cursor-pointer"
+              title={ambientVideoActive ? 'Pause Celestial Ambience' : 'Play Celestial Ambience'}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${ambientVideoActive ? 'bg-[#2f63ff] animate-pulse shadow-[0_0_8px_#2f63ff]' : 'bg-slate-500'}`} />
+              <span className="hidden sm:inline">Celestial Background</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400">{ambientVideoActive ? 'ON' : 'OFF'}</span>
+            </button>
+
             <div className="text-[11px] font-mono text-slate-400 hidden md:block">
               Standard: <span className="text-blue-400 font-semibold">FMCSA 49 CFR Part 395</span>
             </div>
@@ -326,7 +384,7 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 relative z-10">
         {/* Error Alert */}
         <AnimatePresence>
           {errorMessage && (
