@@ -37,6 +37,10 @@ const CapabilityCard: React.FC<{
   const IconComponent = item.icon;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Only track cursor spotlight on devices with fine pointer (mouse/trackpad), never on touch screens
+    if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      return;
+    }
     const rect = e.currentTarget.getBoundingClientRect();
     setMousePos({
       x: e.clientX - rect.left,
@@ -261,14 +265,14 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
           ))}
         </div>
 
-        {/* Bottom CTA Button with Spring Hover & Shimmer */}
+        {/* Bottom CTA Button with Spring Hover & Electric Glow */}
         <div className="mt-16 text-center">
           <motion.button
             type="button"
             whileHover={{ scale: 1.04, y: -2 }}
             whileTap={{ scale: 0.96 }}
             onClick={() => handleLaunch()}
-            className="relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#0016CB] hover:bg-[#0014B5] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_0_35px_rgba(0,22,203,0.5)] cursor-pointer overflow-hidden group"
+            className="relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#0016CB] hover:bg-[#0022ff] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(0,82,255,0.55),0_0_40px_rgba(37,99,235,0.25),inset_0_1px_1px_rgba(255,255,255,0.35)] hover:shadow-[0_0_30px_rgba(0,140,255,0.85),0_0_50px_rgba(0,82,255,0.4)] cursor-pointer overflow-hidden group font-mono"
           >
             {/* Shimmer line */}
             <motion.div
@@ -278,7 +282,7 @@ export const CapabilitiesGrid: React.FC<CapabilitiesGridProps> = ({ onLaunchPlan
               className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 pointer-events-none"
             />
             <span>LAUNCH LIVE COMPLIANCE ENGINE</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
           </motion.button>
         </div>
       </div>

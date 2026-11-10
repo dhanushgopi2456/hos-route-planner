@@ -119,6 +119,8 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
     stripWidth: 2000,
     lettersWidth: 1600,
     edgePx: 0,
+    videoTop: 0,
+    videoH: 0,
     curTime: 0,
     targetTime: 0,
     lastScrollY: 0,
@@ -190,7 +192,19 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
       video.style.transform = `translate(${videoLeft}px, ${videoTop}px)`;
     }
 
-    s.edgePx = videoTop + 0.448 * videoH;
+    s.videoTop = videoTop;
+    s.videoH = videoH;
+
+    // Dynamic ground line: 82.9% (0.829) until 3.1s, rising to 44.8% (0.448) by 3.75s
+    let groundFrac = 0.829;
+    if (s.curTime > 3.1 && s.curTime < 3.75) {
+      const p = (s.curTime - 3.1) / (3.75 - 3.1);
+      groundFrac = 0.829 + p * (0.448 - 0.829);
+    } else if (s.curTime >= 3.75) {
+      groundFrac = 0.448;
+    }
+
+    s.edgePx = videoTop + groundFrac * videoH;
     document.documentElement.style.setProperty('--edge-px', `${s.edgePx}px`);
 
     if (groundBand) {
@@ -284,7 +298,9 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
         s.smoothedSpeed += (0 - s.smoothedSpeed) * 0.2;
       }
       const displaySpeed = Math.min(99, Math.max(0, Math.round(s.smoothedSpeed)));
-      setSpeedText(`${String(displaySpeed).padStart(2, '0')} KM/H`);
+      if (speedReadoutRef.current) {
+        speedReadoutRef.current.textContent = `${String(displaySpeed).padStart(2, '0')} KM/H`;
+      }
 
       s.lastScrollY = sy;
       s.lastTime = now;
@@ -303,6 +319,27 @@ export const KvScrollHero: React.FC<KvScrollHeroProps> = ({ onLaunchPlanner }) =
 
       s.curTime += (s.targetTime - s.curTime) * 0.2;
       applyVideoSeek(s.curTime);
+
+      // Update dynamic ground edge as video scrubs (ground line rises from 82.9% to 44.8%)
+      let groundFrac = 0.829;
+      if (s.curTime > 3.1 && s.curTime < 3.75) {
+        const p = (s.curTime - 3.1) / (3.75 - 3.1);
+        groundFrac = 0.829 + p * (0.448 - 0.829);
+      } else if (s.curTime >= 3.75) {
+        groundFrac = 0.448;
+      }
+
+      if (s.videoH > 0) {
+        s.edgePx = s.videoTop + groundFrac * s.videoH;
+        document.documentElement.style.setProperty('--edge-px', `${s.edgePx}px`);
+        if (groundBandRef.current) {
+          groundBandRef.current.style.top = `${s.edgePx}px`;
+          groundBandRef.current.style.height = `${Math.max(0, s.vh - s.edgePx)}px`;
+        }
+        if (sceneBgBlackRef.current) {
+          sceneBgBlackRef.current.style.top = `${s.edgePx}px`;
+        }
+      }
 
       const isSettled = q >= 0.94;
       setSettled(isSettled);

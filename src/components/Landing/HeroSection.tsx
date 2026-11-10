@@ -166,7 +166,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
 
             {/* Kinetic Word-by-Word Title Reveal */}
             <div className="space-y-2">
-              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-black uppercase tracking-tight leading-[0.95] text-white font-display flex flex-wrap gap-x-4">
+              <h1 className="text-[clamp(2.4rem,7vw,5.5rem)] font-black uppercase tracking-tight leading-[0.95] text-white font-display flex flex-wrap gap-x-4">
                 {titleWords.map((word, i) => (
                   <motion.span
                     key={word}
@@ -201,50 +201,50 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
               Precision commercial corridor routing, automated 11h/14h/30m/70h duty scheduling, mandatory diesel stops every &lt; 1,000 miles, and FMCSA-certified 24.00h balanced RODS daily driver logs.
             </motion.p>
 
-            {/* United Carriers Pill Buttons with Magnetic Hover & Shimmer */}
+            {/* United Carriers Pill Buttons with Magnetic Hover & Luminous Glow */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-wrap items-center gap-4 pt-2"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2 w-full sm:w-auto"
             >
-              {/* Primary Action Button with Shimmer Effect */}
+              {/* Primary Action Button with Electric Aura & Shimmer Effect */}
               <motion.button
                 type="button"
                 whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => handleLaunch(false)}
-                className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full bg-[#0016CB] hover:bg-[#0014B5] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_0_35px_rgba(0,22,203,0.5)] hover:shadow-[0_0_50px_rgba(0,22,203,0.8)] cursor-pointer overflow-hidden"
+                className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#0016CB] hover:bg-[#0022ff] text-white text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-[0_0_20px_rgba(0,82,255,0.55),0_0_40px_rgba(37,99,235,0.25),inset_0_1px_1px_rgba(255,255,255,0.35)] hover:shadow-[0_0_30px_rgba(0,140,255,0.85),0_0_50px_rgba(0,82,255,0.4)] cursor-pointer overflow-hidden font-mono"
               >
                 {/* Diagonal light shimmer */}
                 <motion.div
                   initial={{ x: '-100%' }}
                   animate={{ x: '200%' }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                  className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 pointer-events-none"
+                  className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent transform -skew-x-12 pointer-events-none"
                 />
 
-                <Truck className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                <Truck className="w-4 h-4 transition-transform group-hover:scale-110" />
                 <span>PLAN A ROUTE NOW</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
               </motion.button>
 
-              {/* Working Secondary Demo Button */}
+              {/* Working Secondary Demo Button with Electric Border Bloom */}
               <motion.button
                 type="button"
                 whileHover={{ scale: 1.04, y: -2 }}
                 whileTap={{ scale: 0.96 }}
                 onClick={() => handleLaunch(true)}
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs sm:text-sm font-semibold uppercase tracking-wider border border-white/20 hover:border-white/40 transition-all duration-300 cursor-pointer backdrop-blur-md group"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white/5 hover:bg-white/10 text-white text-xs sm:text-sm font-bold uppercase tracking-wider border border-blue-400/40 hover:border-[#38BDF8] hover:shadow-[0_0_20px_rgba(56,189,248,0.35)] transition-all duration-300 cursor-pointer backdrop-blur-md group font-mono"
               >
-                <Play className="w-3.5 h-3.5 text-[#0016CB] fill-[#0016CB] group-hover:scale-110 transition-transform" />
+                <Play className="w-3.5 h-3.5 text-blue-400 fill-blue-400 group-hover:scale-110 transition-transform" />
                 <span>TRY LIVE DEMO TRIP</span>
               </motion.button>
 
               <button
                 type="button"
                 onClick={() => scrollToSection('crane-sequence')}
-                className="text-xs font-mono text-slate-400 hover:text-white underline cursor-pointer ml-2"
+                className="text-xs font-mono text-slate-400 hover:text-white underline cursor-pointer self-center sm:self-auto ml-1"
               >
                 Explore Dispatch Sequence &darr;
               </button>
@@ -335,10 +335,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onLaunchPlanner }) => 
               {/* Direct Quick Launch Trigger */}
               <motion.button
                 type="button"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.03, y: -2 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => handleLaunch(true)}
-                className="w-full py-3.5 rounded-xl bg-white hover:bg-slate-200 text-black text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-lg"
+                className="w-full py-3.5 rounded-full bg-[#0016CB] hover:bg-[#0022ff] text-white text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[0_0_25px_rgba(0,82,255,0.6)] hover:shadow-[0_0_35px_rgba(0,140,255,0.85)] font-mono"
               >
                 <span>RUN DEMO CORRIDOR</span>
                 <ArrowRight className="w-3.5 h-3.5" />

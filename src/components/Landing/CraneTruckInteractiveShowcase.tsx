@@ -185,7 +185,7 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
         {/* ============================================================ */}
         {/* THE MAIN CINEMATIC ANIMATION STAGE (The Crane & Truck Yard) */}
         {/* ============================================================ */}
-        <div className="relative w-full h-[360px] sm:h-[460px] md:h-[520px] bg-gradient-to-b from-[#0A0A0A] via-[#050505] to-[#000000] border border-[#242424] rounded-sm overflow-hidden mb-8 shadow-2xl">
+        <div className="relative w-full aspect-[16/9] min-h-[260px] max-h-[520px] bg-gradient-to-b from-[#0A0A0A] via-[#050505] to-[#000000] border border-[#242424] rounded-sm overflow-hidden mb-8 shadow-2xl">
           
           {/* Subtle Grid Ceiling & Yard Lights */}
           <div className="absolute inset-0 bg-grid-mesh opacity-15 pointer-events-none" />
@@ -489,9 +489,10 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
         {/* ============================================================ */}
         {/* INTERACTIVE STAGE SCRUBBER & TELEMETRY CARDS */}
         {/* ============================================================ */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 mb-8">
           {STAGES.map((s, idx) => {
             const isActive = currentStageIdx === idx;
+            const isLastOnMobile = idx === 4;
             return (
               <button
                 key={s.id}
@@ -500,8 +501,14 @@ export const CraneTruckInteractiveShowcase: React.FC<CraneTruckInteractiveShowca
                   setCurrentStageIdx(idx);
                   setIsPlaying(false);
                 }}
+                onTouchEnd={() => {
+                  setCurrentStageIdx(idx);
+                  setIsPlaying(false);
+                }}
                 onMouseEnter={() => setIsPlaying(false)}
                 className={`relative overflow-hidden p-3 sm:p-4 rounded-sm border text-left cursor-pointer transition-all ${
+                  isLastOnMobile ? 'col-span-2 sm:col-span-1' : ''
+                } ${
                   isActive
                     ? 'bg-[#161616] border-[#0016CB] shadow-[0_0_20px_rgba(0,22,203,0.3)]'
                     : 'bg-[#0A0A0A] border-[#242424] hover:border-[#374151]'

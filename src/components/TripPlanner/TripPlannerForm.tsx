@@ -861,7 +861,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.96 }}
               onClick={handleSwapRoute}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-blue-400/50 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-blue-400/50 hover:shadow-[0_0_18px_rgba(56,189,248,0.35)] text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
               title="Reverse route direction (Swap Origin and Dropoff)"
             >
               <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35, ease: 'easeInOut' }}>
@@ -876,7 +876,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.96 }}
               onClick={handleSwapPickupDropoff}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-emerald-400/50 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-200 border border-white/10 hover:border-emerald-400/50 hover:shadow-[0_0_18px_rgba(16,185,129,0.35)] text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm"
               title="Swap Pickup and Dropoff locations"
             >
               <motion.div animate={{ rotate: swapRotation }} transition={{ duration: 0.35, ease: 'easeInOut' }}>
@@ -891,7 +891,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.96 }}
               onClick={handleResetForm}
-              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 hover:border-rose-400/40 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm group"
+              className="px-3 py-1.5 rounded-xl bg-black/40 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 hover:border-rose-400/40 hover:shadow-[0_0_18px_rgba(244,63,94,0.35)] text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer transition-all font-mono backdrop-blur-sm group"
               title="Reset all form fields to default"
             >
               <RotateCcw className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-[-360deg] transition-transform duration-500" />
@@ -909,6 +909,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
           {/* Current Location */}
           <LocationAutocompleteInput
+            id="origin-input"
             label="Current Location (Origin)"
             icon={<Truck className="w-4 h-4 text-blue-600" />}
             value={currentLoc}
@@ -923,6 +924,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
 
           {/* Pickup Location */}
           <LocationAutocompleteInput
+            id="pickup-input"
             label="Pickup Location (1h Stop)"
             icon={<Package className="w-4 h-4 text-emerald-600" />}
             value={pickupLoc}
@@ -937,6 +939,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
 
           {/* Dropoff Location */}
           <LocationAutocompleteInput
+            id="dropoff-input"
             label="Dropoff Location (1h Stop)"
             icon={<Flag className="w-4 h-4 text-rose-600" />}
             value={dropoffLoc}
@@ -1240,6 +1243,7 @@ export const TripPlannerForm: React.FC<TripPlannerFormProps> = ({
 };
 
 interface LocationInputProps {
+  id?: string;
   label: string;
   icon: React.ReactNode;
   value: LocationPoint;
@@ -1250,6 +1254,7 @@ interface LocationInputProps {
 }
 
 const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
+  id,
   label,
   icon,
   value,
@@ -1345,6 +1350,7 @@ const LocationAutocompleteInput: React.FC<LocationInputProps> = ({
 
       <div className="relative group">
         <input
+          id={id}
           type="text"
           value={query}
           onChange={e => {

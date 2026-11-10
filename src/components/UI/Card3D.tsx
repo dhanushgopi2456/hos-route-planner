@@ -34,6 +34,9 @@ export const Card3D: React.FC<Card3DProps> = ({
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!ref.current) return;
+    if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      return;
+    }
     const rect = ref.current.getBoundingClientRect();
 
     const mouseX = e.clientX - rect.left;

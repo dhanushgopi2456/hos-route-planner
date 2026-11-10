@@ -22,6 +22,7 @@ export const Navbar: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       navigate('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -29,13 +30,12 @@ export const Navbar: React.FC = () => {
     setMobileMenuOpen(false);
     if (location.pathname !== '/') {
       navigate(`/#${sectionId}`);
-      // Give React Router time to mount landing page
       setTimeout(() => {
         const el = document.getElementById(sectionId);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth' });
         }
-      }, 150);
+      }, 200);
     } else {
       const el = document.getElementById(sectionId);
       if (el) {
@@ -48,6 +48,12 @@ export const Navbar: React.FC = () => {
     setMobileMenuOpen(false);
     navigate('/planner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      const originInput = document.getElementById('origin-input') || document.querySelector('input[placeholder*="city"], input[placeholder*="Origin"]');
+      if (originInput instanceof HTMLInputElement) {
+        originInput.focus();
+      }
+    }, 250);
   };
 
   return (
@@ -179,11 +185,12 @@ export const Navbar: React.FC = () => {
               whileHover={{ scale: 1.05, y: -1 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleLaunchPlanner}
-              className="relative overflow-hidden btn-uc-solid px-5 py-2.5 text-xs font-bold inline-flex items-center gap-2 group cursor-pointer shadow-[0_0_25px_rgba(0,22,203,0.55)] hover:shadow-[0_0_35px_rgba(0,22,203,0.8)] font-mono"
+              className="relative overflow-hidden btn-uc-solid px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs font-bold inline-flex items-center gap-1.5 sm:gap-2 group cursor-pointer shadow-[0_0_20px_rgba(0,22,203,0.55)] hover:shadow-[0_0_35px_rgba(0,22,203,0.85)] font-mono"
             >
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
-              <span className="tracking-wider">LAUNCH PLANNER</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1.5" />
+              <span className="tracking-wider hidden sm:inline">LAUNCH PLANNER</span>
+              <span className="tracking-wider sm:hidden">PLANNER</span>
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
             </motion.button>
 
             {/* Light / Dark Mode Toggle */}
@@ -204,79 +211,111 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Dropdown Nav */}
+        {/* Mobile Dropdown Nav Drawer */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-slate-800 bg-[#06080E]/95 backdrop-blur-2xl px-4 py-4 space-y-2 font-sans"
+              className="lg:hidden border-t border-slate-800 bg-[#06080E]/95 backdrop-blur-2xl px-4 py-5 space-y-2.5 font-sans max-h-[85vh] overflow-y-auto"
             >
               <button
                 type="button"
                 onClick={() => handleNavClick('hero')}
-                className={`w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold ${
-                  isActive('/') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
+                className={`w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
+                  isActive('/') ? 'bg-[#0016CB] text-white' : 'text-slate-300 hover:bg-slate-800/80'
                 }`}
               >
-                Home
+                <span>Home</span>
+                <span className="text-xs opacity-60 font-mono">01</span>
               </button>
+
               <button
                 type="button"
                 onClick={handleLaunchPlanner}
-                className={`w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold ${
-                  isActive('/planner') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
+                className={`w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors cursor-pointer ${
+                  isActive('/planner') ? 'bg-[#0016CB] text-white' : 'text-slate-300 hover:bg-slate-800/80'
                 }`}
               >
-                Trip Planner Workspace
+                <div className="flex items-center gap-2">
+                  <span>Trip Planner Workspace</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/30">DISPATCH</span>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-blue-400" />
               </button>
+
               <button
                 type="button"
                 onClick={() => handleNavClick('capabilities-grid')}
-                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
+                className="w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800/80 transition-colors cursor-pointer"
               >
-                Features &amp; Capabilities
+                <span>Features &amp; Capabilities</span>
+                <span className="text-xs opacity-60 font-mono">02</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => handleNavClick('crane-sequence')}
-                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
+                className="w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800/80 transition-colors cursor-pointer"
               >
-                HOS Dispatch Engine
+                <span>HOS Dispatch Engine</span>
+                <span className="text-xs opacity-60 font-mono">03</span>
               </button>
+
               <button
                 type="button"
                 onClick={() => handleNavClick('milestones')}
-                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
+                className="w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800/80 transition-colors cursor-pointer"
               >
-                ELD Milestones &amp; Logs
+                <span>ELD Milestones &amp; Logs</span>
+                <span className="text-xs opacity-60 font-mono">04</span>
               </button>
+
               <Link
                 to="/about"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
-                  isActive('/about') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800'
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  isActive('/about') ? 'bg-[#0016CB] text-white' : 'text-slate-300 hover:bg-slate-800/80'
                 }`}
               >
-                FMCSA Compliance Rules
+                <span>FMCSA Compliance Rules</span>
+                <span className="text-xs opacity-60 font-mono">§ 395</span>
               </Link>
+
               <button
                 type="button"
                 onClick={() => handleNavClick('faq')}
-                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800"
+                className="w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800/80 transition-colors cursor-pointer"
               >
-                FAQ
+                <span>FAQ</span>
+                <span className="text-xs opacity-60 font-mono">05</span>
               </button>
-              <a
-                href="/kv-hero.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-left block px-3 py-2 rounded-xl text-sm font-semibold text-[#2f63ff] hover:bg-[#2f63ff]/15 font-mono"
-              >
-                KV Hero (Pure Vanilla JS) ↗
-              </a>
+
+              <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setShowAssumptionsModal(true);
+                  }}
+                  className="w-full text-left flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 bg-[#161616] border border-[#2E2E2E] hover:border-[#0016CB] transition-colors cursor-pointer font-mono"
+                >
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span>70h / 8d Compliance Rules Summary</span>
+                </button>
+
+                <a
+                  href="/kv-hero.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-left flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[#2f63ff] bg-[#161616] border border-[#2f63ff]/30 hover:bg-[#2f63ff]/15 transition-colors font-mono"
+                >
+                  <span>KV Hero (Pure Vanilla JS)</span>
+                  <ExternalLink className="w-3.5 h-3.5 text-[#2f63ff]" />
+                </a>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

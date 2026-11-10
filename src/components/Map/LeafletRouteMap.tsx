@@ -70,6 +70,32 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
   // Default tile style follows theme: dark mode -> dark tiles; light mode -> street tiles
   const [activeStyle, setActiveStyle] = useState<MapTileStyle>(() => (resolvedTheme === 'light' ? 'street' : 'dark'));
 
+  // Mobile Touch Device Detection & Scroll Lock State
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isMapUnlocked, setIsMapUnlocked] = useState(false);
+
+  useEffect(() => {
+    const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    setIsTouchDevice(isTouch);
+  }, []);
+
+  // Toggle Map Pan/Zoom lock on touch devices
+  const toggleMapLock = useCallback(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    setIsMapUnlocked(prev => {
+      const next = !prev;
+      if (next) {
+        map.dragging.enable();
+        if (map.touchZoom) map.touchZoom.enable();
+      } else {
+        map.dragging.disable();
+        if (map.touchZoom) map.touchZoom.disable();
+      }
+      return next;
+    });
+  }, []);
+
   // Sync tile provider with theme changes unless user explicitly switched
   useEffect(() => {
     if (activeStyle === 'dark' && resolvedTheme === 'light') {
@@ -122,11 +148,14 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
     if (!mapContainerRef.current) return;
 
     if (!mapInstanceRef.current) {
+      const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
       const map = L.map(mapContainerRef.current, {
         center: [39.8283, -98.5795], // Default continental US center
         zoom: 4,
         zoomControl: false,
-        attributionControl: false
+        attributionControl: false,
+        scrollWheelZoom: false, // Prevent desktop page scroll hijacking
+        dragging: !isTouch // Prevent mobile page swipe hijacking by default
       });
 
       // Custom clean zoom control at bottom right
@@ -351,8 +380,12 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
 
   return (
     <div className={`relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 ${className}`}>
-      {/* Map DOM mount container */}
-      <div ref={mapContainerRef} className="w-full h-full z-0" />
+      {/* Map DOM mount container with touch-action protection */}
+      <div
+        ref={mapContainerRef}
+        className="w-full h-full z-0"
+        style={{ touchAction: isTouchDevice && !isMapUnlocked ? 'pan-y' : 'none' }}
+      />
 
       {/* Calculating Radar Pulse Scanline Overlay */}
       <AnimatePresence>
@@ -378,7 +411,7 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
       </AnimatePresence>
 
       {/* Floating HUD Telemetry Overlay (Top Left) */}
-      <div className="absolute top-3 left-3 z-10 pointer-events-auto">
+      <div className="absolute top-3 left-3 z-10 pointer-events-auto flex flex-col gap-2">
         <div className="p-2.5 sm:p-3 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/15 shadow-xl flex items-center gap-3 sm:gap-4 text-xs font-mono">
           <div className="flex items-center gap-2 border-r border-white/15 pr-3">
             <Navigation className="w-3.5 h-3.5 text-blue-400" />
@@ -404,6 +437,33 @@ export const LeafletRouteMap: React.FC<LeafletRouteMapProps> = ({
             </div>
           </div>
         </div>
+
+        {/* Mobile Touch Scroll Lock / Pan Pill */}
+        {isTouchDevice && (
+          <div className="sm:hidden">
+            <button
+              type="button"
+              onClick={toggleMapLock}
+              className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold flex items-center gap-1.5 shadow-xl backdrop-blur-md transition-all cursor-pointer ${
+                isMapUnlocked
+                  ? 'bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 shadow-emerald-500/20'
+                  : 'bg-slate-950/90 text-amber-300 border border-amber-500/40'
+              }`}
+            >
+              {isMapUnlocked ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>🔓 Map Unlocked (Tap to Lock)</span>
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-amber-400" />
+                  <span>🔒 Map Locked (Swipe Page)</span>
+                </>
+              )}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tile Layer & View Controls (Top Right) */}

@@ -350,7 +350,13 @@ export const EldLogSheet: React.FC<EldLogSheetProps> = ({
             </div>
           </div>
 
-          {/* 24-Hour Graph Grid */}
+          {/* 24-Hour Graph Grid with Mobile Horizontal Scroll Hint */}
+          <div className="mb-1.5 flex md:hidden items-center justify-between text-[11px] font-mono text-slate-500 px-1">
+            <span className="font-semibold text-slate-700">24h Duty Timeline Grid:</span>
+            <span className="text-blue-600 font-bold flex items-center gap-1">
+              <span>Swipe horizontally ⇄</span>
+            </span>
+          </div>
           <div className="mb-6 w-full overflow-x-auto pb-2">
             <div className="min-w-[760px]">
               <EldLogGraph log={log} />

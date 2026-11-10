@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { HeroSection } from '../components/Landing/HeroSection';
 import { MarqueeTicker } from '../components/Landing/MarqueeTicker';
 import { ImpactMetrics } from '../components/Landing/ImpactMetrics';
@@ -13,10 +13,22 @@ import { FooterCta } from '../components/Landing/FooterCta';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const timer = setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 120);
+      return () => clearTimeout(timer);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.hash]);
 
   const handleLaunchPlanner = (demo?: boolean, tab?: string) => {
     const params = new URLSearchParams();
